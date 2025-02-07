@@ -1,12 +1,7 @@
+'use client';
 import { base, baseSepolia } from 'viem/chains';
-import { createConfig, http } from 'wagmi';
-import {
-	coinbaseWallet,
-	injected,
-	metaMask,
-	walletConnect,
-} from 'wagmi/connectors';
 import { IS_MAINNET, WALLET_CONNECT_PROJECT_ID } from './env.constant';
+import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 
 declare module 'wagmi' {
 	interface Register {
@@ -16,16 +11,9 @@ declare module 'wagmi' {
 
 const chain = IS_MAINNET ? base : baseSepolia;
 
-export const web3Config = createConfig({
+export const web3Config = getDefaultConfig({
+	appName: 'HSTK Base',
+	projectId: WALLET_CONNECT_PROJECT_ID,
 	chains: [chain],
-	transports: {
-		[base.id]: http(),
-		[baseSepolia.id]: http(),
-	},
-	connectors: [
-		injected(),
-		metaMask(),
-		coinbaseWallet(),
-		walletConnect({ projectId: WALLET_CONNECT_PROJECT_ID }),
-	],
+	ssr: true, // If your dApp uses server side rendering (SSR)
 });
