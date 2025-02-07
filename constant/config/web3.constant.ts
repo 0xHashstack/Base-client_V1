@@ -1,12 +1,7 @@
-import { base, baseSepolia } from 'viem/chains';
-import { createConfig, http } from 'wagmi';
-import {
-	coinbaseWallet,
-	injected,
-	metaMask,
-	walletConnect,
-} from 'wagmi/connectors';
-import { IS_MAINNET, WALLET_CONNECT_PROJECT_ID } from './env.constant';
+import { base, baseSepolia } from '@reown/appkit/networks';
+import { WALLET_CONNECT_PROJECT_ID } from './env.constant';
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
+import { cookieStorage, createStorage } from '@wagmi/core';
 
 declare module 'wagmi' {
 	interface Register {
@@ -14,18 +9,13 @@ declare module 'wagmi' {
 	}
 }
 
-const chain = IS_MAINNET ? base : baseSepolia;
-
-export const web3Config = createConfig({
-	chains: [chain],
-	transports: {
-		[base.id]: http(),
-		[baseSepolia.id]: http(),
-	},
-	connectors: [
-		injected(),
-		metaMask(),
-		coinbaseWallet(),
-		walletConnect({ projectId: WALLET_CONNECT_PROJECT_ID }),
-	],
+export const wagmiAdapter = new WagmiAdapter({
+	storage: createStorage({
+		storage: cookieStorage,
+	}),
+	ssr: true,
+	projectId: WALLET_CONNECT_PROJECT_ID,
+	networks: [base, baseSepolia],
 });
+
+export const web3Config = wagmiAdapter.wagmiConfig;
