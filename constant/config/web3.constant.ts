@@ -1,7 +1,7 @@
 'use client';
-import { base, baseSepolia } from 'viem/chains';
-import { IS_MAINNET, WALLET_CONNECT_PROJECT_ID } from './env.constant';
+import { CURRENT_NETWORK } from './env.constant';
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
+import Web3DataProvider from '@/lib/config/web3';
 
 declare module 'wagmi' {
 	interface Register {
@@ -9,11 +9,20 @@ declare module 'wagmi' {
 	}
 }
 
-const chain = IS_MAINNET ? base : baseSepolia;
+export const web3DataProvider = new Web3DataProvider(CURRENT_NETWORK);
 
-export const web3Config = getDefaultConfig({
-	appName: 'HSTK Base',
-	projectId: WALLET_CONNECT_PROJECT_ID,
-	chains: [chain],
-	ssr: true,
-});
+const initializeWeb3Config = (web3Provider: Web3DataProvider) => {
+	const baseChain = web3Provider.baseChain;
+
+	return getDefaultConfig({
+		appName: 'HSTK Base',
+		projectId: web3Provider.walletConnectProjectId,
+		chains: [baseChain],
+		ssr: true,
+		transports: {
+			[baseChain.id]: web3Provider.baseTransport,
+		},
+	});
+};
+
+export const web3Config = initializeWeb3Config(web3DataProvider);
