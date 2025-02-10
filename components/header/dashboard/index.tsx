@@ -1,7 +1,8 @@
 'use client';
-import { Bell } from '@phosphor-icons/react';
-import { Button } from '@/components/ui/button';
+
 import SidebarToggleButton from '@/components/sidebar/components/sidebar-toggle-button';
+import HeaderNotification from './components/header-notification';
+import Web3ConnectButton from '@/components/web3/button/connect-button';
 
 function DashboardHeader() {
 	return (
@@ -10,13 +11,9 @@ function DashboardHeader() {
 				<SidebarToggleButton />
 			</div>
 
-			<div className='ml-auto'>
-				<Button
-					variant='ghost'
-					size='icon'
-					className='w-8 h-8'>
-					<Bell size={16} />
-				</Button>
+			<div className='ml-auto flex items-center gap-4'>
+				<HeaderNotification />
+				<Web3ConnectButton />
 			</div>
 		</header>
 	);

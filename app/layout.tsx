@@ -12,6 +12,7 @@ import { Web3Provider } from '@/context/web-3.context';
 
 const inter = Inter({
 	subsets: ['latin'],
+	variable: '--font-inter',
 	display: 'swap',
 });
 
@@ -26,7 +27,7 @@ export default async function RootLayout({
 	return (
 		<html
 			lang='en'
-			className={inter.className}>
+			className={`${inter.className} ${inter.variable}`}>
 			<ThemeAndLanguageProvider
 				defaultTheme={(userPrefTheme || HstkTheme.DARK) as HstkTheme}>
 				<Web3Provider>{children}</Web3Provider>
