@@ -5,9 +5,22 @@ export default {
 		'./pages/**/*.{js,ts,jsx,tsx,mdx}',
 		'./components/**/*.{js,ts,jsx,tsx,mdx}',
 		'./app/**/*.{js,ts,jsx,tsx,mdx}',
+		'./features/**/*.{js,ts,jsx,tsx,mdx}',
 	],
+
 	theme: {
 		extend: {
+			textColor: {
+				primary: {
+					DEFAULT: 'hsl(var(--text-primary-900))',
+					900: 'hsl(var(--text-primary-900))',
+					600: 'hsl(var(--text-primary-600))',
+					500: 'hsl(var(--text-primary-500))',
+				},
+			},
+			borderColor: {
+				header: 'hsl(var(--border-header))',
+			},
 			colors: {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
@@ -49,11 +62,25 @@ export default {
 					'4': 'hsl(var(--chart-4))',
 					'5': 'hsl(var(--chart-5))',
 				},
+				sidebar: {
+					bg: 'hsl(var(--sidebar-bg))',
+				},
+				tab: {
+					DEFAULT: 'hsl(var(--tab-bg))',
+					active: 'hsl(var(--active-tab-bg))',
+				},
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)',
+			},
+			screens: {
+				xs: '320px',
+				sm: '640px',
+				md: '768px',
+				lg: '1024px',
+				xl: '1280px',
 			},
 		},
 	},

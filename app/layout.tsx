@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 import '@/styles/globals.scss';
 import { getCookie } from 'cookies-next/server';
 
@@ -9,6 +10,11 @@ import { RootMetadata } from '@/constant/seo.constant';
 import { HSTK_THEME_KEY } from '@/constant/config';
 import { Web3Provider } from '@/context/web-3.context';
 
+const inter = Inter({
+	subsets: ['latin'],
+	display: 'swap',
+});
+
 export const metadata: Metadata = RootMetadata;
 
 export default async function RootLayout({
@@ -18,7 +24,9 @@ export default async function RootLayout({
 }>) {
 	const userPrefTheme = await getCookie(HSTK_THEME_KEY, { cookies });
 	return (
-		<html lang='en'>
+		<html
+			lang='en'
+			className={inter.className}>
 			<ThemeAndLanguageProvider
 				defaultTheme={(userPrefTheme || HstkTheme.DARK) as HstkTheme}>
 				<Web3Provider>{children}</Web3Provider>
