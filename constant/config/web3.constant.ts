@@ -15,5 +15,5 @@ export const web3Config = getDefaultConfig({
 	appName: 'HSTK Base',
 	projectId: WALLET_CONNECT_PROJECT_ID,
 	chains: [chain],
-	ssr: true, // If your dApp uses server side rendering (SSR)
+	ssr: true,
 });
