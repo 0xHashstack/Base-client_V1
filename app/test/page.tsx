@@ -8,7 +8,7 @@ import {
 } from '@rainbow-me/rainbowkit';
 import React from 'react';
 
-function page() {
+function Page() {
 	const { openConnectModal } = useConnectModal();
 	const { openAccountModal } = useAccountModal();
 	const { openChainModal } = useChainModal();
@@ -44,4 +44,4 @@ function page() {
 	);
 }
 
-export default page;
+export default Page;
