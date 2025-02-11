@@ -14,7 +14,7 @@ function HeaderNav() {
 					<Link
 						href={item.href}
 						className={cn(
-							'text-[13px] text-primary-900 px-[20px] py-[10px] rounded-full hover:bg-background transition-colors',
+							'text-[13px] text-primary-900 px-[20px] py-[10px] rounded-md hover:bg-background transition-colors',
 							{
 								'bg-background font-medium': isActive,
 							}

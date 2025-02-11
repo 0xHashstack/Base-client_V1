@@ -47,6 +47,10 @@ export default {
 						border: 'hsl(var(--outline-button-border))',
 						text: 'hsl(var(--outline-button-text))',
 					},
+					wallet: {
+						DEFAULT: 'hsl(var(--wallet-connect-button))',
+						text: 'hsl(var(--wallet-connect-button-text))',
+					},
 				},
 				card: {
 					DEFAULT: 'hsl(var(--card))',

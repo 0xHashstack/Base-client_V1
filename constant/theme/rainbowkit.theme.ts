@@ -13,5 +13,6 @@ export const customRainbowKitTheme = customMerge<Theme>(darkTheme(), {
 		connectButtonInnerBackground: 'hsl(var(--background))',
 		connectButtonText: 'hsl(var(--rk-foreground))',
 		profileAction: 'hsl(var(--background))',
+		generalBorder: 'hsl(var(--border-header))',
 	},
 } as Theme);
