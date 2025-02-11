@@ -1,0 +1,31 @@
+.table {
+	position: relative;
+	width: 100%;
+	overflow: auto;
+	&.primary {
+		background: hsl(var(--table-bg));
+		border-radius: 12px;
+		thead {
+			tr:hover {
+				background: none !important;
+			}
+		}
+		tr {
+			border-color: hsl(var(--border-table));
+		}
+		th {
+			height: 50px;
+			color: hsl(var(--text-primary-900));
+		}
+		td {
+			padding-block: 16px;
+			color: hsl(var(--text-primary-900));
+		}
+		:is(th, td):first-child {
+			padding-left: 30px;
+		}
+		:is(th, td):last-child {
+			padding-right: 30px;
+		}
+	}
+}

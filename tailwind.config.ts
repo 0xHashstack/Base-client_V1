@@ -26,6 +26,7 @@ export default {
 			},
 			borderColor: {
 				header: 'hsl(var(--border-header))',
+				table: 'hsl(var(--border-table))',
 			},
 			colors: {
 				background: 'hsl(var(--background))',
@@ -88,6 +89,10 @@ export default {
 				tab: {
 					DEFAULT: 'hsl(var(--tab-bg))',
 					active: 'hsl(var(--active-tab-bg))',
+				},
+				table: {
+					DEFAULT: 'hsl(var(--table-bg))',
+					hover: 'hsl(var(--table-hover))',
 				},
 			},
 			borderRadius: {
