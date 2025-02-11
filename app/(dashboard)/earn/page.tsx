@@ -58,7 +58,7 @@ const invoices = [
 
 function page() {
 	return (
-		<div>
+		<div className='mt-10'>
 			<Btn.Primary>test</Btn.Primary>
 			<Btn.Secondary>test</Btn.Secondary>
 			<Btn.Outline>test</Btn.Outline>

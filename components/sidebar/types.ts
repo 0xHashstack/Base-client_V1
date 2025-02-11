@@ -17,7 +17,6 @@ export interface SidebarHeaderProps {
 
 export interface SidebarNavProps {
 	items: NavItem[];
-	isSidebarOpen: boolean;
 }
 
 export interface SidebarThemeToggleProps {

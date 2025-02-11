@@ -1,10 +1,5 @@
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
-} from '@/components/ui/tooltip';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SidebarThemeToggleProps } from '../types';
 import {
@@ -32,9 +27,7 @@ export const SidebarThemeToggle = ({
 	return (
 		<div className='flex flex-col gap-1.5 pb-4'>
 			<Tabs
-				className={cn('w-full block', {
-					'lg:hidden': !isSidebarOpen,
-				})}
+				className={cn('w-full block')}
 				defaultValue={theme}
 				onValueChange={(value) =>
 					handleThemeToggle(value as HstkTheme)
@@ -53,34 +46,10 @@ export const SidebarThemeToggle = ({
 				</TabsList>
 			</Tabs>
 
-			<div
-				className={cn('hidden mx-auto', {
-					'lg:block': !isSidebarOpen,
-				})}>
-				<Tooltip delayDuration={0}>
-					<TooltipTrigger asChild>
-						<Button
-							variant='ghost'
-							size='icon'
-							className='w-6 h-6 mx-auto'
-							onClick={() => handleThemeToggle()}>
-							{true ?
-								<Moon size={16} />
-							:	<Sun size={16} />}
-						</Button>
-					</TooltipTrigger>
-					<TooltipContent side='right'>
-						{true ? 'Dark Mode' : 'Light Mode'}
-					</TooltipContent>
-				</Tooltip>
-			</div>
-
 			<Button
 				variant='ghost'
 				size='icon'
-				className={cn('w-6 h-6', {
-					'lg:mx-auto': !isSidebarOpen,
-				})}
+				className={cn('w-6 h-6')}
 				onClick={() => onToggle(!isSidebarOpen)}>
 				{isSidebarOpen ?
 					<CaretDoubleLeft size={16} />

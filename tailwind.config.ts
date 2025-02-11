@@ -31,6 +31,9 @@ export default {
 			colors: {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
+				header: {
+					DEFAULT: 'hsl(var(--primary-header))',
+				},
 				button: {
 					primary: {
 						DEFAULT: 'hsl(var(--primary-button))',

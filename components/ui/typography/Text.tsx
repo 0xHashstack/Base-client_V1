@@ -103,6 +103,7 @@ const createTextComponent =
 export const Text = {
 	Regular10: createTextComponent(10, 'regular'),
 	Regular12: createTextComponent(12, 'regular'),
+	Regular13: createTextComponent(13, 'regular'),
 	Regular14: createTextComponent(14, 'regular'),
 	Regular16: createTextComponent(16, 'regular'),
 	Regular20: createTextComponent(20, 'regular'),
@@ -113,6 +114,7 @@ export const Text = {
 	Regular48: createTextComponent(48, 'regular'),
 	Medium10: createTextComponent(10, 'medium'),
 	Medium12: createTextComponent(12, 'medium'),
+	Medium13: createTextComponent(13, 'medium'),
 	Medium14: createTextComponent(14, 'medium'),
 	Medium16: createTextComponent(16, 'medium'),
 	Medium20: createTextComponent(20, 'medium'),
@@ -123,6 +125,7 @@ export const Text = {
 	Medium48: createTextComponent(48, 'medium'),
 	Semibold10: createTextComponent(10, 'semibold'),
 	Semibold12: createTextComponent(12, 'semibold'),
+	Semibold13: createTextComponent(13, 'semibold'),
 	Semibold14: createTextComponent(14, 'semibold'),
 	Semibold16: createTextComponent(16, 'semibold'),
 	Semibold20: createTextComponent(20, 'semibold'),
