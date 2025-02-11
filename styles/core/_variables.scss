@@ -42,6 +42,17 @@
 		// rainbowkit
 		--rk-background: 0 0% 100%;
 		--rk-foreground: 0 0% 0%;
+
+		// button
+		--primary-button: 0 0% 27%;
+		--primary-button-text: 0 0% 100%;
+		--secondary-button: 240 5% 90%;
+		--secondary-button-text: 240 6% 10%;
+		--outline-button-border: 240 6% 90%;
+		--outline-button-text: 240 6% 10%;
+
+		// sizes
+		--max-section-width: 1110px;
 	}
 	[data-theme-id='dark'] {
 		--background: 240 10% 3.9%;

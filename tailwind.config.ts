@@ -10,6 +10,12 @@ export default {
 
 	theme: {
 		extend: {
+			maxWidth: {
+				section: 'var(--max-section-width)',
+			},
+			width: {
+				section: 'var(--max-section-width)',
+			},
 			textColor: {
 				primary: {
 					DEFAULT: 'hsl(var(--text-primary-900))',
@@ -24,6 +30,20 @@ export default {
 			colors: {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
+				button: {
+					primary: {
+						DEFAULT: 'hsl(var(--primary-button))',
+						text: 'hsl(var(--primary-button-text))',
+					},
+					secondary: {
+						DEFAULT: 'hsl(var(--secondary-button))',
+						text: 'hsl(var(--secondary-button-text))',
+					},
+					outline: {
+						border: 'hsl(var(--outline-button-border))',
+						text: 'hsl(var(--outline-button-text))',
+					},
+				},
 				card: {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))',
