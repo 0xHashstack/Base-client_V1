@@ -40,8 +40,6 @@ function Web3ConnectButton() {
 				mounted,
 			}) => {
 				const connected = !!(mounted && account && chain);
-				console.log({ chain });
-
 				return (
 					<div
 						aria-hidden={!mounted}

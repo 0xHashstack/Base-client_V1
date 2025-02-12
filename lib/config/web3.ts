@@ -3,6 +3,8 @@ import {
 	BASE_SEPOLIA_RPC_URL,
 	WALLET_CONNECT_PROJECT_ID,
 } from '@/constant/config';
+import { CHAIN_COIN_MAP } from '@/constant/web3';
+import { SupportedChain } from '@/store/useWeb3.store';
 import { ChainNetwork } from '@/types/web3';
 import { http } from 'viem';
 import { base, baseSepolia } from 'viem/chains';
@@ -85,6 +87,13 @@ class Web3DataProvider {
 	 */
 	get walletConnectProjectId(): string {
 		return this.config.walletConnectProjectId;
+	}
+
+	/**
+	 * Get the coins configuration for the current network
+	 */
+	coins(chain: SupportedChain = 'base') {
+		return CHAIN_COIN_MAP[chain][this.currentNetwork];
 	}
 }
 

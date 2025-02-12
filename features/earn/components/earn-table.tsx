@@ -1,0 +1,55 @@
+'use client';
+import React from 'react';
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from '@/components/ui/table/index';
+import { web3DataProvider } from '@/constant/config';
+import { Btn } from '@/components/ui/button';
+import { useWalletTokenBalances } from '@/hooks/useWalletTokenBalance';
+
+const coins = web3DataProvider.coins();
+
+function EarnTable() {
+	const { formatted } = useWalletTokenBalances(
+		coins.map((coin) => coin.address)
+	);
+
+	return (
+		<div className='mt-20'>
+			<Table isPrimary>
+				<TableHeader>
+					<TableRow>
+						<TableHead>Market</TableHead>
+						<TableHead>Price</TableHead>
+						<TableHead>Wallet balance</TableHead>
+						<TableHead>Total Supply</TableHead>
+					</TableRow>
+				</TableHeader>
+				<TableBody>
+					{coins.map((coin) => (
+						<TableRow key={coin.address}>
+							<TableCell className='font-medium'>
+								{coin.name}
+							</TableCell>
+							<TableCell>{coin.name}</TableCell>
+							<TableCell>
+								{formatted?.[coin.address] || '-'}
+							</TableCell>
+							<TableCell>{coin.name}</TableCell>
+							<TableCell className='w-[100px]'>
+								<Btn.Primary>Supply</Btn.Primary>
+							</TableCell>
+						</TableRow>
+					))}
+				</TableBody>
+			</Table>
+		</div>
+	);
+}
+
+export default EarnTable;

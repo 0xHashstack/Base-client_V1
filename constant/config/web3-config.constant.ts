@@ -5,11 +5,11 @@ import Web3DataProvider from '@/lib/config/web3';
 import { cookieStorage, createStorage } from 'wagmi';
 import { HSTK_WAGMI_COOKIE_KEY } from './keys.constant';
 
-declare module 'wagmi' {
-	interface Register {
-		config: typeof web3Config;
-	}
-}
+// declare module 'wagmi' {
+// 	interface Register {
+// 		config: typeof web3Config;
+// 	}
+// }
 
 export const web3DataProvider = new Web3DataProvider(CURRENT_NETWORK);
 

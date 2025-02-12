@@ -3,16 +3,17 @@ import { notFound } from 'next/navigation';
 import { SUPPORTED_CHAINS } from '@/constant/config';
 import { SupportedChain } from '@/store/useWeb3.store';
 
-function layout({
+async function layout({
 	children,
 	params,
 }: {
 	children: React.ReactNode;
-	params: { chain: string };
+	params: Promise<{ chain: string }>;
 }) {
 	const validChains = SUPPORTED_CHAINS;
+	const { chain } = await params;
 
-	if (!validChains.includes(params.chain.toLowerCase() as SupportedChain)) {
+	if (!validChains.includes(chain.toLowerCase() as SupportedChain)) {
 		notFound();
 	}
 
