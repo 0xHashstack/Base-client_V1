@@ -15,4 +15,9 @@ export const customRainbowKitTheme = customMerge<Theme>(darkTheme(), {
 		profileAction: 'hsl(var(--background))',
 		generalBorder: 'hsl(var(--border-header))',
 	},
+	radii: {
+		modal: 'var(--radius)',
+		modalMobile: 'var(--radius)',
+		actionButton: 'var(--radius)',
+	},
 } as Theme);
