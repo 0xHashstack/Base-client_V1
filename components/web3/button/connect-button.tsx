@@ -1,7 +1,6 @@
 'use client';
 import If from '@/components/common/If';
 import { Btn } from '@/components/ui/button';
-import { TooltipProvider } from '@/components/ui/tooltip';
 import { Text } from '@/components/ui/typography/Text';
 import { cn } from '@/lib/utils';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
@@ -41,6 +40,7 @@ function Web3ConnectButton() {
 				mounted,
 			}) => {
 				const connected = !!(mounted && account && chain);
+				console.log({ chain });
 
 				return (
 					<div
@@ -50,19 +50,16 @@ function Web3ConnectButton() {
 								!mounted,
 						})}>
 						<If isTrue={connected}>
-							<ConnectedActionArea
-								openAccountModal={openAccountModal}
-								openChainModal={openChainModal}
-								chain={chain!}
-								account={account!}
-							/>
-
 							<If isTrue={chain?.unsupported}>
 								<WrongNetworkButton onClick={openChainModal} />
-								<ConnectWalletButton
-									onClick={openConnectModal}
+								<ConnectedActionArea
+									openAccountModal={openAccountModal}
+									openChainModal={openChainModal}
+									chain={chain!}
+									account={account!}
 								/>
 							</If>
+							<ConnectWalletButton onClick={openConnectModal} />
 						</If>
 					</div>
 				);
@@ -82,33 +79,25 @@ const ConnectedActionArea = ({
 	account: Account;
 }) => {
 	return (
-		<TooltipProvider>
-			<div
-				className='flex bg-background h-8 items-center justify-center cursor-pointer rounded-md  px-2 gap-2'
-				onClick={openAccountModal}>
-				<If isTrue={chain.hasIcon && chain.iconUrl}>
-					<Image
-						className='flex-shrink-0'
-						src={chain.iconUrl!}
-						alt={chain.name!}
-						width={20}
-						height={20}
-					/>
-				</If>
-				<Text.Regular13>{account.displayName}</Text.Regular13>
-			</div>
-		</TooltipProvider>
+		<div
+			className='flex bg-background h-8 items-center justify-center cursor-pointer rounded-md  px-2 gap-2'
+			onClick={openAccountModal}>
+			<If isTrue={chain.hasIcon && chain.iconUrl}>
+				<Image
+					className='flex-shrink-0'
+					src={chain.iconUrl!}
+					alt={chain.name!}
+					width={20}
+					height={20}
+				/>
+			</If>
+			<Text.Regular13>{account.displayName}</Text.Regular13>
+		</div>
 	);
 };
 
 const WrongNetworkButton = ({ onClick }: { onClick: () => void }) => {
-	return (
-		<Btn.Destructive
-			className='pointer-events-none'
-			onClick={onClick}>
-			Wrong Network
-		</Btn.Destructive>
-	);
+	return <Btn.Destructive onClick={onClick}>Wrong Network</Btn.Destructive>;
 };
 
 const ConnectWalletButton = ({ onClick }: { onClick: () => void }) => {

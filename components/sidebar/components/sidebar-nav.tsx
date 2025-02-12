@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils';
 import { SidebarNavProps } from '../types';
 import { usePathname } from 'next/navigation';
-import Link from 'next/link';
+import DashboardLink from '@/components/common/DashboardLink';
 
 export const SidebarNav = ({ items }: SidebarNavProps) => {
 	const pathName = usePathname();
@@ -11,7 +11,7 @@ export const SidebarNav = ({ items }: SidebarNavProps) => {
 				{items.map((item) => {
 					const isActive = pathName.includes(item.href);
 					return (
-						<Link
+						<DashboardLink
 							key={item.href}
 							href={item.href}
 							className={cn(
@@ -22,7 +22,7 @@ export const SidebarNav = ({ items }: SidebarNavProps) => {
 							)}>
 							{item.icon}
 							<span className='block'>{item.title}</span>
-						</Link>
+						</DashboardLink>
 					);
 				})}
 			</nav>

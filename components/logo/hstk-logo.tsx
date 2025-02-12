@@ -3,8 +3,8 @@ import HstkIcon from '../icons/HstkIcon';
 import If from '../common/If';
 import { Text } from '../ui/typography/Text';
 import { cn } from '@/lib/utils';
-import Link from 'next/link';
 import { LOCAL_ROUTE } from '@/constant/routes/routes.constant';
+import DashboardLink from '../common/DashboardLink';
 
 interface HstkLogoProps {
 	hideTitle?: boolean;
@@ -18,7 +18,7 @@ function HstkLogo({
 	id = 'hstk-logo-svg',
 }: HstkLogoProps) {
 	return (
-		<Link
+		<DashboardLink
 			href={LOCAL_ROUTE.EARN.HOME}
 			className='flex items-center gap-1.5'>
 			<HstkIcon id={id} />
@@ -28,7 +28,7 @@ function HstkLogo({
 					Hashstack
 				</Text.Regular20>
 			</If>
-		</Link>
+		</DashboardLink>
 	);
 }
 

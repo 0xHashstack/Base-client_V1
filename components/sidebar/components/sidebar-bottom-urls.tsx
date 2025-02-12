@@ -1,15 +1,15 @@
 import { ArrowSquareOut } from '@phosphor-icons/react';
-import { useRouter } from 'next/navigation';
 import { SIDEBAR_BOTTOM_LINKS } from '../constant';
+import useCustomRouter from '@/hooks/useCustomRouter';
 
 function SidebarBottomUrls() {
-	const router = useRouter();
+	const { dashboardRouter } = useCustomRouter();
 
 	const handleClick = (href: string, isExternal?: boolean) => {
 		if (isExternal) {
 			window.open(href, '_blank');
 		} else {
-			router.push(href);
+			dashboardRouter.push(href);
 		}
 	};
 
