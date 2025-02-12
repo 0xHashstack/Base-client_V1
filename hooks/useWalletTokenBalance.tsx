@@ -41,15 +41,16 @@ export const useWalletTokenBalance = (
 	const { address: walletAccount } = useAccount();
 	const wAccount = address ?? walletAccount;
 
-	const { data, isError, isLoading, isSuccess, error } = useReadContract({
-		address: tokenAddress as Web3Address,
-		abi: erc20ABI,
-		functionName: 'balanceOf',
-		args: [wAccount],
-		query: {
-			enabled: !!wAccount,
-		},
-	});
+	const { data, isError, isLoading, isSuccess, error, refetch } =
+		useReadContract({
+			address: tokenAddress as Web3Address,
+			abi: erc20ABI,
+			functionName: 'balanceOf',
+			args: [wAccount],
+			query: {
+				enabled: !!wAccount,
+			},
+		});
 
 	return {
 		data,
@@ -58,6 +59,7 @@ export const useWalletTokenBalance = (
 		isLoading,
 		isSuccess,
 		error,
+		refetch,
 	};
 };
 
@@ -78,13 +80,14 @@ export const useWalletTokenBalances = (
 		args: [wAccount],
 	})) as UseReadContractsParameters['contracts'];
 
-	const { data, isError, isLoading, isSuccess, error } = useReadContracts({
-		contracts,
-		allowFailure: true,
-		query: {
-			enabled: !!wAccount,
-		},
-	});
+	const { data, isError, isLoading, isSuccess, error, refetch } =
+		useReadContracts({
+			contracts,
+			allowFailure: true,
+			query: {
+				enabled: !!wAccount,
+			},
+		});
 
 	const values =
 		data?.reduce(
@@ -112,5 +115,6 @@ export const useWalletTokenBalances = (
 		isLoading,
 		isSuccess,
 		error,
+		refetch,
 	};
 };
