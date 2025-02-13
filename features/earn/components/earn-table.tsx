@@ -11,6 +11,8 @@ import {
 import { web3DataProvider } from '@/constant/config';
 import { Btn } from '@/components/ui/button';
 import { useWalletTokenBalances } from '@/hooks/useWalletTokenBalance';
+import { Text } from '@/components/ui/typography/Text';
+import { StatCard } from '@/components/ui/card';
 
 const coins = web3DataProvider.coins();
 
@@ -20,7 +22,24 @@ function EarnTable() {
 	);
 
 	return (
-		<div className='mt-20'>
+		<div className='flex flex-col gap-5'>
+			<div className='flex justify-between items-center gap-4 flex-wrap'>
+				<Text.Medium20>Earn Markets</Text.Medium20>
+				<div className='flex gap-4 items-center'>
+					<StatCard
+						title='Market Deposit'
+						value='$97689.32'
+						className='min-w-[200px]'
+						isLoading
+					/>
+
+					<StatCard
+						title='Market APR'
+						value='3.476%'
+						valueClassName='text-success'
+					/>
+				</div>
+			</div>
 			<Table isPrimary>
 				<TableHeader>
 					<TableRow>

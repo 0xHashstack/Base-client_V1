@@ -10,7 +10,7 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
 				<Sidebar className='flex sm:hidden' />
 				<div className='flex-1 flex flex-col relative'>
 					<DashboardHeader />
-					<div className='flex-1 mx-auto max-w-section w-full px-6'>
+					<div className='flex-1 mx-auto max-w-section w-full px-6 py-12'>
 						{children}
 					</div>
 				</div>

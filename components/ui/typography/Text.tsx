@@ -24,7 +24,7 @@ const paragraphVariants = cva('text-text-primary-700', {
 			13: 'text-[13px]',
 			14: 'text-sm',
 			16: 'text-base',
-			20: 'text-xl',
+			20: 'text-base md:text-xl',
 			24: 'text-2xl',
 			32: 'text-[32px]',
 			36: 'text-4xl',
