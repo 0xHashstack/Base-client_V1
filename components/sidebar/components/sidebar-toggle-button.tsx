@@ -4,7 +4,13 @@ import { useLayoutStore } from '@/store/useLayout.store';
 import { SidebarSimple } from '@phosphor-icons/react';
 import React from 'react';
 
-function SidebarToggleButton({ className }: { className?: string }) {
+function SidebarToggleButton({
+	className,
+	icon = <SidebarSimple size={16} />,
+}: {
+	className?: string;
+	icon?: React.ReactNode;
+}) {
 	const { isSidebarOpen, toggleSidebar } = useLayoutStore();
 	return (
 		<Button
@@ -12,7 +18,7 @@ function SidebarToggleButton({ className }: { className?: string }) {
 			size='icon'
 			className={cn('w-6 h-6', className)}
 			onClick={() => toggleSidebar(!isSidebarOpen)}>
-			<SidebarSimple size={16} />
+			{icon}
 		</Button>
 	);
 }

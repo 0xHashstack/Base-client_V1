@@ -8,7 +8,7 @@ function HeaderNotification() {
 			variant='ghost'
 			size='icon'
 			className='w-8 h-8'>
-			<Bell size={16} />
+			<Bell className='!size-6' />
 		</Button>
 	);
 }
