@@ -6,12 +6,23 @@ import { SidebarNav } from './components/sidebar-nav';
 import { SidebarThemeToggle } from './components/sidebar-theme-toggle';
 import { SIDEBAR_NAV_ITEMS } from './constant';
 import SidebarBottomUrls from './components/sidebar-bottom-urls';
+import { useOutsideClickListener } from '@/hooks/useOutsideClickListener';
+import { useCallback } from 'react';
 
 function Sidebar({ className }: { className?: string }) {
 	const { isSidebarOpen, toggleSidebar } = useLayoutStore();
 
+	const handleOutsideClick = useCallback(() => {
+		if (isSidebarOpen) {
+			toggleSidebar(false);
+		}
+	}, [isSidebarOpen, toggleSidebar]);
+
+	const sidebarRef = useOutsideClickListener(handleOutsideClick);
+
 	return (
 		<aside
+			ref={sidebarRef}
 			className={cn(
 				'z-30 h-screen bg-sidebar-bg transition-all duration-300 ease-in-out px-2.5 flex flex-col overflow-x-hidden w-[90vw] max-w-[300px] text-primary-600',
 				'lg:sticky lg:top-0',
