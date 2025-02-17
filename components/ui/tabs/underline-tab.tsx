@@ -11,14 +11,24 @@ interface UnderLinedTabProps {
 	tabs: { value: string; label: string; content: React.ReactNode }[];
 	defaultValue?: string;
 	className?: string;
+	tabListClassName?: string;
 }
 
-function UnderLinedTab({ tabs, defaultValue, className }: UnderLinedTabProps) {
+function UnderLinedTab({
+	tabs,
+	defaultValue,
+	className,
+	tabListClassName,
+}: UnderLinedTabProps) {
 	return (
 		<Tabs
 			defaultValue={defaultValue || tabs[0].value}
 			className={cn('flex flex-col', className)}>
-			<TabsList className='w-full h-auto bg-transparent justify-start gap-8 p-0 border-b border-tab rounded-none'>
+			<TabsList
+				className={cn(
+					'w-full h-auto bg-transparent justify-start gap-8 p-0 border-b border-tab rounded-none',
+					tabListClassName
+				)}>
 				{tabs.map((tab) => (
 					<TabsTrigger
 						key={tab.value}

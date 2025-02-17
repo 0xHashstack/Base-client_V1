@@ -33,7 +33,12 @@ export default {
 				table: 'hsl(var(--border-table))',
 				tab: 'hsl(var(--border-tab))',
 			},
-
+			height: {
+				header: 'var(--header-height)',
+			},
+			inset: {
+				header: 'var(--header-height)',
+			},
 			colors: {
 				badge: {
 					success: 'hsl(var(--badge-success))',

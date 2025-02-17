@@ -7,7 +7,7 @@ import MyPositionsTable from '../components/my-position/my-position-table';
 function EarnView() {
 	return (
 		<EarnProvider>
-			<div className='flex flex-col flex-1'>
+			<div className='flex flex-col flex-1 relative'>
 				<div className='block tablet:hidden'>
 					<EarnMobile />
 				</div>

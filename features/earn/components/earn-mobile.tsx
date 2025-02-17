@@ -21,6 +21,7 @@ function EarnMobile() {
 			<UnderLinedTab
 				tabs={tabs}
 				className='gap-8'
+				tabListClassName='sticky top-header  bg-background'
 			/>
 		</div>
 	);
