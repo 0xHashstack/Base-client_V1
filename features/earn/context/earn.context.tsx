@@ -1,10 +1,10 @@
 import React, { createContext, useContext } from 'react';
 import { useWalletTokenBalances } from '@/hooks/useWalletTokenBalance';
-import { useEarnStore } from '@/store/useEarn.store';
-import { HstkCoin } from '@/types/web3/coin.types';
+import { useTokenStore } from '@/store/useTokenStore';
+import { HstkToken } from '@/types/web3/token.types';
 
 interface EarnContextType {
-	coins: HstkCoin[];
+	tokens: HstkToken[];
 	tokenBalances: {
 		formatted: Record<string, string>;
 		isLoading: boolean;
@@ -16,13 +16,13 @@ interface EarnContextType {
 const EarnContext = createContext<EarnContextType | undefined>(undefined);
 
 export function EarnProvider({ children }: { children: React.ReactNode }) {
-	const { coins } = useEarnStore();
+	const { tokens } = useTokenStore();
 	const { formatted, isLoading, isError, error } = useWalletTokenBalances(
-		coins.map((coin) => coin.address)
+		tokens.map((token) => token.address)
 	);
 
 	const value = {
-		coins,
+		tokens,
 		tokenBalances: {
 			formatted,
 			isLoading,

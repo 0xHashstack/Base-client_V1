@@ -9,7 +9,7 @@ import { List } from '@phosphor-icons/react';
 
 function DashboardHeader() {
 	return (
-		<header className='bg-header h-[64px] w-full border-b border-header flex items-center justify-between px-4 xl:px-12 sticky top-0'>
+		<header className='bg-header h-[64px] w-full border-b border-header flex items-center justify-between px-4 xl:px-12 sticky top-0 z-10'>
 			<div className='flex items-center gap-4 laptop:gap-12 '>
 				<div className='hidden tablet:block'>
 					<HstkLogo hideTitleOnMobile />

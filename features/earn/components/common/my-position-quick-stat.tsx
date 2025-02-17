@@ -1,17 +1,16 @@
 import { StatCard } from '@/components/ui/card';
 import React from 'react';
 
-function EarnQuickStat() {
+function MyPositionQuickStat() {
 	return (
 		<div className='flex gap-2 tablet:gap-4 items-center flex-wrap'>
 			<StatCard
-				title='Market Deposit'
-				value='$97689.32'
-				className='min-w-[200px]'
+				title='Total Positions'
+				value='$567.876'
 			/>
 
 			<StatCard
-				title='Market APR'
+				title='Total APR'
 				value='3.476%'
 				valueClassName='text-success'
 			/>
@@ -19,4 +18,4 @@ function EarnQuickStat() {
 	);
 }
 
-export default EarnQuickStat;
+export default MyPositionQuickStat;

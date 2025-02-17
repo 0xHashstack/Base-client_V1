@@ -23,13 +23,22 @@ export default {
 					600: 'hsl(var(--text-primary-600))',
 					500: 'hsl(var(--text-primary-500))',
 				},
+				badge: {
+					success: 'hsl(var(--badge-success-text))',
+					secondary: 'hsl(var(--badge-secondary-text))',
+				},
 			},
 			borderColor: {
 				header: 'hsl(var(--border-header))',
 				table: 'hsl(var(--border-table))',
 				tab: 'hsl(var(--border-tab))',
 			},
+
 			colors: {
+				badge: {
+					success: 'hsl(var(--badge-success))',
+					secondary: 'hsl(var(--badge-secondary))',
+				},
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				header: {

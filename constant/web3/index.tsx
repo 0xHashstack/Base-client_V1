@@ -1,2 +1,2 @@
-export * from './coin.constant';
-export * from './coin-aggregate.constant';
+export * from './token.constant';
+export * from './token-aggregate.constant';

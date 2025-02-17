@@ -1,5 +1,3 @@
-import If from '@/components/common/If';
-import { Badge } from '@/components/ui/badge';
 import { Btn } from '@/components/ui/button';
 import PrimaryCard from '@/components/ui/card/primary-card';
 import { Text } from '@/components/ui/typography/Text';
@@ -9,14 +7,10 @@ import { currencyFormat } from '@/utils';
 import Image from 'next/image';
 import React, { useMemo } from 'react';
 
-interface EarnSupplyCardProps {
+interface MyPositionCardProps {
 	token: HstkToken;
-	price?: string;
-	liquidity?: string;
-	netApy?: string;
-	walletBalance?: string;
-	supply?: string;
-	priceChangePercentage?: number;
+	value?: string | null;
+	APR?: string | null;
 }
 
 interface CardDataItem {
@@ -26,43 +20,19 @@ interface CardDataItem {
 	rawValue: string | null;
 }
 
-function EarnSupplyCard({
-	token,
-	price,
-	liquidity,
-	netApy,
-	walletBalance,
-	supply,
-	priceChangePercentage,
-}: EarnSupplyCardProps) {
+function MyPositionCard({ token, value, APR }: MyPositionCardProps) {
 	const cardData = useMemo<CardDataItem[]>(
 		() =>
 			[
 				{
-					title: 'Price',
-					value: currencyFormat(price),
-					rawValue: price,
-					change: priceChangePercentage,
+					title: 'Value',
+					value: currencyFormat(value),
+					rawValue: value,
 				},
 				{
-					title: 'Liquidity',
-					value: liquidity,
-					rawValue: liquidity,
-				},
-				{
-					title: 'Net APY',
-					value: netApy,
-					rawValue: netApy,
-				},
-				{
-					title: 'Wallet Balance',
-					value: walletBalance,
-					rawValue: walletBalance,
-				},
-				{
-					title: 'Supply',
-					value: supply,
-					rawValue: supply,
+					title: 'APR',
+					value: APR,
+					rawValue: APR,
 				},
 			].filter(
 				(
@@ -70,7 +40,7 @@ function EarnSupplyCard({
 				): item is CardDataItem & { value: string; rawValue: string } =>
 					item.rawValue !== null && item.rawValue !== undefined
 			),
-		[price, liquidity, netApy, walletBalance, supply, priceChangePercentage]
+		[value, APR]
 	);
 
 	return (
@@ -87,12 +57,6 @@ function EarnSupplyCard({
 						/>
 						<Text.Semibold20>{token.name}</Text.Semibold20>
 					</div>
-					<If isTrue={token.isPaused || token.isNew}>
-						<Badge
-							variant={token.isPaused ? 'secondary' : 'success'}>
-							{token.isPaused ? 'Paused' : 'New'}
-						</Badge>
-					</If>
 				</div>
 			</PrimaryCard.Header>
 			<PrimaryCard.Body>
@@ -122,10 +86,13 @@ function EarnSupplyCard({
 						</div>
 					))}
 				</div>
-				<Btn.Primary>Supply</Btn.Primary>
+				<div className='flex items-center gap-3'>
+					<Btn.Outline className='flex-1'>Add</Btn.Outline>
+					<Btn.Secondary className='flex-1'>Withdraw</Btn.Secondary>
+				</div>
 			</PrimaryCard.Body>
 		</PrimaryCard>
 	);
 }
 
-export default EarnSupplyCard;
+export default MyPositionCard;

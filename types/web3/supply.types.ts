@@ -1,7 +1,6 @@
-export type HstkCoin = {
+export type MySupply = {
 	name: string;
 	symbol: string;
 	address: string;
 	decimals: number;
-	iconUrl: string;
 };

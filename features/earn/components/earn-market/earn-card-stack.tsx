@@ -4,20 +4,20 @@ import { useEarnContext } from '../../context/earn.context';
 import EarnSupplyCard from './earn-supply-card';
 
 function EarnCardStack() {
-	const { coins, tokenBalances } = useEarnContext();
+	const { tokens, tokenBalances } = useEarnContext();
 	const { formatted } = tokenBalances;
 
 	return (
 		<div className='flex flex-col gap-5'>
 			<EarnQuickStat />
-			{coins.map((coin) => {
+			{tokens.map((token) => {
 				return (
 					<EarnSupplyCard
-						key={coin.address}
-						coin={coin}
+						key={token.address}
+						token={token}
 						price={'1212'}
 						priceChangePercentage={10}
-						walletBalance={formatted[coin.address]}
+						walletBalance={formatted[token.address]}
 					/>
 				);
 			})}

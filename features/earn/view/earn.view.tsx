@@ -2,6 +2,7 @@ import React from 'react';
 import EarnTable from '../components/earn-market/earn-table';
 import EarnMobile from '../components/earn-mobile';
 import { EarnProvider } from '../context/earn.context';
+import MyPositionsTable from '../components/my-position/my-position-table';
 
 function EarnView() {
 	return (
@@ -11,7 +12,10 @@ function EarnView() {
 					<EarnMobile />
 				</div>
 				<div className='hidden tablet:block'>
-					<EarnTable />
+					<div className='flex flex-col gap-9'>
+						<MyPositionsTable />
+						<EarnTable />
+					</div>
 				</div>
 			</div>
 		</EarnProvider>

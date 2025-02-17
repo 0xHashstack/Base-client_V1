@@ -16,14 +16,14 @@ import { useEarnContext } from '../../context/earn.context';
 import EarnQuickStat from '../common/earn-quick-stat';
 import Image from 'next/image';
 
-function EarnTable() {
-	const { tokens, tokenBalances } = useEarnContext();
+function MySupplyTable() {
+	const { tokens: coins, tokenBalances } = useEarnContext();
 	const { formatted } = tokenBalances;
 
 	return (
 		<div className='flex flex-col gap-5'>
 			<div className='flex justify-between items-center gap-4 flex-wrap'>
-				<Text.Medium20>Earn Markets</Text.Medium20>
+				<Text.Medium20>My Supply</Text.Medium20>
 				<EarnQuickStat />
 			</div>
 			<Table isPrimary>
@@ -36,36 +36,36 @@ function EarnTable() {
 					</TableRow>
 				</TableHeader>
 				<TableBody>
-					{tokens.map((token) => (
-						<TableRow key={token.address}>
+					{coins.map((coin) => (
+						<TableRow key={coin.address}>
 							<TableCell className='font-medium'>
 								<div className='flex items-center gap-3'>
 									<Image
-										src={token.iconUrl}
-										alt={token.name}
+										src={coin.iconUrl}
+										alt={coin.name}
 										width={20}
 										height={20}
 									/>
-									{token.name}
+									{coin.name}
 								</div>
 							</TableCell>
-							<TableCell>{token.name}</TableCell>
+							<TableCell>{coin.name}</TableCell>
 							<TableCell>
 								<HoverPopover
 									side='bottom'
 									content={
 										<TokenInfo
-											name={token.name}
-											address={token.address}
+											name={coin.name}
+											address={coin.address}
 										/>
 									}
 									contentClassName='w-80 p-3'>
 									<span>
-										{formatted?.[token.address] || '-'}
+										{formatted?.[coin.address] || '-'}
 									</span>
 								</HoverPopover>
 							</TableCell>
-							<TableCell>{token.name}</TableCell>
+							<TableCell>{coin.name}</TableCell>
 							<TableCell className='w-[100px]'>
 								<Btn.Primary>Supply</Btn.Primary>
 							</TableCell>
@@ -77,4 +77,4 @@ function EarnTable() {
 	);
 }
 
-export default EarnTable;
+export default MySupplyTable;
