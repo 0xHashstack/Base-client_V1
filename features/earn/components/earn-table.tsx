@@ -8,20 +8,16 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table/index';
-import { web3DataProvider } from '@/constant/config';
 import { Btn } from '@/components/ui/button';
-import { useWalletTokenBalances } from '@/hooks/useWalletTokenBalance';
 import { Text } from '@/components/ui/typography/Text';
 import { StatCard } from '@/components/ui/card';
 import { HoverPopover } from '@/components/ui/popover/hover-popover';
 import { TokenInfo } from '@/components/web3/token/token-info';
-
-const coins = web3DataProvider.coins();
+import { useEarnContext } from '../context/earn.context';
 
 function EarnTable() {
-	const { formatted } = useWalletTokenBalances(
-		coins.map((coin) => coin.address)
-	);
+	const { coins, tokenBalances } = useEarnContext();
+	const { formatted } = tokenBalances;
 
 	return (
 		<div className='flex flex-col gap-5'>

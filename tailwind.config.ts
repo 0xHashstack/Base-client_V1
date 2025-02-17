@@ -109,7 +109,7 @@ export default {
 			},
 			screens: {
 				mobile: '320px', // Small mobile devices
-				tablet: '768px', // Tablets and larger phones
+				tablet: '640px', // Tablets and larger phones
 				laptop: '1024px', // Laptops and small desktops
 				desktop: '1280px', // Standard desktop monitors
 				wide: '1536px', // Wide/large desktop screens

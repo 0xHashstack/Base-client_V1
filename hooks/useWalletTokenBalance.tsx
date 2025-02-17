@@ -8,6 +8,7 @@ import {
 import erc20ABI from '@/web3/abi/erc_20.abi.json';
 
 import { formatTokenBalance } from '@/utils/web3';
+import { useMemo } from 'react';
 
 // Types for wagmi contract results
 type ContractResult = {
@@ -89,23 +90,30 @@ export const useWalletTokenBalances = (
 			},
 		});
 
-	const values =
-		data?.reduce(
-			(acc, result, index) => {
-				acc[tokenAddresses[index]] = extractValue(
-					result as ContractResult
-				);
-				return acc;
-			},
-			{} as Record<string, bigint | undefined>
-		) || {};
+	const values = useMemo(
+		() =>
+			data?.reduce(
+				(acc, result, index) => {
+					acc[tokenAddresses[index]] = extractValue(
+						result as ContractResult
+					);
+					return acc;
+				},
+				{} as Record<string, bigint | undefined>
+			) || {},
+		[data, tokenAddresses]
+	);
 
-	const formattedValues = Object.entries(values).reduce(
-		(acc, [address, value]) => {
-			acc[address] = formatTokenBalance(value, decimals);
-			return acc;
-		},
-		{} as Record<string, string>
+	const formattedValues = useMemo(
+		() =>
+			Object.entries(values).reduce(
+				(acc, [address, value]) => {
+					acc[address] = formatTokenBalance(value, decimals);
+					return acc;
+				},
+				{} as Record<string, string>
+			),
+		[values, decimals]
 	);
 
 	return {
