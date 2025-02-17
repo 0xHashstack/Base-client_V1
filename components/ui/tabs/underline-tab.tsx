@@ -18,7 +18,7 @@ function UnderLinedTab({ tabs, defaultValue, className }: UnderLinedTabProps) {
 		<Tabs
 			defaultValue={defaultValue || tabs[0].value}
 			className={cn('flex flex-col', className)}>
-			<TabsList className='w-full h-auto bg-transparent justify-start gap-8 p-0 border-b rounded-none'>
+			<TabsList className='w-full h-auto bg-transparent justify-start gap-8 p-0 border-b border-tab rounded-none'>
 				{tabs.map((tab) => (
 					<TabsTrigger
 						key={tab.value}

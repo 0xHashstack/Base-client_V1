@@ -27,6 +27,7 @@ export default {
 			borderColor: {
 				header: 'hsl(var(--border-header))',
 				table: 'hsl(var(--border-table))',
+				tab: 'hsl(var(--border-tab))',
 			},
 			colors: {
 				background: 'hsl(var(--background))',

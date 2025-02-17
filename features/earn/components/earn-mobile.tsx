@@ -1,7 +1,7 @@
 import UnderLinedTab from '@/components/ui/tabs/underline-tab';
 import React from 'react';
-import EarnCardStack from './earn-card-stack';
-import MyPositionCardStack from './my-position-card-stack';
+import EarnCardStack from './earn-market/earn-card-stack';
+import MyPositionCardStack from './my-supply/my-position-card-stack';
 
 function EarnMobile() {
 	const tabs = [

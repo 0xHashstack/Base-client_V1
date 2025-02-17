@@ -3,4 +3,5 @@ export type HstkCoin = {
 	symbol: string;
 	address: string;
 	decimals: number;
+	iconUrl: string;
 };

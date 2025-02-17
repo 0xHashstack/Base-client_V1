@@ -10,10 +10,10 @@ import {
 } from '@/components/ui/table/index';
 import { Btn } from '@/components/ui/button';
 import { Text } from '@/components/ui/typography/Text';
-import { StatCard } from '@/components/ui/card';
 import { HoverPopover } from '@/components/ui/popover/hover-popover';
 import { TokenInfo } from '@/components/web3/token/token-info';
-import { useEarnContext } from '../context/earn.context';
+import { useEarnContext } from '../../context/earn.context';
+import EarnQuickStat from '../common/earn-quick-stat';
 
 function EarnTable() {
 	const { coins, tokenBalances } = useEarnContext();
@@ -23,20 +23,7 @@ function EarnTable() {
 		<div className='flex flex-col gap-5'>
 			<div className='flex justify-between items-center gap-4 flex-wrap'>
 				<Text.Medium20>Earn Markets</Text.Medium20>
-				<div className='flex gap-4 items-center flex-wrap'>
-					<StatCard
-						title='Market Deposit'
-						value='$97689.32'
-						className='min-w-[200px]'
-						isLoading
-					/>
-
-					<StatCard
-						title='Market APR'
-						value='3.476%'
-						valueClassName='text-success'
-					/>
-				</div>
+				<EarnQuickStat />
 			</div>
 			<Table isPrimary>
 				<TableHeader>
