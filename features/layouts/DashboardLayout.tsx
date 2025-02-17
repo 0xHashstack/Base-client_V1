@@ -7,7 +7,7 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<div className='flex relative'>
 			<IsConnectedWrapper>
-				<Sidebar className='flex sm:hidden' />
+				<Sidebar className='flex tablet:hidden' />
 				<div className='flex-1 flex flex-col relative'>
 					<DashboardHeader />
 					<div className='flex-1 mx-auto max-w-section w-full px-6 py-12'>

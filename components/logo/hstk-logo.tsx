@@ -24,7 +24,9 @@ function HstkLogo({
 			<HstkIcon id={id} />
 			<If isTrue={!hideTitle}>
 				<Text.Regular20
-					className={cn({ 'hidden md:block': hideTitleOnMobile })}>
+					className={cn({
+						'hidden laptop:block': hideTitleOnMobile,
+					})}>
 					Hashstack
 				</Text.Regular20>
 			</If>

@@ -10,8 +10,8 @@ export const SidebarHeader = ({ isSidebarOpen }: SidebarHeaderProps) => {
 			<div className={cn('h-12 items-center px-3 flex justify-between')}>
 				<HstkIcon id='hstk-logo-sidebar' />
 				<SidebarToggleButton
-					className={cn('lg:hidden', {
-						'lg:mx-auto': !isSidebarOpen,
+					className={cn('laptop:hidden', {
+						'laptop:mx-auto': !isSidebarOpen,
 					})}
 				/>
 			</div>

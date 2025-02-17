@@ -108,11 +108,11 @@ export default {
 				sm: 'calc(var(--radius) - 4px)',
 			},
 			screens: {
-				xs: '320px',
-				sm: '640px',
-				md: '768px',
-				lg: '1024px',
-				xl: '1280px',
+				mobile: '320px', // Small mobile devices
+				tablet: '768px', // Tablets and larger phones
+				laptop: '1024px', // Laptops and small desktops
+				desktop: '1280px', // Standard desktop monitors
+				wide: '1536px', // Wide/large desktop screens
 			},
 		},
 	},
