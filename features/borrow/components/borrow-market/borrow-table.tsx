@@ -9,7 +9,7 @@ import {
 
 import { useBorrowContext } from '../../context/borrow.context';
 import BorrowQuickStat from '../common/borrow-quick-stat';
-import { FallbackImage } from '@/components/ui/image/fallback-image';
+import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
 import { currencyFormat } from '@/utils';
 import { Text } from '@/components/ui/typography/Text';
 
@@ -37,7 +37,7 @@ function BorrowTable() {
 						<TableRow key={token.address}>
 							<TableCell className='font-medium'>
 								<div className='flex items-center gap-3'>
-									<FallbackImage
+									<ImageWithLoader
 										src={token.iconUrl}
 										alt={token.name}
 										width={20}

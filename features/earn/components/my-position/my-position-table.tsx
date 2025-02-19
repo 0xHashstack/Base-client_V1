@@ -13,7 +13,7 @@ import { Text } from '@/components/ui/typography/Text';
 import { HoverPopover } from '@/components/ui/popover/hover-popover';
 import { TokenInfo } from '@/components/web3/token/token-info';
 import { useEarnContext } from '../../context/earn.context';
-import { FallbackImage } from '@/components/ui/image/fallback-image';
+import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
 import MyPositionQuickStat from '../common/my-position-quick-stat';
 
 function MyPositionsTable() {
@@ -39,7 +39,7 @@ function MyPositionsTable() {
 						<TableRow key={token.address}>
 							<TableCell className='font-medium'>
 								<div className='flex items-center gap-3'>
-									<FallbackImage
+									<ImageWithLoader
 										src={token.iconUrl}
 										alt={token.name}
 										width={20}

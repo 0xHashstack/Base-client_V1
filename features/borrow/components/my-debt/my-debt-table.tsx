@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/table';
 import { useBorrowContext } from '../../context/borrow.context';
 import { currencyFormat } from '@/utils';
-import { FallbackImage } from '@/components/ui/image/fallback-image';
+import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
 import MyDebtQuickStat from '../common/my-debt-quick-stat';
 import { Text } from '@/components/ui/typography/Text';
 
@@ -37,7 +37,7 @@ function MyDebtTable() {
 							<TableRow key={token.address}>
 								<TableCell className='font-medium'>
 									<div className='flex items-center gap-3'>
-										<FallbackImage
+										<ImageWithLoader
 											src={token.iconUrl}
 											alt={token.name}
 											width={20}

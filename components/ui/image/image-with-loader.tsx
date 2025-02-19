@@ -5,7 +5,7 @@ import { getShimmerDataUrl } from '@/utils/shimmer.utils';
 
 const defaultPlaceholder = ICON.LOGO;
 
-export function FallbackImage({
+export function ImageWithLoader({
 	src,
 	alt,
 	width = 24,

@@ -3,7 +3,7 @@ import PrimaryCard from '@/components/ui/card/primary-card';
 import { Text } from '@/components/ui/typography/Text';
 import { HstkToken } from '@/types/web3/token.types';
 import { currencyFormat } from '@/utils';
-import { FallbackImage } from '@/components/ui/image/fallback-image';
+import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
 import React, { useMemo } from 'react';
 
 interface MyDebtCardProps {
@@ -41,7 +41,7 @@ function MyDebtCard({ token, amount, apy, healthFactor }: MyDebtCardProps) {
 		<PrimaryCard>
 			<PrimaryCard.Header>
 				<div className='flex items-center gap-3'>
-					<FallbackImage
+					<ImageWithLoader
 						src={token.iconUrl}
 						alt={token.name}
 						width={24}

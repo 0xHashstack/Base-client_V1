@@ -14,7 +14,7 @@ import { HoverPopover } from '@/components/ui/popover/hover-popover';
 import { TokenInfo } from '@/components/web3/token/token-info';
 import { useEarnContext } from '../../context/earn.context';
 import EarnQuickStat from '../common/earn-quick-stat';
-import { FallbackImage } from '@/components/ui/image/fallback-image';
+import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
 
 function EarnTable() {
 	const { tokens, tokenBalances } = useEarnContext();
@@ -40,7 +40,7 @@ function EarnTable() {
 						<TableRow key={token.address}>
 							<TableCell className='font-medium'>
 								<div className='flex items-center gap-3'>
-									<FallbackImage
+									<ImageWithLoader
 										src={token.iconUrl}
 										alt={token.name}
 										width={20}

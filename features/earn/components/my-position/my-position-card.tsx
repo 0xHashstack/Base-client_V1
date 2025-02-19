@@ -4,7 +4,7 @@ import { Text } from '@/components/ui/typography/Text';
 import { cn } from '@/lib/utils';
 import { HstkToken } from '@/types/web3/token.types';
 import { currencyFormat } from '@/utils';
-import { FallbackImage } from '@/components/ui/image/fallback-image';
+import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
 import React, { useMemo } from 'react';
 
 interface MyPositionCardProps {
@@ -48,7 +48,7 @@ function MyPositionCard({ token, value, APR }: MyPositionCardProps) {
 			<PrimaryCard.Header>
 				<div className='flex items-center justify-between flex-1'>
 					<div className='flex gap-3 items-center'>
-						<FallbackImage
+						<ImageWithLoader
 							src={token.iconUrl}
 							alt={token.name}
 							width={24}
