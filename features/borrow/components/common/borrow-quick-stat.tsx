@@ -4,16 +4,12 @@ function BorrowQuickStat() {
 	return (
 		<div className='flex gap-2 tablet:gap-4 items-center flex-wrap'>
 			<StatCard
-				title='Total Debt'
-				value='$10,000'
+				title='Market Deposit'
+				value='$97689.32'
 			/>
 			<StatCard
-				title='Available to Borrow'
-				value='$50,000'
-			/>
-			<StatCard
-				title='Health Factor'
-				value='1.5'
+				title='Market APR'
+				value='3.476%'
 			/>
 		</div>
 	);

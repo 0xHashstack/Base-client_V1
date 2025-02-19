@@ -6,7 +6,7 @@ import { Text } from '@/components/ui/typography/Text';
 import { cn } from '@/lib/utils';
 import { HstkToken } from '@/types/web3/token.types';
 import { currencyFormat } from '@/utils';
-import Image from 'next/image';
+import { FallbackImage } from '@/components/ui/image/fallback-image';
 import React, { useMemo } from 'react';
 
 interface BorrowCardProps {
@@ -78,7 +78,7 @@ function BorrowCard({
 			<PrimaryCard.Header>
 				<div className='flex items-center justify-between flex-1'>
 					<div className='flex gap-3 items-center'>
-						<Image
+						<FallbackImage
 							src={token.iconUrl}
 							alt={token.name}
 							width={24}
@@ -108,9 +108,9 @@ function BorrowCard({
 								{item.change !== undefined && (
 									<Text.Regular14
 										className={cn(
-											item.change > 0
-												? 'text-green-500'
-												: 'text-red-500'
+											item.change > 0 ?
+												'text-green-500'
+											:	'text-red-500'
 										)}>
 										{item.change > 0 ? '↑' : '↓'}{' '}
 										{Math.abs(item.change)}%

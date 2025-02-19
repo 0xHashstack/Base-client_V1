@@ -14,7 +14,7 @@ import { HoverPopover } from '@/components/ui/popover/hover-popover';
 import { TokenInfo } from '@/components/web3/token/token-info';
 import { useEarnContext } from '../../context/earn.context';
 import EarnQuickStat from '../common/earn-quick-stat';
-import Image from 'next/image';
+import { FallbackImage } from '@/components/ui/image/fallback-image';
 
 function MySupplyTable() {
 	const { tokens, tokenBalances } = useEarnContext();
@@ -40,7 +40,7 @@ function MySupplyTable() {
 						<TableRow key={token.address}>
 							<TableCell className='font-medium'>
 								<div className='flex items-center gap-3'>
-									<Image
+									<FallbackImage
 										src={token.iconUrl}
 										alt={token.name}
 										width={20}

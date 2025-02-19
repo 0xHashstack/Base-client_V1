@@ -8,13 +8,20 @@ import {
 } from '@/components/ui/table';
 import { useBorrowContext } from '../../context/borrow.context';
 import { currencyFormat } from '@/utils';
-import Image from 'next/image';
+import { FallbackImage } from '@/components/ui/image/fallback-image';
+import MyDebtQuickStat from '../common/my-debt-quick-stat';
+import { Text } from '@/components/ui/typography/Text';
 
 function MyDebtTable() {
 	const { tokens } = useBorrowContext();
 
 	return (
 		<div className='flex flex-col gap-6'>
+			<div className='flex justify-between items-center gap-4 flex-wrap'>
+				<Text.Medium20>My Debt Positions</Text.Medium20>
+
+				<MyDebtQuickStat />
+			</div>
 			<Table isPrimary>
 				<TableHeader>
 					<TableRow>
@@ -22,7 +29,6 @@ function MyDebtTable() {
 						<TableCell>Debt</TableCell>
 						<TableCell>APY</TableCell>
 						<TableCell>Health Factor</TableCell>
-						<TableCell>Action</TableCell>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
@@ -31,7 +37,7 @@ function MyDebtTable() {
 							<TableRow key={token.address}>
 								<TableCell className='font-medium'>
 									<div className='flex items-center gap-3'>
-										<Image
+										<FallbackImage
 											src={token.iconUrl}
 											alt={token.name}
 											width={20}

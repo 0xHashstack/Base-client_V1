@@ -4,7 +4,7 @@ import { Btn } from '@/components/ui/button';
 import { Text } from '@/components/ui/typography/Text';
 import { cn } from '@/lib/utils';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import Image from 'next/image';
+import { FallbackImage } from '@/components/ui/image/fallback-image';
 import React from 'react';
 
 type Chain = {
@@ -81,7 +81,7 @@ const ConnectedActionArea = ({
 			className='flex bg-background h-8 items-center justify-center cursor-pointer rounded-md  px-2 gap-2'
 			onClick={openAccountModal}>
 			<If isTrue={chain.hasIcon && chain.iconUrl}>
-				<Image
+				<FallbackImage
 					className='flex-shrink-0'
 					src={chain.iconUrl!}
 					alt={chain.name!}
