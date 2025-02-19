@@ -1,38 +1,34 @@
-'use client';
-import React from 'react';
+import { Btn } from '@/components/ui/button';
 import {
 	Table,
 	TableBody,
 	TableCell,
-	TableHead,
 	TableHeader,
 	TableRow,
-} from '@/components/ui/table/index';
-import { Btn } from '@/components/ui/button';
-import { Text } from '@/components/ui/typography/Text';
-import { HoverPopover } from '@/components/ui/popover/hover-popover';
-import { TokenInfo } from '@/components/web3/token/token-info';
-import { useEarnContext } from '../../context/earn.context';
-import EarnQuickStat from '../common/earn-quick-stat';
-import Image from 'next/image';
+} from '@/components/ui/table';
 
-function MySupplyTable() {
-	const { tokens, tokenBalances } = useEarnContext();
+import { TokenInfo } from '@/components/web3/token/token-info';
+import { useBorrowContext } from '../../context/borrow.context';
+import BorrowQuickStat from '../common/borrow-quick-stat';
+import Image from 'next/image';
+import { currencyFormat } from '@/utils';
+import { HoverPopover } from '@/components/ui/popover/hover-popover';
+
+function BorrowTable() {
+	const { tokens, tokenBalances } = useBorrowContext();
 	const { formatted } = tokenBalances;
 
 	return (
-		<div className='flex flex-col gap-5'>
-			<div className='flex justify-between items-center gap-4 flex-wrap'>
-				<Text.Medium20>My Supply</Text.Medium20>
-				<EarnQuickStat />
-			</div>
+		<div className='flex flex-col gap-6'>
+			<BorrowQuickStat />
 			<Table isPrimary>
 				<TableHeader>
 					<TableRow>
-						<TableHead>Market</TableHead>
-						<TableHead>Price</TableHead>
-						<TableHead>Wallet balance</TableHead>
-						<TableHead>Total Supply</TableHead>
+						<TableCell>Asset</TableCell>
+						<TableCell>Available</TableCell>
+						<TableCell>Wallet Balance</TableCell>
+						<TableCell>APY</TableCell>
+						<TableCell>Action</TableCell>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
@@ -49,7 +45,7 @@ function MySupplyTable() {
 									{token.name}
 								</div>
 							</TableCell>
-							<TableCell>{token.name}</TableCell>
+							<TableCell>{currencyFormat('1000000')}</TableCell>
 							<TableCell>
 								<HoverPopover
 									side='bottom'
@@ -60,14 +56,14 @@ function MySupplyTable() {
 										/>
 									}
 									contentClassName='w-80 p-3'>
-									<span>
+									<span className='cursor-help underline decoration-dashed'>
 										{formatted?.[token.address] || '-'}
 									</span>
 								</HoverPopover>
 							</TableCell>
-							<TableCell>{token.name}</TableCell>
+							<TableCell>2.5%</TableCell>
 							<TableCell className='w-[100px]'>
-								<Btn.Primary>Supply</Btn.Primary>
+								<Btn.Primary>Borrow</Btn.Primary>
 							</TableCell>
 						</TableRow>
 					))}
@@ -77,4 +73,4 @@ function MySupplyTable() {
 	);
 }
 
-export default MySupplyTable;
+export default BorrowTable;

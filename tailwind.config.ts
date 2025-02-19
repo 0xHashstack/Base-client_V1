@@ -10,6 +10,9 @@ export default {
 
 	theme: {
 		extend: {
+			spacing: {
+				header: 'var(--header-height)',
+			},
 			maxWidth: {
 				section: 'var(--max-section-width)',
 			},
