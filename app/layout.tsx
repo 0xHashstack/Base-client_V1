@@ -9,6 +9,7 @@ import { HstkTheme } from '@/types/ui/theme.types';
 import { RootMetadata } from '@/constant/seo.constant';
 import { HSTK_THEME_KEY } from '@/constant/config';
 import { Web3Provider } from '@/context/web-3.context';
+import { Toaster } from 'sonner';
 
 const inter = Inter({
 	subsets: ['latin'],
@@ -33,6 +34,10 @@ export default async function RootLayout({
 			<ThemeAndLanguageProvider
 				defaultTheme={(userPrefTheme || HstkTheme.DARK) as HstkTheme}>
 				<Web3Provider cookie={wagmiCookie}>{children}</Web3Provider>
+				<Toaster
+					closeButton
+					duration={4000}
+				/>
 			</ThemeAndLanguageProvider>
 		</html>
 	);

@@ -15,6 +15,7 @@ import { TokenInfo } from '@/components/web3/token/token-info';
 import { useEarnContext } from '../../context/earn.context';
 import EarnQuickStat from '../common/earn-quick-stat';
 import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
+import AddTokenToWallet from '@/components/actions/cta/add-token-to-wallet';
 
 function EarnTable() {
 	const { tokens, tokenBalances } = useEarnContext();
@@ -47,6 +48,13 @@ function EarnTable() {
 										height={20}
 									/>
 									{token.name}
+									<AddTokenToWallet
+										className='bg-background w-6 h-6 rounded-full'
+										address={token.address}
+										symbol={token.symbol}
+										decimals={token.decimals}
+										name={token.name}
+									/>
 								</div>
 							</TableCell>
 							<TableCell>{token.name}</TableCell>
