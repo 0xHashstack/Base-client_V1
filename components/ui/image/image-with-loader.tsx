@@ -1,4 +1,4 @@
-import { ICON } from '@/constant/assets/assets.constnat';
+import { ICON } from '@/constant/assets/assets.constant';
 import Image, { ImageProps } from 'next/image';
 import { useState } from 'react';
 import { getShimmerDataUrl } from '@/utils/shimmer.utils';

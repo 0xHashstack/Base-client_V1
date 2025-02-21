@@ -5,7 +5,7 @@ import Sidebar from '@/components/sidebar';
 
 function DashboardLayout({ children }: { children: React.ReactNode }) {
 	return (
-		<div className='flex relative'>
+		<div className='flex relative min-h-screen'>
 			<IsConnectedWrapper>
 				<Sidebar className='flex tablet:hidden' />
 				<div className='flex-1 flex flex-col relative'>
