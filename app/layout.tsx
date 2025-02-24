@@ -32,7 +32,7 @@ export default async function RootLayout({
 			lang='en'
 			className={`${inter.className} ${inter.variable}`}>
 			<ThemeAndLanguageProvider
-				defaultTheme={(userPrefTheme || HstkTheme.DARK) as HstkTheme}>
+				defaultTheme={(userPrefTheme || HstkTheme.LIGHT) as HstkTheme}>
 				<Web3Provider cookie={wagmiCookie}>{children}</Web3Provider>
 				<Toaster
 					closeButton
