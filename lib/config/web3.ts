@@ -3,7 +3,11 @@ import {
 	BASE_SEPOLIA_RPC_URL,
 	WALLET_CONNECT_PROJECT_ID,
 } from '@/constant/config';
-import { CHAIN_TOKEN_MAP } from '@/constant/web3';
+import {
+	CHAIN_TOKEN_MAP,
+	DIAMOND_ADDRESS_MAINNET,
+	DIAMOND_ADDRESS_TESTNET,
+} from '@/constant/web3';
 import { SupportedChain } from '@/store/useWeb3.store';
 import { ChainNetwork } from '@/types/web3';
 import { http } from 'viem';
@@ -14,6 +18,7 @@ interface Web3Config {
 	chain: typeof base | typeof baseSepolia;
 	transport: ReturnType<typeof http>;
 	walletConnectProjectId: string;
+	diamondAddress: string;
 }
 
 /**
@@ -40,6 +45,8 @@ class Web3DataProvider {
 		const isMainnet = this.currentNetwork === ChainNetwork.MAINNET;
 
 		const rpcURL = isMainnet ? BASE_MAINNET_RPC_URL : BASE_SEPOLIA_RPC_URL;
+		const diamondAddress =
+			isMainnet ? DIAMOND_ADDRESS_MAINNET : DIAMOND_ADDRESS_TESTNET;
 		if (!rpcURL) {
 			throw new Error(
 				`RPC URL not configured for ${this.currentNetwork}`
@@ -51,6 +58,7 @@ class Web3DataProvider {
 			chain: isMainnet ? base : baseSepolia,
 			transport: http(rpcURL),
 			walletConnectProjectId: WALLET_CONNECT_PROJECT_ID,
+			diamondAddress,
 		};
 	}
 
@@ -94,6 +102,13 @@ class Web3DataProvider {
 	 */
 	tokens(chain: SupportedChain = 'base') {
 		return CHAIN_TOKEN_MAP[chain][this.currentNetwork];
+	}
+
+	/**
+	 * Get the diamond address for the current network
+	 */
+	get diamondAddress(): string {
+		return this.config.diamondAddress;
 	}
 }
 
