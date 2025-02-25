@@ -11,7 +11,12 @@ import { currencyFormat } from '@/utils';
 import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
 import MyDebtQuickStat from '../common/my-debt-quick-stat';
 import { Text } from '@/components/ui/typography/Text';
-import { HoverBorrowValueCard } from '../card/hover-cards';
+import {
+	HoverBorrowAprCard,
+	HoverBorrowHealthCard,
+	HoverBorrowValueCard,
+} from '../card/hover-cards';
+import { SpendCategory } from '@/types/web3/borrow.types';
 
 function MyDebtTable() {
 	const { tokens } = useBorrowContext();
@@ -70,9 +75,32 @@ function MyDebtTable() {
 										<Btn.Outline>Repay</Btn.Outline>
 									</div>
 								</TableCell>
-								<TableCell>2.5%</TableCell>
+								<TableCell>
+									<HoverBorrowAprCard
+										netApr={2.5}
+										changeInAprPercentage={-10}
+										collateralApr={2.5}
+										borrowApr={0.0}>
+										<span>2.5%</span>
+									</HoverBorrowAprCard>
+								</TableCell>
 								<TableCell>{token.symbol}</TableCell>
-								<TableCell>3.34</TableCell>
+								<TableCell>
+									<HoverBorrowHealthCard
+										healthScore={3.34}
+										actualDebt={1500}
+										collateral={2000}
+										netAssetValue={500}
+										liquidationPrice={1200}
+										currentDebt={{
+											dappName: 'Example Dapp',
+											spendCategory: SpendCategory.Supply,
+											value: 1500,
+											assetName: 'ETH',
+										}}>
+										<span>3.34</span>
+									</HoverBorrowHealthCard>
+								</TableCell>
 								<TableCell className='w-[100px]'>
 									<Btn.Primary>Repay</Btn.Primary>
 								</TableCell>
