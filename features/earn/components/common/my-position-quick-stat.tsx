@@ -1,4 +1,4 @@
-import { StatCard } from '@/components/ui/card';
+import { StatCard } from '@/components/ui/card/stat-card';
 import React from 'react';
 
 function MyPositionQuickStat() {
