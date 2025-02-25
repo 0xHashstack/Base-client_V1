@@ -9,7 +9,7 @@ interface TokenInfoProps {
 
 export function TokenInfo({ name, address, className }: TokenInfoProps) {
 	return (
-		<div className={cn('flex flex-col gap-1', className)}>
+		<div className={cn('flex flex-col gap-1 w-[180px]', className)}>
 			<div className='flex items-center gap-2'>
 				<Text.Regular12 textColor={600}>Name</Text.Regular12>
 				<Text.Regular12>{name}</Text.Regular12>

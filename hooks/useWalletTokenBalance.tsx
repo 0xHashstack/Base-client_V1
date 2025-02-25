@@ -9,6 +9,7 @@ import erc20ABI from '@/web3/abi/erc_20.abi.json';
 
 import { formatTokenBalance } from '@/utils/web3';
 import { useMemo } from 'react';
+import { useDappUser } from '@/context/user-data.context';
 
 // Types for wagmi contract results
 type ContractResult = {
@@ -39,7 +40,7 @@ export const useWalletTokenBalance = (
 	tokenAddress: string,
 	{ decimals = 18, address }: TokenBalanceParams = {}
 ) => {
-	const { address: walletAccount } = useAccount();
+	const { address: walletAccount } = useDappUser();
 	const wAccount = address ?? walletAccount;
 
 	const { data, isError, isLoading, isSuccess, error, refetch } =

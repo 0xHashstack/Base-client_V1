@@ -5,17 +5,20 @@ import {
 	PopoverTrigger,
 } from '@/components/ui/popover/popover';
 import { PopoverContentProps } from '@radix-ui/react-popover';
+import { cn } from '@/lib/utils';
 
 type HoverPopoverProps = Pick<PopoverContentProps, 'side' | 'sideOffset'> & {
 	children: React.ReactNode;
 	content: React.ReactNode;
 	contentClassName?: string;
+	removePadding?: boolean;
 };
 
 export function HoverPopover({
 	children,
 	content,
 	contentClassName,
+	removePadding = false,
 	...others
 }: HoverPopoverProps) {
 	const [isOpen, setIsOpen] = useState(false);
@@ -43,7 +46,11 @@ export function HoverPopover({
 				{children}
 			</PopoverTrigger>
 			<PopoverContent
-				className={contentClassName}
+				className={cn(
+					'border border-popup shadow-lg',
+					{ 'p-4': !removePadding },
+					contentClassName
+				)}
 				onMouseEnter={handleMouseEnter}
 				onMouseLeave={handleMouseLeave}
 				{...others}>

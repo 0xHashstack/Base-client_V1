@@ -57,8 +57,7 @@ function MyPositionsTable() {
 											name={token.name}
 											address={token.address}
 										/>
-									}
-									contentClassName='w-80 p-3'>
+									}>
 									<span>
 										{formatted?.[token.address] || '-'}
 									</span>

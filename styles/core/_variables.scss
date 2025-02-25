@@ -37,9 +37,11 @@
 		--active-tab-bg: 0 0% 100%;
 
 		//border
+
 		--border-header: 0 0% 91%;
-		--border-table: 0 0% 96%;
+		--border-table: var(--border);
 		--border-tab: 0 0% 91%;
+		--border-popup: var(--border);
 
 		// rainbowkit
 		--rk-background: 0 0% 100%;

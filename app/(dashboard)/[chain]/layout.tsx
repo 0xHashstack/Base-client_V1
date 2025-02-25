@@ -2,6 +2,7 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import { SUPPORTED_CHAINS } from '@/constant/config';
 import { SupportedChain } from '@/store/useWeb3.store';
+import { DappUserProvider } from '@/context/user-data.context';
 
 async function layout({
 	children,
@@ -17,7 +18,7 @@ async function layout({
 		notFound();
 	}
 
-	return children;
+	return <DappUserProvider>{children}</DappUserProvider>;
 }
 
 export default layout;

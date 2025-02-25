@@ -35,6 +35,7 @@ export default {
 				header: 'hsl(var(--border-header))',
 				table: 'hsl(var(--border-table))',
 				tab: 'hsl(var(--border-tab))',
+				popup: 'hsl(var(--border-popup))',
 			},
 			height: {
 				header: 'var(--header-height)',
