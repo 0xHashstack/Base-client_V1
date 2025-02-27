@@ -8,7 +8,7 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table/index';
-import { Btn } from '@/components/ui/button';
+import { ConnectedBtn } from '@/components/ui/button';
 import { Text } from '@/components/ui/typography/Text';
 import { HoverPopover } from '@/components/ui/popover/hover-popover';
 import { TokenInfo } from '@/components/web3/token/token-info';
@@ -75,7 +75,9 @@ function EarnTable() {
 							</TableCell>
 							<TableCell>{token.name}</TableCell>
 							<TableCell className='w-[100px]'>
-								<Btn.Primary>Supply</Btn.Primary>
+								<ConnectedBtn.Primary>
+									Supply
+								</ConnectedBtn.Primary>
 							</TableCell>
 						</TableRow>
 					))}
