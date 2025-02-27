@@ -48,7 +48,7 @@ export function HoverPopover({
 			<PopoverContent
 				className={cn(
 					'border border-popup shadow-lg',
-					{ 'p-4': !removePadding },
+					removePadding ? 'p-0' : 'p-4',
 					contentClassName
 				)}
 				onMouseEnter={handleMouseEnter}

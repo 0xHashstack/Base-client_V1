@@ -92,6 +92,8 @@ function MyDebtTable() {
 										collateral={2000}
 										netAssetValue={500}
 										liquidationPrice={1200}
+										debtAssetName='ETH'
+										collateralAssetName='ETH'
 										currentDebt={{
 											dappName: 'Example Dapp',
 											spendCategory: SpendCategory.Supply,
