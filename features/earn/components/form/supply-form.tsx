@@ -3,13 +3,9 @@ import React from 'react';
 import { Text } from '@/components/ui/typography/Text';
 import { ConnectedBtn } from '@/components/ui/button';
 import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
-import { useEarnDrawer } from '@/features/earn/context/earn-drawer.context';
 import { Input } from '@/components/ui/input';
 import SideDrawer from '@/components/drawer/side-drawer';
-import {
-	SupplyFormContextProvider,
-	useSupplyFormStore,
-} from '../../context/supply-form.context';
+import { SupplyFormContextProvider } from '../../context/supply-form.context';
 import { useSupplyForm } from '../../hooks/useSupplyForm';
 
 interface SupplyFormProps {
@@ -37,16 +33,16 @@ function SupplyForm({ token }: SupplyFormProps) {
  * The actual content of the supply form that uses the store
  */
 function SupplyFormContent() {
-	const { closeDrawer } = useEarnDrawer();
-
-	// Get state from the store using selectors
-	const amount = useSupplyFormStore((state) => state.amount);
-	const isLoading = useSupplyFormStore((state) => state.isLoading);
-	const token = useSupplyFormStore((state) => state.token);
-
 	// Get handlers from the hook
-	const { handleAmountChange, handleMaxClick, handleSupply } =
-		useSupplyForm();
+	const {
+		handleAmountChange,
+		handleMaxClick,
+		handleSupply,
+		token,
+		amount,
+		closeDrawer,
+		isLoading,
+	} = useSupplyForm();
 
 	// If token is not set, don't render anything
 	if (!token) return null;

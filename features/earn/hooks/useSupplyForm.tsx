@@ -79,5 +79,6 @@ export function useSupplyForm() {
 		setAmount,
 		setToken,
 		reset,
+		closeDrawer,
 	};
 }
