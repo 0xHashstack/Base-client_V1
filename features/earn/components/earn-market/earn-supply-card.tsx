@@ -8,6 +8,8 @@ import { HstkToken } from '@/types/web3/token.types';
 import { currencyFormat } from '@/utils';
 import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
 import React, { useMemo } from 'react';
+import { useEarnDrawer } from '@/features/earn/context/earn-drawer.context';
+import SupplyForm from '../form/supply-form';
 
 interface EarnSupplyCardProps {
 	token: HstkToken;
@@ -35,6 +37,16 @@ function EarnSupplyCard({
 	supply,
 	priceChangePercentage,
 }: EarnSupplyCardProps) {
+	const { openDrawer, setDrawerContent } = useEarnDrawer();
+
+	// Handle opening the supply drawer
+	const handleSupplyClick = () => {
+		// Set the drawer content to the supply form
+		setDrawerContent(<SupplyForm token={token} />);
+		// Open the drawer
+		openDrawer();
+	};
+
 	const cardData = useMemo<CardDataItem[]>(
 		() =>
 			[
@@ -122,7 +134,7 @@ function EarnSupplyCard({
 						</div>
 					))}
 				</div>
-				<Btn.Primary>Supply</Btn.Primary>
+				<Btn.Primary onClick={handleSupplyClick}>Supply</Btn.Primary>
 			</PrimaryCard.Body>
 		</PrimaryCard>
 	);

@@ -12,14 +12,25 @@ import { ConnectedBtn } from '@/components/ui/button';
 import { Text } from '@/components/ui/typography/Text';
 import { HoverPopover } from '@/components/ui/popover/hover-popover';
 import { TokenInfo } from '@/components/web3/token/token-info';
-import { useEarnContext } from '../../context/earn.context';
 import EarnQuickStat from '../common/earn-quick-stat';
 import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
 import AddTokenToWallet from '@/components/actions/cta/add-token-to-wallet';
+import useEarnTable from '../../hooks/useEarnTable';
+import { useEarnDrawer } from '@/features/earn/context/earn-drawer.context';
+import SupplyForm from '../form/supply-form';
+import { HstkToken } from '@/types/web3';
 
 function EarnTable() {
-	const { tokens, tokenBalances } = useEarnContext();
-	const { formatted } = tokenBalances;
+	const { formatted, tokens } = useEarnTable();
+	const { openDrawer, setDrawerContent } = useEarnDrawer();
+
+	// Handle opening the supply drawer
+	const handleSupplyClick = (token: HstkToken) => {
+		// Set the drawer content to the supply form
+		setDrawerContent(<SupplyForm token={token} />);
+		// Open the drawer
+		openDrawer();
+	};
 
 	return (
 		<div className='flex flex-col gap-5'>
@@ -75,7 +86,8 @@ function EarnTable() {
 							</TableCell>
 							<TableCell>{token.name}</TableCell>
 							<TableCell className='w-[100px]'>
-								<ConnectedBtn.Primary>
+								<ConnectedBtn.Primary
+									onClick={() => handleSupplyClick(token)}>
 									Supply
 								</ConnectedBtn.Primary>
 							</TableCell>
@@ -83,6 +95,7 @@ function EarnTable() {
 					))}
 				</TableBody>
 			</Table>
+			{/* The SideDrawer is now managed by the EarnDrawerProvider */}
 		</div>
 	);
 }
