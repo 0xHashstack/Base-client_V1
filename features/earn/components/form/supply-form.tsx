@@ -1,11 +1,16 @@
 'use client';
-import React, { useState } from 'react';
+import React from 'react';
 import { Text } from '@/components/ui/typography/Text';
 import { ConnectedBtn } from '@/components/ui/button';
 import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
 import { useEarnDrawer } from '@/features/earn/context/earn-drawer.context';
 import { Input } from '@/components/ui/input';
 import SideDrawer from '@/components/drawer/side-drawer';
+import {
+	SupplyFormContextProvider,
+	useSupplyFormStore,
+} from '../../context/supply-form.context';
+import { useSupplyForm } from '../../hooks/useSupplyForm';
 
 interface SupplyFormProps {
 	token: {
@@ -21,39 +26,30 @@ interface SupplyFormProps {
  * Form component for supplying tokens to the protocol
  */
 function SupplyForm({ token }: SupplyFormProps) {
+	return (
+		<SupplyFormContextProvider token={token}>
+			<SupplyFormContent />
+		</SupplyFormContextProvider>
+	);
+}
+
+/**
+ * The actual content of the supply form that uses the store
+ */
+function SupplyFormContent() {
 	const { closeDrawer } = useEarnDrawer();
-	const [amount, setAmount] = useState<string>('');
-	const [isLoading, setIsLoading] = useState<boolean>(false);
 
-	// Handle amount change
-	const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setAmount(e.target.value);
-	};
+	// Get state from the store using selectors
+	const amount = useSupplyFormStore((state) => state.amount);
+	const isLoading = useSupplyFormStore((state) => state.isLoading);
+	const token = useSupplyFormStore((state) => state.token);
 
-	// Handle max button click
-	const handleMaxClick = () => {
-		// In a real implementation, this would set the max available balance
-		setAmount('1000');
-	};
+	// Get handlers from the hook
+	const { handleAmountChange, handleMaxClick, handleSupply } =
+		useSupplyForm();
 
-	// Handle supply submission
-	const handleSupply = async () => {
-		try {
-			setIsLoading(true);
-			// In a real implementation, this would call the contract to supply tokens
-			console.log(`Supplying ${amount} ${token.symbol}`);
-
-			// Simulate API call
-			await new Promise((resolve) => setTimeout(resolve, 1500));
-
-			// Close the drawer after successful supply
-			closeDrawer();
-		} catch (error) {
-			console.error('Error supplying tokens:', error);
-		} finally {
-			setIsLoading(false);
-		}
-	};
+	// If token is not set, don't render anything
+	if (!token) return null;
 
 	return (
 		<>
