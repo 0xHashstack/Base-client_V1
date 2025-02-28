@@ -28,7 +28,11 @@ type Account = {
 	hasPendingTransactions: boolean;
 };
 
-function Web3ConnectButton() {
+type ConnectedBtnProps = {
+	parentWidth?: boolean;
+};
+
+function Web3ConnectButton({ parentWidth = false }: ConnectedBtnProps) {
 	return (
 		<ConnectButton.Custom>
 			{({
@@ -46,6 +50,7 @@ function Web3ConnectButton() {
 						className={cn({
 							'pointer-events-none opacity-0 select-none':
 								!mounted,
+							'w-full': parentWidth,
 						})}>
 						<If isTrue={connected}>
 							<If isTrue={chain?.unsupported}>
@@ -57,7 +62,10 @@ function Web3ConnectButton() {
 									account={account!}
 								/>
 							</If>
-							<ConnectWalletButton onClick={openConnectModal} />
+							<ConnectWalletButton
+								onClick={openConnectModal}
+								parentWidth={parentWidth}
+							/>
 						</If>
 					</div>
 				);
@@ -98,11 +106,22 @@ const WrongNetworkButton = ({ onClick }: { onClick: () => void }) => {
 	return <Btn.Destructive onClick={onClick}>Wrong Network</Btn.Destructive>;
 };
 
-const ConnectWalletButton = ({ onClick }: { onClick: () => void }) => {
+const ConnectWalletButton = ({
+	onClick,
+	parentWidth = false,
+}: {
+	onClick: () => void;
+	parentWidth?: boolean;
+}) => {
 	return (
 		<Btn.Primary
 			onClick={onClick}
-			className='h-10 bg-button-wallet text-button-wallet-text hover:bg-button-wallet/80'>
+			className={cn(
+				'h-10 bg-button-wallet text-button-wallet-text hover:bg-button-wallet/80',
+				{
+					'w-full': parentWidth,
+				}
+			)}>
 			Connect Wallet
 		</Btn.Primary>
 	);

@@ -10,6 +10,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from './tooltip';
+import Web3ConnectButton from '../web3/button/connect-button';
 
 const buttonVariants = cva(
 	'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
@@ -44,14 +45,27 @@ export interface ButtonProps
 	extends React.ButtonHTMLAttributes<HTMLButtonElement>,
 		VariantProps<typeof buttonVariants> {
 	asChild?: boolean;
+	parentWidth?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-	({ className, variant, size, asChild = false, ...props }, ref) => {
+	(
+		{
+			className,
+			variant,
+			size,
+			asChild = false,
+			parentWidth = false,
+			...props
+		},
+		ref
+	) => {
 		const Comp = asChild ? Slot : 'button';
 		return (
 			<Comp
-				className={cn(buttonVariants({ variant, size, className }))}
+				className={cn(buttonVariants({ variant, size, className }), {
+					'w-full': parentWidth,
+				})}
 				ref={ref}
 				{...props}
 			/>
@@ -88,18 +102,33 @@ export const Btn = {
 	Large: createButtonVariant('primary', 'lg'),
 };
 
+type ConnectedBtnProps = ButtonProps & {
+	showConnectButton?: boolean;
+};
+
 // Higher Order Component that adds wallet connection check
-export const withWalletConnection = <P extends ButtonProps>(
-	Component: React.ComponentType<P>
+export const withWalletConnection = <P extends ConnectedBtnProps>(
+	Component: React.ComponentType<ButtonProps>
 ) => {
-	const WithWalletConnection = (props: P) => {
+	const WithWalletConnection = ({
+		showConnectButton = false,
+		...props
+	}: P) => {
 		const { isConnected } = useAccount();
+
+		if (showConnectButton && !isConnected) {
+			return <Web3ConnectButton parentWidth={props.parentWidth} />;
+		}
 
 		return (
 			<TooltipProvider>
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<div className='inline-block'>
+						<div
+							className={cn(
+								'inline-block',
+								props.parentWidth && 'w-full'
+							)}>
 							<Component
 								{...props}
 								disabled={!isConnected || props.disabled}

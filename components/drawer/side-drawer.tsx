@@ -66,6 +66,21 @@ function Body({
 	);
 }
 
+// Footer component for the SideDrawer
+function Footer({
+	children,
+	className,
+}: {
+	children?: React.ReactNode;
+	className?: string;
+}) {
+	return (
+		<div className={cn('flex-shrink-0 p-6 border-t', className)}>
+			{children}
+		</div>
+	);
+}
+
 function SideDrawer({
 	open,
 	setOpen,
@@ -96,7 +111,7 @@ function SideDrawer({
 	const drawerContent = (
 		<div
 			className={cn(
-				'fixed laptop:relative h-screen pt-header bg-popover shadow-xl transition-all duration-300 ease-in-out overflow-x-hidden right-0 flex-shrink-0 flex flex-col',
+				'fixed laptop:relative h-screen pt-header bg-popover shadow-xl transition-all duration-300 ease-in-out overflow-hidden right-0 flex-shrink-0 flex flex-col',
 				' top-0',
 				!open ? 'w-0' : 'w-[min(80vw,var(--drawer-width))]',
 				className
@@ -114,5 +129,6 @@ function SideDrawer({
 // Attach the Header component to SideDrawer
 SideDrawer.Header = Header;
 SideDrawer.Body = Body;
+SideDrawer.Footer = Footer;
 
 export default SideDrawer;

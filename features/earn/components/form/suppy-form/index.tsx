@@ -5,8 +5,8 @@ import { ConnectedBtn } from '@/components/ui/button';
 import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
 import { Input } from '@/components/ui/input';
 import SideDrawer from '@/components/drawer/side-drawer';
-import { SupplyFormContextProvider } from '../../context/supply-form.context';
-import { useSupplyForm } from '../../hooks/useSupplyForm';
+import { SupplyFormContextProvider } from '../../../context/supply-form.context';
+import { useSupplyForm } from '../../../hooks/useSupplyForm';
 
 interface SupplyFormProps {
 	token: {
@@ -58,7 +58,7 @@ function SupplyFormContent() {
 				</button>
 			</SideDrawer.Header>
 			<SideDrawer.Body>
-				<div className='flex-1 flex flex-col'>
+				<div className='flex-1 flex flex-col gap-4'>
 					<div className='flex items-center gap-2 mb-2'>
 						<ImageWithLoader
 							src={token.iconUrl}
@@ -69,29 +69,20 @@ function SupplyFormContent() {
 						<Text.Regular16>{token.name}</Text.Regular16>
 					</div>
 
-					<div className='flex flex-col gap-2'>
-						<div className='flex justify-between items-center'>
-							<Text.Regular14>Amount</Text.Regular14>
+					<Input
+						label='Amount'
+						type='number'
+						value={amount}
+						onChange={handleAmountChange}
+						placeholder='0.0'
+						suffix={
 							<button
 								onClick={handleMaxClick}
 								className='text-primary text-sm hover:underline'>
 								MAX
 							</button>
-						</div>
-
-						<div className='relative'>
-							<Input
-								type='number'
-								value={amount}
-								onChange={handleAmountChange}
-								placeholder='0.0'
-								className='w-full p-3'
-							/>
-							<div className='absolute right-3 top-1/2 transform -translate-y-1/2'>
-								<Text.Regular14>{token.symbol}</Text.Regular14>
-							</div>
-						</div>
-					</div>
+						}
+					/>
 
 					<div className='flex flex-col gap-4 mt-4'>
 						<div className='flex justify-between'>
@@ -104,15 +95,17 @@ function SupplyFormContent() {
 							<Text.Regular14>75%</Text.Regular14>
 						</div>
 					</div>
-
-					<ConnectedBtn.Primary
-						onClick={handleSupply}
-						disabled={!amount || isLoading}
-						className='w-full mt-4'>
-						{isLoading ? 'Processing...' : `Supply ${token.symbol}`}
-					</ConnectedBtn.Primary>
 				</div>
 			</SideDrawer.Body>
+			<SideDrawer.Footer>
+				<ConnectedBtn.Primary
+					onClick={handleSupply}
+					disabled={!amount || isLoading}
+					showConnectButton
+					parentWidth>
+					{isLoading ? 'Processing...' : `Supply ${token.symbol}`}
+				</ConnectedBtn.Primary>
+			</SideDrawer.Footer>
 		</>
 	);
 }

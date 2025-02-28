@@ -9,7 +9,7 @@ import { currencyFormat } from '@/utils';
 import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
 import React, { useMemo } from 'react';
 import { useEarnDrawer } from '@/features/earn/context/earn-drawer.context';
-import SupplyForm from '../form/supply-form';
+import SupplyForm from '../form/suppy-form';
 
 interface EarnSupplyCardProps {
 	token: HstkToken;

@@ -8,7 +8,7 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table/index';
-import { ConnectedBtn } from '@/components/ui/button';
+import { Btn } from '@/components/ui/button';
 import { Text } from '@/components/ui/typography/Text';
 import { HoverPopover } from '@/components/ui/popover/hover-popover';
 import { TokenInfo } from '@/components/web3/token/token-info';
@@ -17,7 +17,7 @@ import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
 import AddTokenToWallet from '@/components/actions/cta/add-token-to-wallet';
 import useEarnTable from '../../hooks/useEarnTable';
 import { useEarnDrawer } from '@/features/earn/context/earn-drawer.context';
-import SupplyForm from '../form/supply-form';
+import SupplyForm from '../form/suppy-form';
 import { HstkToken } from '@/types/web3';
 
 function EarnTable() {
@@ -86,10 +86,10 @@ function EarnTable() {
 							</TableCell>
 							<TableCell>{token.name}</TableCell>
 							<TableCell className='w-[100px]'>
-								<ConnectedBtn.Primary
+								<Btn.Primary
 									onClick={() => handleSupplyClick(token)}>
 									Supply
-								</ConnectedBtn.Primary>
+								</Btn.Primary>
 							</TableCell>
 						</TableRow>
 					))}
