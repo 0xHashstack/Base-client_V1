@@ -7,6 +7,7 @@ import SideDrawer from '@/components/drawer/side-drawer';
 import { SupplyFormContextProvider } from '../../../context/supply-form.context';
 import { useSupplyForm } from '../../../hooks/useSupplyForm';
 import SupplyFormInputs from './components/supply-form-inputs';
+import { CardAccordionExample } from '@/components/ui/accordion/card-accordion.example';
 
 interface SupplyFormProps {
 	token: {
@@ -63,6 +64,7 @@ function SupplyFormContent() {
 					</div>
 
 					<SupplyFormInputs />
+					<CardAccordionExample />
 
 					<div className='flex flex-col gap-4 mt-4'>
 						<div className='flex justify-between'>
