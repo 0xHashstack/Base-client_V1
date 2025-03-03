@@ -1,3 +1,4 @@
+import { HstkToken } from '@/types/web3';
 import { createContext, useContext, useRef } from 'react';
 import { create, useStore } from 'zustand';
 
@@ -5,13 +6,7 @@ import { create, useStore } from 'zustand';
 interface SupplyFormState {
 	amount: string;
 	isLoading: boolean;
-	token: {
-		name: string;
-		symbol: string;
-		address: string;
-		iconUrl: string;
-		decimals: number;
-	} | null;
+	token: HstkToken | null;
 
 	// Actions
 	setAmount: (amount: string) => void;

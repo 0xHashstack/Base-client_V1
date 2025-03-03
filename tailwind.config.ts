@@ -82,6 +82,7 @@ export default {
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))',
+					'1': 'hsl(var(--primary-1))',
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
@@ -119,6 +120,10 @@ export default {
 				table: {
 					DEFAULT: 'hsl(var(--table-bg))',
 					hover: 'hsl(var(--table-hover))',
+				},
+				slider: {
+					bg: 'hsl(var(--slider-bg))',
+					thumb: 'hsl(var(--slider-thumb))',
 				},
 			},
 			borderRadius: {

@@ -3,10 +3,10 @@ import React from 'react';
 import { Text } from '@/components/ui/typography/Text';
 import { ConnectedBtn } from '@/components/ui/button';
 import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
-import { Input } from '@/components/ui/input';
 import SideDrawer from '@/components/drawer/side-drawer';
 import { SupplyFormContextProvider } from '../../../context/supply-form.context';
 import { useSupplyForm } from '../../../hooks/useSupplyForm';
+import SupplyFormInputs from './components/supply-form-inputs';
 
 interface SupplyFormProps {
 	token: {
@@ -34,15 +34,8 @@ function SupplyForm({ token }: SupplyFormProps) {
  */
 function SupplyFormContent() {
 	// Get handlers from the hook
-	const {
-		handleAmountChange,
-		handleMaxClick,
-		handleSupply,
-		token,
-		amount,
-		closeDrawer,
-		isLoading,
-	} = useSupplyForm();
+	const { handleSupply, token, amount, closeDrawer, isLoading } =
+		useSupplyForm();
 
 	// If token is not set, don't render anything
 	if (!token) return null;
@@ -69,20 +62,7 @@ function SupplyFormContent() {
 						<Text.Regular16>{token.name}</Text.Regular16>
 					</div>
 
-					<Input
-						label='Amount'
-						type='number'
-						value={amount}
-						onChange={handleAmountChange}
-						placeholder='0.0'
-						suffix={
-							<button
-								onClick={handleMaxClick}
-								className='text-primary text-sm hover:underline'>
-								MAX
-							</button>
-						}
-					/>
+					<SupplyFormInputs />
 
 					<div className='flex flex-col gap-4 mt-4'>
 						<div className='flex justify-between'>

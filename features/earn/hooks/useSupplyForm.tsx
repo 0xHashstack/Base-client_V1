@@ -13,30 +13,11 @@ export function useSupplyForm() {
 	const isLoading = useSupplyFormStore((state) => state.isLoading);
 	const token = useSupplyFormStore((state) => state.token);
 	const setAmount = useSupplyFormStore((state) => state.setAmount);
-	const setMaxAmount = useSupplyFormStore((state) => state.setMaxAmount);
 	const setToken = useSupplyFormStore((state) => state.setToken);
 	const setIsLoading = useSupplyFormStore((state) => state.setIsLoading);
 	const reset = useSupplyFormStore((state) => state.reset);
 
 	const { closeDrawer } = useEarnDrawer();
-
-	/**
-	 * Handle amount change
-	 * @param e Input change event
-	 */
-	const handleAmountChange = useCallback(
-		(e: React.ChangeEvent<HTMLInputElement>) => {
-			setAmount(e.target.value);
-		},
-		[setAmount]
-	);
-
-	/**
-	 * Handle max button click
-	 */
-	const handleMaxClick = useCallback(() => {
-		setMaxAmount();
-	}, [setMaxAmount]);
 
 	/**
 	 * Handle supply submission
@@ -69,10 +50,6 @@ export function useSupplyForm() {
 		amount,
 		isLoading,
 		token,
-
-		// Handlers
-		handleAmountChange,
-		handleMaxClick,
 		handleSupply,
 
 		// Actions
