@@ -7,7 +7,9 @@ import SideDrawer from '@/components/drawer/side-drawer';
 import { SupplyFormContextProvider } from '../../../context/supply-form.context';
 import { useSupplyForm } from '../../../hooks/useSupplyForm';
 import SupplyFormInputs from './components/supply-form-inputs';
-import { CardAccordionExample } from '@/components/ui/accordion/card-accordion.example';
+import SupplyTokenInfoCard from './components/supply-token-info-card';
+import SupplyFormAPR from './components/supply-form-apr';
+import SupplyFormPriceBreakdownCard from './components/supply-form-price-breakdown-card';
 
 interface SupplyFormProps {
 	token: {
@@ -64,19 +66,9 @@ function SupplyFormContent() {
 					</div>
 
 					<SupplyFormInputs />
-					<CardAccordionExample />
-
-					<div className='flex flex-col gap-4 mt-4'>
-						<div className='flex justify-between'>
-							<Text.Regular14>Supply APY</Text.Regular14>
-							<Text.Regular14>3.5%</Text.Regular14>
-						</div>
-
-						<div className='flex justify-between'>
-							<Text.Regular14>Collateral Factor</Text.Regular14>
-							<Text.Regular14>75%</Text.Regular14>
-						</div>
-					</div>
+					<SupplyTokenInfoCard />
+					<SupplyFormAPR />
+					<SupplyFormPriceBreakdownCard />
 				</div>
 			</SideDrawer.Body>
 			<SideDrawer.Footer>

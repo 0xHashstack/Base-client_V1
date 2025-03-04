@@ -120,7 +120,7 @@ const CardAccordion = React.forwardRef<HTMLDivElement, CardAccordionProps>(
 				<div
 					ref={ref}
 					className={cn(
-						'rounded-lg border bg-card text-card-foreground shadow-sm',
+						'rounded-lg border bg-card text-card-foreground',
 						className
 					)}
 					{...props}>
@@ -132,7 +132,7 @@ const CardAccordion = React.forwardRef<HTMLDivElement, CardAccordionProps>(
 						{header}
 					</div>
 					<div className='flex flex-col gap-3 px-4 pb-4'>
-						<div className='w-full border-t border-dashed'></div>
+						<div className='w-full border-t border-card border-dashed'></div>
 						<div className={cn(bodyClassName)}>{children}</div>
 					</div>
 				</div>
@@ -160,7 +160,7 @@ const CardAccordion = React.forwardRef<HTMLDivElement, CardAccordionProps>(
 					<AccordionPrimitive.Header>
 						<AccordionPrimitive.Trigger
 							className={cn(
-								'flex w-full items-center justify-between p-4 text-sm font-medium transition-all [&[data-state=open]>svg]:rotate-180',
+								'flex w-full items-center justify-between p-4 text-sm font-medium transition-all [&[data-state=open]>svg]:rotate-180 gap-2',
 								headerClassName
 							)}>
 							{header}
@@ -174,7 +174,7 @@ const CardAccordion = React.forwardRef<HTMLDivElement, CardAccordionProps>(
 					</AccordionPrimitive.Header>
 					<AccordionPrimitive.Content className='overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down'>
 						<div className='flex flex-col gap-3 px-4 pb-4'>
-							<div className='w-full border-t border-dashed'></div>
+							<div className='w-full border-t border-card border-dashed'></div>
 							<div className={cn(bodyClassName)}>{children}</div>
 						</div>
 					</AccordionPrimitive.Content>
