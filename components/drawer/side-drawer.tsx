@@ -3,7 +3,6 @@ import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils';
 import { X } from 'lucide-react';
 import { useEscapeKey } from '@/hooks/useEscapeKey';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { Text } from '../ui/typography/Text';
 import { Btn } from '../ui/button';
 
@@ -97,9 +96,6 @@ function SideDrawer({
 	// Use the escape key hook
 	useEscapeKey(handleClose, open);
 
-	// Use the body scroll lock hook
-	useBodyScrollLock(open);
-
 	// Handle portal mounting
 	useEffect(() => {
 		setMounted(true);
@@ -111,7 +107,7 @@ function SideDrawer({
 	const drawerContent = (
 		<div
 			className={cn(
-				'fixed laptop:relative h-screen pt-header bg-popover shadow-xl transition-all duration-300 ease-in-out overflow-hidden right-0 flex-shrink-0 flex flex-col',
+				'fixed laptop:sticky h-screen pt-header bg-popover shadow-xl transition-all duration-300 ease-in-out overflow-hidden right-0 flex-shrink-0 flex flex-col',
 				' top-0',
 				!open ? 'w-0' : 'w-[min(80vw,var(--drawer-width))]',
 				className

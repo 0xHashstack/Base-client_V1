@@ -4,6 +4,7 @@ import { Text } from '@/components/ui/typography/Text';
 import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 import { useSupplyWithdrawForm } from '../../../../hooks/useSupplyWithdrawForm';
+import { Card } from '@/components/ui/card';
 
 /**
  * Component for the withdraw form inputs
@@ -36,7 +37,7 @@ const WithdrawFormInputs: React.FC = () => {
 	};
 
 	return (
-		<div className='flex flex-col gap-4'>
+		<Card className='flex flex-col gap-4 p-4'>
 			<div className='flex items-center justify-between'>
 				<Text.Regular14>Amount</Text.Regular14>
 				<Text.Regular14>
@@ -57,21 +58,23 @@ const WithdrawFormInputs: React.FC = () => {
 				className='w-full'
 			/>
 
-			<Slider
-				value={[percentage]}
-				onValueChange={handleSliderChange}
-				showTooltip
-				className='my-2'
-			/>
+			<div className='flex flex-col gap-1.5'>
+				<Slider
+					value={[percentage]}
+					onValueChange={handleSliderChange}
+					showTooltip
+				/>
 
-			<div className='flex justify-between'>
-				<Text.Regular12 textColor={500}>0%</Text.Regular12>
-				<Text.Regular12 textColor={500}>25%</Text.Regular12>
-				<Text.Regular12 textColor={500}>50%</Text.Regular12>
-				<Text.Regular12 textColor={500}>75%</Text.Regular12>
-				<Text.Regular12 textColor={500}>100%</Text.Regular12>
+				<div className='flex items-center justify-between'>
+					<Text.Regular10>0%</Text.Regular10>
+					<Text.Regular10>100%</Text.Regular10>
+				</div>
 			</div>
-		</div>
+			<div className='flex items-center justify-between'>
+				<Text.Medium12>Available Supply</Text.Medium12>
+				<Text.Medium12>103.2 {token?.symbol}</Text.Medium12>
+			</div>
+		</Card>
 	);
 };
 

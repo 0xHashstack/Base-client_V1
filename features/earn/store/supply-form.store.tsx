@@ -1,5 +1,5 @@
 import { HstkToken } from '@/types/web3';
-import { createContext, useContext, useRef } from 'react';
+import { createContext, useContext, useRef, useEffect } from 'react';
 import { create, useStore } from 'zustand';
 
 // Define the store state and actions
@@ -14,6 +14,7 @@ interface SupplyFormState {
 	setToken: (token: SupplyFormState['token']) => void;
 	setIsLoading: (isLoading: boolean) => void;
 	reset: () => void;
+	resetStore: (newToken?: SupplyFormState['token']) => void;
 }
 
 const initialState = {
@@ -34,6 +35,10 @@ const createSupplyFormStore = (initialToken: SupplyFormState['token'] = null) =>
 		setToken: (token) => set({ token }),
 		setIsLoading: (isLoading) => set({ isLoading }),
 		reset: () => set({ ...initialState, token: initialToken }),
+		resetStore: (newToken) => set({ 
+			...initialState, 
+			token: newToken !== undefined ? newToken : initialToken 
+		}),
 	}));
 
 // Create a React context for the store
@@ -55,9 +60,19 @@ export const SupplyFormProvider = ({
 		null
 	);
 
+	// Create the store if it doesn't exist
 	if (!storeRef.current) {
 		storeRef.current = createSupplyFormStore(initialToken);
 	}
+
+	// Update the token when it changes
+	useEffect(() => {
+		if (storeRef.current) {
+			// Reset the form with the new token
+			storeRef.current.getState().resetStore(initialToken);
+		}
+	}, [initialToken]);
+
 
 	return (
 		<SupplyFormStoreContext.Provider value={storeRef.current}>

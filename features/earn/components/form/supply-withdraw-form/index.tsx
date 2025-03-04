@@ -8,7 +8,6 @@ import { SupplyWithdrawFormContextProvider } from '../../../context/supply-withd
 import { useSupplyWithdrawForm } from '../../../hooks/useSupplyWithdrawForm';
 import WithdrawFormInputs from './components/withdraw-form-inputs';
 import WithdrawTokenInfoCard from './components/withdraw-token-info-card';
-import WithdrawFormAPR from './components/withdraw-form-apr';
 import WithdrawFormPriceBreakdownCard from './components/withdraw-form-price-breakdown-card';
 
 interface SupplyWithdrawFormProps {
@@ -67,7 +66,7 @@ function SupplyWithdrawFormContent() {
 
 					<WithdrawFormInputs />
 					<WithdrawTokenInfoCard />
-					<WithdrawFormAPR />
+
 					<WithdrawFormPriceBreakdownCard />
 				</div>
 			</SideDrawer.Body>

@@ -39,7 +39,7 @@ const DEFAULT_EXCHANGE_RATE = '1 HSTK = $1.00';
 const WithdrawTokenInfoCard: React.FC<WithdrawTokenInfoCardProps> = ({
 	tokenOverride,
 	exchangeRate = DEFAULT_EXCHANGE_RATE,
-	className,
+	className = 'bg-card-secondary border-none',
 }) => {
 	const { token: storeToken } = useSupplyWithdrawForm();
 	const token = tokenOverride ?? storeToken;
@@ -48,11 +48,13 @@ const WithdrawTokenInfoCard: React.FC<WithdrawTokenInfoCardProps> = ({
 	const cardHeader = useMemo(
 		() => (
 			<div className='flex flex-1 items-center justify-between'>
-				<Text.Regular12>Token Info</Text.Regular12>
-				<Text.Regular12>{exchangeRate}</Text.Regular12>
+				<Text.Regular12>1 r{token?.symbol}</Text.Regular12>
+				<Text.Regular12>
+					{exchangeRate} {token?.symbol}
+				</Text.Regular12>
 			</div>
 		),
-		[exchangeRate]
+		[exchangeRate, token?.symbol]
 	);
 
 	// Don't render if there's no token
@@ -63,19 +65,11 @@ const WithdrawTokenInfoCard: React.FC<WithdrawTokenInfoCardProps> = ({
 			header={cardHeader}
 			className={className}
 			collapsible={false}>
-			<div className='flex flex-col gap-3'>
-				<div className='flex items-center justify-between'>
-					<Text.Regular12 textColor={500}>
-						Token Address
-					</Text.Regular12>
-					<Text.Regular12>
-						{token.address.slice(0, 6)}...{token.address.slice(-4)}
-					</Text.Regular12>
-				</div>
-				<div className='flex items-center justify-between'>
-					<Text.Regular12 textColor={500}>Decimals</Text.Regular12>
-					<Text.Regular12>{token.decimals}</Text.Regular12>
-				</div>
+			<div className='flex items-center justify-between'>
+				<Text.Regular12>r{token?.symbol} minted(est)</Text.Regular12>
+				<Text.Regular12>
+					{exchangeRate} {token?.symbol}
+				</Text.Regular12>
 			</div>
 		</CardAccordion>
 	);

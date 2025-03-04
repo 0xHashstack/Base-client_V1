@@ -1,5 +1,5 @@
 import { HstkToken } from '@/types/web3';
-import { createContext, useContext, useRef } from 'react';
+import { createContext, useContext, useRef, useEffect } from 'react';
 import { create, useStore } from 'zustand';
 
 // Define the store state and actions
@@ -14,6 +14,7 @@ interface SupplyWithdrawFormState {
 	setToken: (token: SupplyWithdrawFormState['token']) => void;
 	setIsLoading: (isLoading: boolean) => void;
 	reset: () => void;
+	resetStore: (newToken?: SupplyWithdrawFormState['token']) => void;
 }
 
 const initialState = {
@@ -36,6 +37,10 @@ const createSupplyWithdrawFormStore = (
 		setToken: (token) => set({ token }),
 		setIsLoading: (isLoading) => set({ isLoading }),
 		reset: () => set({ ...initialState, token: initialToken }),
+		resetStore: (newToken) => set({ 
+			...initialState, 
+			token: newToken !== undefined ? newToken : initialToken 
+		}),
 	}));
 
 // Create a React context for the store
@@ -57,9 +62,18 @@ export const SupplyWithdrawFormProvider = ({
 		typeof createSupplyWithdrawFormStore
 	> | null>(null);
 
+	// Create the store if it doesn't exist
 	if (!storeRef.current) {
 		storeRef.current = createSupplyWithdrawFormStore(initialToken);
 	}
+
+	// Update the token when it changes
+	useEffect(() => {
+		if (storeRef.current) {
+			// Reset the form with the new token
+			storeRef.current.getState().resetStore(initialToken);
+		}
+	}, [initialToken]);
 
 	return (
 		<SupplyWithdrawFormStoreContext.Provider value={storeRef.current}>
@@ -75,7 +89,7 @@ export const useSupplyWithdrawFormStore = <T,>(
 	const store = useContext(SupplyWithdrawFormStoreContext);
 	if (!store) {
 		throw new Error(
-			'useWithdrawFormStore must be used within a WithdrawFormProvider'
+			'useSupplyWithdrawFormStore must be used within a SupplyWithdrawFormProvider'
 		);
 	}
 	return useStore(store, selector);
