@@ -5,6 +5,7 @@ import { X } from 'lucide-react';
 import { useEscapeKey } from '@/hooks/useEscapeKey';
 import { Text } from '../ui/typography/Text';
 import { Btn } from '../ui/button';
+import If from '../common/If';
 
 interface SideDrawerProps {
 	open: boolean;
@@ -105,22 +106,36 @@ function SideDrawer({
 	if (!mounted) return null;
 
 	const drawerContent = (
-		<div
-			className={cn(
-				'fixed laptop:sticky h-[90vh] tablet:h-screen  tablet:pt-header bg-popover shadow-xl transition-all duration-300 ease-in-out overflow-hidden  flex-shrink-0 flex flex-col z-20 tablet:z-0',
-				' tablet:top-0 right-0 bottom-0 ',
-				'rounded-t-xl tablet:rounded-t-none',
-				'shadow-2xl tablet:shadow-none',
-				!open ? 'w-0' : (
-					'w-screen tablet:w-[min(80vw,var(--drawer-width))]'
-				),
-				className
-			)}
-			style={{ '--drawer-width': `${width}px` } as React.CSSProperties}>
-			{/* Content */}
+		<>
+			<If isTrue={open}>
+				<div
+					className='fixed inset-0 tablet:hidden z-[15] bg-background opacity-50'
+					data-ui-lock-body={open}></div>
+			</If>
+			<div
+				className={cn(
+					'fixed laptop:sticky h-[90vh] tablet:h-screen  tablet:pt-header bg-popover shadow-xl transition-all duration-300 ease-in-out overflow-hidden  flex-shrink-0 flex flex-col z-20 tablet:z-0 w-screen',
+					' tablet:top-0 right-0 bottom-0 ',
+					'rounded-t-xl tablet:rounded-t-none',
+					'shadow-sm tablet:shadow-none',
+					// desktop
+					!open ? 'tablet:w-0' : (
+						'tablet:w-[min(80vw,var(--drawer-width))]'
+					),
+					// mobile
+					!open ?
+						'translate-y-full tablet:translate-y-0'
+					:	'translate-y-0',
+					className
+				)}
+				style={
+					{ '--drawer-width': `${width}px` } as React.CSSProperties
+				}>
+				{/* Content */}
 
-			{children}
-		</div>
+				{children}
+			</div>
+		</>
 	);
 
 	return createPortal(drawerContent, document.getElementById('drawer-root')!);
