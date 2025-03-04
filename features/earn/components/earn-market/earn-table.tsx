@@ -17,7 +17,7 @@ import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
 import AddTokenToWallet from '@/components/actions/cta/add-token-to-wallet';
 import useEarnTable from '../../hooks/useEarnTable';
 import { useEarnDrawer } from '@/features/earn/context/earn-drawer.context';
-import SupplyForm from '../form/suppy-form';
+import SupplyForm from '../form/supply-form';
 import { HstkToken } from '@/types/web3';
 
 function EarnTable() {
