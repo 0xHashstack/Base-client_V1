@@ -3,7 +3,7 @@ import PrimaryCard from '@/components/ui/card/primary-card';
 import { Text } from '@/components/ui/typography/Text';
 import { cn } from '@/lib/utils';
 import { HstkToken } from '@/types/web3/token.types';
-import { currencyFormat } from '@/utils';
+import { currencyFormat, noop } from '@/utils';
 import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
 import React, { useMemo } from 'react';
 
@@ -11,6 +11,8 @@ interface MyPositionCardProps {
 	token: HstkToken;
 	value?: string | null;
 	APR?: string | null;
+	onAddClick?: (token: HstkToken) => void;
+	onWithdrawClick?: (token: HstkToken) => void;
 }
 
 interface CardDataItem {
@@ -20,7 +22,13 @@ interface CardDataItem {
 	rawValue: string | null;
 }
 
-function MyPositionCard({ token, value, APR }: MyPositionCardProps) {
+function MyPositionCard({
+	token,
+	value,
+	APR,
+	onAddClick = noop,
+	onWithdrawClick = noop,
+}: MyPositionCardProps) {
 	const cardData = useMemo<CardDataItem[]>(
 		() =>
 			[
@@ -42,6 +50,8 @@ function MyPositionCard({ token, value, APR }: MyPositionCardProps) {
 			),
 		[value, APR]
 	);
+
+	const withToken = (fn: (token: HstkToken) => void) => () => fn(token);
 
 	return (
 		<PrimaryCard>
@@ -87,8 +97,16 @@ function MyPositionCard({ token, value, APR }: MyPositionCardProps) {
 					))}
 				</div>
 				<div className='flex items-center gap-3'>
-					<Btn.Outline className='flex-1'>Add</Btn.Outline>
-					<Btn.Secondary className='flex-1'>Withdraw</Btn.Secondary>
+					<Btn.Outline
+						className='flex-1'
+						onClick={withToken(onAddClick)}>
+						Add
+					</Btn.Outline>
+					<Btn.Secondary
+						className='flex-1'
+						onClick={withToken(onWithdrawClick)}>
+						Withdraw
+					</Btn.Secondary>
 				</div>
 			</PrimaryCard.Body>
 		</PrimaryCard>

@@ -57,7 +57,7 @@ function Body({
 	return (
 		<div
 			className={cn(
-				'flex-1 overflow-y-auto  w-[min(80vw,var(--drawer-width))] p-6',
+				'flex-1 overflow-y-auto w-screen tablet:w-[min(80vw,var(--drawer-width))] p-6',
 				className
 			)}>
 			{children}
@@ -107,9 +107,13 @@ function SideDrawer({
 	const drawerContent = (
 		<div
 			className={cn(
-				'fixed laptop:sticky h-screen pt-header bg-popover shadow-xl transition-all duration-300 ease-in-out overflow-hidden right-0 flex-shrink-0 flex flex-col',
-				' top-0',
-				!open ? 'w-0' : 'w-[min(80vw,var(--drawer-width))]',
+				'fixed laptop:sticky h-[90vh] tablet:h-screen  tablet:pt-header bg-popover shadow-xl transition-all duration-300 ease-in-out overflow-hidden  flex-shrink-0 flex flex-col z-20 tablet:z-0',
+				' tablet:top-0 right-0 bottom-0 ',
+				'rounded-t-xl tablet:rounded-t-none',
+				'shadow-2xl tablet:shadow-none',
+				!open ? 'w-0' : (
+					'w-screen tablet:w-[min(80vw,var(--drawer-width))]'
+				),
 				className
 			)}
 			style={{ '--drawer-width': `${width}px` } as React.CSSProperties}>
