@@ -1,9 +1,10 @@
 'use client';
 import { useWeb3Store } from '@/store/useWeb3.store';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useTransitionRouter } from 'next-view-transitions';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 function useCustomRouter() {
-	const router = useRouter();
+	const router = useTransitionRouter();
 	const pathName = usePathname();
 	const searchParams = useSearchParams();
 	const selectedChain = useWeb3Store((state) => state.selectedChain);

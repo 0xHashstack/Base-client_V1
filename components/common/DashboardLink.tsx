@@ -1,5 +1,6 @@
-import Link, { LinkProps } from 'next/link';
+import { LinkProps } from 'next/link';
 import { useWeb3Store } from '@/store/useWeb3.store';
+import { Link } from 'next-view-transitions';
 
 type InternalLinkProps = Omit<
 	React.AnchorHTMLAttributes<HTMLAnchorElement>,

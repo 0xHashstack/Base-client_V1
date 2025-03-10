@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import '@/styles/globals.scss';
 import { getCookie } from 'cookies-next/server';
-
+import { ViewTransitions } from 'next-view-transitions';
 import { cookies, headers } from 'next/headers';
 import { ThemeAndLanguageProvider } from '@/context/theme-language.context';
 import { HstkTheme } from '@/types/ui/theme.types';
@@ -28,17 +28,21 @@ export default async function RootLayout({
 	const wagmiCookie = (await headers()).get('cookie');
 
 	return (
-		<html
-			lang='en'
-			className={`${inter.className} ${inter.variable}`}>
-			<ThemeAndLanguageProvider
-				defaultTheme={(userPrefTheme || HstkTheme.LIGHT) as HstkTheme}>
-				<Web3Provider cookie={wagmiCookie}>{children}</Web3Provider>
-				<Toaster
-					closeButton
-					duration={4000}
-				/>
-			</ThemeAndLanguageProvider>
-		</html>
+		<ViewTransitions>
+			<html
+				lang='en'
+				className={`${inter.className} ${inter.variable}`}>
+				<ThemeAndLanguageProvider
+					defaultTheme={
+						(userPrefTheme || HstkTheme.LIGHT) as HstkTheme
+					}>
+					<Web3Provider cookie={wagmiCookie}>{children}</Web3Provider>
+					<Toaster
+						closeButton
+						duration={4000}
+					/>
+				</ThemeAndLanguageProvider>
+			</html>
+		</ViewTransitions>
 	);
 }
