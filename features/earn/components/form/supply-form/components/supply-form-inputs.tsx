@@ -7,6 +7,8 @@ import { useSupplyFormInputs } from '@/features/earn/hooks/useSupplyFormInputs';
 import { HstkToken } from '@/types/web3/token.types';
 import Image from 'next/image';
 import React from 'react';
+import { Skeleton } from '@/components/ui/skeleton/skeleton';
+import { ArrowsClockwise } from '@phosphor-icons/react';
 
 function SupplyFormInputs() {
 	const {
@@ -18,6 +20,11 @@ function SupplyFormInputs() {
 		handleMaxClick,
 		handleSliderChange,
 		handleTokenChange,
+		handleRefreshBalance,
+		formattedWalletBalance,
+		walletBalanceLoading,
+		walletBalanceError,
+		isFormDisabled,
 	} = useSupplyFormInputs();
 
 	// Custom render function for token options
@@ -52,6 +59,34 @@ function SupplyFormInputs() {
 		);
 	};
 
+	// Render wallet balance based on loading/error state
+	const renderWalletBalance = () => {
+		if (walletBalanceLoading) {
+			return <Skeleton className='h-4 w-24' />;
+		}
+
+		if (walletBalanceError) {
+			return (
+				<div className='flex items-center gap-1 text-destructive'>
+					<Text.Regular12>
+						Failed to load Wallet Balance
+					</Text.Regular12>
+					<button
+						onClick={handleRefreshBalance}
+						className='text-destructive hover:text-destructive/80'>
+						<ArrowsClockwise size={14} />
+					</button>
+				</div>
+			);
+		}
+
+		return (
+			<Text.Regular12 textColor={600}>
+				Wallet balance: {formattedWalletBalance} {token?.symbol || ''}
+			</Text.Regular12>
+		);
+	};
+
 	return (
 		<Card className='flex flex-col gap-4 p-4'>
 			<SingleSelect
@@ -66,20 +101,33 @@ function SupplyFormInputs() {
 				onChange={handleTokenChange}
 			/>
 
-			<Input
-				label='Amount'
-				type='number'
-				value={amount}
-				onChange={handleAmountChange}
-				placeholder='0.0'
-				suffix={
-					<button
-						onClick={handleMaxClick}
-						className='text-primary text-sm hover:underline'>
-						MAX
-					</button>
-				}
-			/>
+			<div className='flex flex-col gap-2'>
+				<Input
+					label='Amount'
+					type='number'
+					value={amount}
+					onChange={handleAmountChange}
+					placeholder='0.0'
+					disabled={isFormDisabled}
+					suffix={
+						<button
+							onClick={handleMaxClick}
+							className={`text-sm ${
+								isFormDisabled ?
+									'text-muted-foreground cursor-not-allowed'
+								:	'text-primary hover:underline'
+							}`}
+							disabled={isFormDisabled}>
+							MAX
+						</button>
+					}
+				/>
+				<div className='flex justify-end flex-1'>
+					<div className='flex items-center gap-1'>
+						{renderWalletBalance()}
+					</div>
+				</div>
+			</div>
 
 			<div className='flex flex-col gap-1.5'>
 				<Slider
@@ -88,6 +136,7 @@ function SupplyFormInputs() {
 					step={1}
 					onValueChange={handleSliderChange}
 					className='mt-1'
+					disabled={isFormDisabled}
 				/>
 				<div className='flex items-center justify-between'>
 					<Text.Regular10>0%</Text.Regular10>

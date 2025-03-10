@@ -2,6 +2,9 @@ import { useCallback, useMemo } from 'react';
 import { useSupplyFormStore } from '../store/supply-form.store';
 import { useTokenStore } from '@/store/useTokenStore';
 import { HstkToken } from '@/types/web3/token.types';
+import { useBalance } from 'wagmi';
+import { Web3Address } from '@/types/web3';
+import { formatUnits } from 'viem';
 
 /**
  * Hook to manage supply form input logic
@@ -11,14 +14,36 @@ export function useSupplyFormInputs() {
 	const amount = useSupplyFormStore((state) => state.amount);
 	const token = useSupplyFormStore((state) => state.token);
 	const setAmount = useSupplyFormStore((state) => state.setAmount);
-	const setMaxAmount = useSupplyFormStore((state) => state.setMaxAmount);
 	const setToken = useSupplyFormStore((state) => state.setToken);
-	
+
 	// Get tokens from token store
 	const tokens = useTokenStore((state) => state.tokens);
 
-	// Maximum amount for the slider (from the setMaxAmount function)
-	const MAX_AMOUNT = 1000;
+	const {
+		data: walletBalance,
+		isFetching: walletBalanceLoading,
+		isError: walletBalanceError,
+		refetch: refetchWalletBalance,
+	} = useBalance({
+		address: token?.address as Web3Address,
+	});
+
+	// Get formatted wallet balance
+	const formattedWalletBalance = useMemo(() => {
+		if (!walletBalance || !token) return '0';
+		return formatUnits(walletBalance.value, token.decimals);
+	}, [walletBalance, token]);
+
+	// Maximum amount for the slider (from wallet balance)
+	const MAX_AMOUNT = useMemo(() => {
+		if (
+			walletBalanceLoading ||
+			walletBalanceError ||
+			!formattedWalletBalance
+		)
+			return 0;
+		return parseFloat(formattedWalletBalance);
+	}, [formattedWalletBalance, walletBalanceLoading, walletBalanceError]);
 
 	// Convert amount string to number for slider
 	const amountValue = useMemo(() => {
@@ -28,8 +53,10 @@ export function useSupplyFormInputs() {
 
 	// Calculate slider percentage (0-100)
 	const sliderPercentage = useMemo(() => {
-		return (amountValue / MAX_AMOUNT) * 100;
-	}, [amountValue]);
+		if (MAX_AMOUNT <= 0) return 0;
+		const percentage = (amountValue / MAX_AMOUNT) * 100;
+		return Math.min(percentage, 100); // Ensure it doesn't exceed 100%
+	}, [amountValue, MAX_AMOUNT]);
 
 	/**
 	 * Handle amount change from input
@@ -37,7 +64,11 @@ export function useSupplyFormInputs() {
 	 */
 	const handleAmountChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
-			setAmount(e.target.value);
+			const value = e.target.value;
+			// Validate input: only allow numbers and decimals
+			if (value === '' || /^[0-9]*\.?[0-9]*$/.test(value)) {
+				setAmount(value);
+			}
 		},
 		[setAmount]
 	);
@@ -46,8 +77,16 @@ export function useSupplyFormInputs() {
 	 * Handle max button click
 	 */
 	const handleMaxClick = useCallback(() => {
-		setMaxAmount();
-	}, [setMaxAmount]);
+		if (walletBalanceLoading || walletBalanceError || MAX_AMOUNT <= 0)
+			return;
+		setAmount(formattedWalletBalance);
+	}, [
+		setAmount,
+		formattedWalletBalance,
+		walletBalanceLoading,
+		walletBalanceError,
+		MAX_AMOUNT,
+	]);
 
 	/**
 	 * Handle slider change
@@ -55,11 +94,14 @@ export function useSupplyFormInputs() {
 	 */
 	const handleSliderChange = useCallback(
 		(value: number[]) => {
+			if (walletBalanceLoading || walletBalanceError || MAX_AMOUNT <= 0)
+				return;
+
 			const percentage = value[0];
 			const newAmount = (percentage / 100) * MAX_AMOUNT;
-			setAmount(newAmount.toString());
+			setAmount(newAmount.toFixed(token?.decimals || 6));
 		},
-		[setAmount]
+		[setAmount, MAX_AMOUNT, walletBalanceLoading, walletBalanceError, token]
 	);
 
 	/**
@@ -74,6 +116,18 @@ export function useSupplyFormInputs() {
 		[setToken]
 	);
 
+	/**
+	 * Handle wallet balance refresh
+	 */
+	const handleRefreshBalance = useCallback(() => {
+		refetchWalletBalance();
+	}, [refetchWalletBalance]);
+
+	// Check if form inputs should be disabled
+	const isFormDisabled = useMemo(() => {
+		return walletBalanceError || MAX_AMOUNT <= 0;
+	}, [walletBalanceError, MAX_AMOUNT]);
+
 	return {
 		amount,
 		amountValue,
@@ -85,5 +139,11 @@ export function useSupplyFormInputs() {
 		handleMaxClick,
 		handleSliderChange,
 		handleTokenChange,
+		handleRefreshBalance,
+		walletBalance,
+		formattedWalletBalance,
+		walletBalanceLoading,
+		walletBalanceError,
+		isFormDisabled,
 	};
 }

@@ -1,6 +1,6 @@
 import { ICON } from '@/constant/assets/assets.constant';
 import Image, { ImageProps } from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getShimmerDataUrl } from '@/utils/shimmer.utils';
 
 const defaultPlaceholder = ICON.LOGO;
@@ -13,6 +13,10 @@ export function ImageWithLoader({
 	...props
 }: Omit<ImageProps, 'onError'>) {
 	const [imgSrc, setImgSrc] = useState(src);
+
+	useEffect(() => {
+		setImgSrc(src);
+	}, [src]);
 
 	return (
 		<Image
