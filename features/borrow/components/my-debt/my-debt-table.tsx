@@ -23,9 +23,6 @@ import { SpendCategory } from '@/types/web3/borrow.types';
 function MyDebtTable() {
 	const { tokens, tokenBalances } = useBorrowContext();
 	const { isLoading } = tokenBalances || {};
-	
-	// You can replace this with actual debt positions data
-	const debtPositions = [];
 
 	return (
 		<div className='flex flex-col gap-6'>
@@ -47,78 +44,88 @@ function MyDebtTable() {
 					</TableRow>
 				</TableHeader>
 				<TableBody>
-					{isLoading ? (
-						<TableLoader rowCount={3} colCount={7} />
-					) : debtPositions.length === 0 ? (
-						<TableNoData message="No debt positions found" colSpan={7} />
-					) : tokens.map((token) => {
-						return (
-							<TableRow key={token.address}>
-								<TableCell className='font-medium'>
-									<div className='flex items-center gap-3'>
-										<ImageWithLoader
-											src={token.iconUrl}
-											alt={token.name}
-											width={20}
-											height={20}
-										/>
-										{token.name}
-									</div>
-								</TableCell>
-								<TableCell>
-									<HoverBorrowValueCard
-										borrowAmount={400}
-										tokenName={token.name}
-										dTokenName={'d' + token.name}
-										dTokenIssued={123123}
-										pricePerToken={123123}
-										tokenPrice={123123}
-										dappFees={0.12}>
-										<span>
-											{currencyFormat(3423423423423)}
-										</span>
-									</HoverBorrowValueCard>
-								</TableCell>
-								<TableCell>
-									<div className='flex items-center gap-2'>
-										<Btn.Secondary>Spend</Btn.Secondary>
-										<Btn.Outline>Repay</Btn.Outline>
-									</div>
-								</TableCell>
-								<TableCell>
-									<HoverBorrowAprCard
-										netApr={2.5}
-										changeInAprPercentage={-10}
-										collateralApr={2.5}
-										borrowApr={0.0}>
-										<span>2.5%</span>
-									</HoverBorrowAprCard>
-								</TableCell>
-								<TableCell>{token.symbol}</TableCell>
-								<TableCell>
-									<HoverBorrowHealthCard
-										healthScore={3.34}
-										actualDebt={1500}
-										collateral={2000}
-										netAssetValue={500}
-										liquidationPrice={1200}
-										debtAssetName='ETH'
-										collateralAssetName='ETH'
-										currentDebt={{
-											dappName: 'Example Dapp',
-											spendCategory: SpendCategory.Supply,
-											value: 1500,
-											assetName: 'ETH',
-										}}>
-										<span>3.34</span>
-									</HoverBorrowHealthCard>
-								</TableCell>
-								<TableCell className='w-[100px]'>
-									<Btn.Primary>Repay</Btn.Primary>
-								</TableCell>
-							</TableRow>
-						);
-					})}
+					{isLoading ?
+						<TableLoader
+							rowCount={3}
+							colCount={7}
+						/>
+					: tokens.length === 0 ?
+						<TableNoData
+							message='No debt positions found'
+							colSpan={7}
+						/>
+					:	tokens.map((token) => {
+							return (
+								<TableRow key={token.address}>
+									<TableCell className='font-medium'>
+										<div className='flex items-center gap-3'>
+											<ImageWithLoader
+												src={token.iconUrl}
+												alt={token.name}
+												width={20}
+												height={20}
+											/>
+											{token.name}
+										</div>
+									</TableCell>
+									<TableCell>
+										<HoverBorrowValueCard
+											borrowAmount={400}
+											tokenName={token.name}
+											dTokenName={'d' + token.name}
+											dTokenIssued={123123}
+											pricePerToken={123123}
+											tokenPrice={123123}
+											dappFees={0.12}>
+											<span>
+												{currencyFormat(3423423423423)}
+											</span>
+										</HoverBorrowValueCard>
+									</TableCell>
+									<TableCell>
+										<div className='flex items-center gap-2'>
+											<Btn.Outline>Repay</Btn.Outline>
+											<Btn.Secondary>Spend</Btn.Secondary>
+										</div>
+									</TableCell>
+									<TableCell>
+										<HoverBorrowAprCard
+											netApr={2.5}
+											changeInAprPercentage={-10}
+											collateralApr={2.5}
+											borrowApr={0.0}>
+											<span>2.5%</span>
+										</HoverBorrowAprCard>
+									</TableCell>
+									<TableCell>{token.symbol}</TableCell>
+									<TableCell>
+										<HoverBorrowHealthCard
+											healthScore={3.34}
+											actualDebt={1500}
+											collateral={2000}
+											netAssetValue={500}
+											liquidationPrice={1200}
+											debtAssetName='ETH'
+											collateralAssetName='ETH'
+											currentDebt={{
+												dappName: 'Example Dapp',
+												spendCategory:
+													SpendCategory.Supply,
+												value: 1500,
+												assetName: 'ETH',
+											}}>
+											<span>3.34</span>
+										</HoverBorrowHealthCard>
+									</TableCell>
+									<TableCell className='w-[100px]'>
+										<Btn.Secondary>
+											Add Collateral
+										</Btn.Secondary>
+									</TableCell>
+								</TableRow>
+							);
+						})
+					}
 				</TableBody>
 			</Table>
 		</div>
