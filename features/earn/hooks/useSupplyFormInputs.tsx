@@ -144,6 +144,6 @@ export function useSupplyFormInputs() {
 		formattedWalletBalance,
 		walletBalanceLoading,
 		walletBalanceError,
-		isFormDisabled: false,
+		isFormDisabled,
 	};
 }

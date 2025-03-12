@@ -9,6 +9,8 @@ import SupplyFormInputs from './components/supply-form-inputs';
 import SupplyTokenInfoCard from './components/supply-token-info-card';
 import SupplyFormAPR from './components/supply-form-apr';
 import SupplyFormPriceBreakdownCard from './components/supply-form-price-breakdown-card';
+import { Card } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 
 interface SupplyFormProps {
 	token: {
@@ -55,9 +57,13 @@ function SupplyFormContent() {
 			<SideDrawer.Body>
 				<div className='flex-1 flex flex-col gap-4'>
 					<SupplyFormInputs />
-					<SupplyTokenInfoCard />
-					<SupplyFormAPR />
-					<SupplyFormPriceBreakdownCard />
+					<Card className='flex flex-col gap-3 p-6 bg-card-secondary'>
+						<SupplyTokenInfoCard />
+						<Separator />
+						<SupplyFormAPR />
+						<Separator />
+						<SupplyFormPriceBreakdownCard />
+					</Card>
 				</div>
 			</SideDrawer.Body>
 			<SideDrawer.Footer>

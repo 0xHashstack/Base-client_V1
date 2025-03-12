@@ -133,7 +133,7 @@ function SupplyFormInputs() {
 						</div>
 					</div>
 				</div>
-				<div className='flex flex-col gap-1.5'>
+				<div className='flex flex-col gap-2.5'>
 					<Slider
 						value={[sliderPercentage]}
 						max={100}
@@ -144,6 +144,9 @@ function SupplyFormInputs() {
 					/>
 					<div className='flex items-center justify-between'>
 						<Text.Regular10>0%</Text.Regular10>
+						<Text.Regular10>25%</Text.Regular10>
+						<Text.Regular10>50%</Text.Regular10>
+						<Text.Regular10>75%</Text.Regular10>
 						<Text.Regular10>100%</Text.Regular10>
 					</div>
 				</div>
