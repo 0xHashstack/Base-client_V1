@@ -7,6 +7,8 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
+	TableNoData,
+	TableLoader,
 } from '@/components/ui/table/index';
 import { Btn } from '@/components/ui/button';
 import { Text } from '@/components/ui/typography/Text';
@@ -21,7 +23,7 @@ import SupplyForm from '../form/supply-form';
 import { HstkToken } from '@/types/web3';
 
 function EarnTable() {
-	const { formatted, tokens } = useEarnTable();
+	const { formatted, tokens, isLoading } = useEarnTable();
 	const { openDrawer, setDrawerContent } = useEarnDrawer();
 
 	// Handle opening the supply drawer
@@ -48,7 +50,11 @@ function EarnTable() {
 					</TableRow>
 				</TableHeader>
 				<TableBody>
-					{tokens.map((token) => (
+					{isLoading ? (
+						<TableLoader rowCount={3} colCount={5} />
+					) : tokens.length === 0 ? (
+						<TableNoData message="No markets available" colSpan={5} />
+					) : tokens.map((token) => (
 						<TableRow key={token.address}>
 							<TableCell className='font-medium'>
 								<div className='flex items-center gap-3'>

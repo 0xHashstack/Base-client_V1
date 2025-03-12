@@ -7,3 +7,7 @@ export type HstkToken = {
 	isPaused?: boolean;
 	isNew?: boolean;
 };
+
+export type SuppliedToken = HstkToken & {
+	availableSupply?: number;
+};

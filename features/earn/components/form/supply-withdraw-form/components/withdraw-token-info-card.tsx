@@ -1,27 +1,21 @@
-'use client';
-import React, { useMemo } from 'react';
-import { CardAccordion } from '@/components/ui/accordion';
 import { Text } from '@/components/ui/typography/Text';
 import { useSupplyWithdrawForm } from '../../../../hooks/useSupplyWithdrawForm';
+import { HstkToken } from '@/types/web3';
+import React from 'react';
 
 /**
  * Props for the WithdrawTokenInfoCard component
  */
 interface WithdrawTokenInfoCardProps {
 	/**
-	 * Token override for the card
+	 * Optional token to override the one from the store
 	 */
-	tokenOverride?: {
-		name: string;
-		symbol: string;
-		address: string;
-		iconUrl: string;
-		decimals: number;
-	} | null;
+	tokenOverride?: HstkToken | null;
 	/**
-	 * Exchange rate for the token
+	 * Exchange rate between token and rToken
+	 * @default 100
 	 */
-	exchangeRate?: string;
+	exchangeRate?: number;
 	/**
 	 * CSS class name for the card
 	 */
@@ -29,49 +23,31 @@ interface WithdrawTokenInfoCardProps {
 }
 
 /**
- * Default exchange rate
- */
-const DEFAULT_EXCHANGE_RATE = '1 HSTK = $1.00';
-
-/**
- * Component that displays token information in an accordion card
+ * Component that displays token exchange information in a card
  */
 const WithdrawTokenInfoCard: React.FC<WithdrawTokenInfoCardProps> = ({
 	tokenOverride,
-	exchangeRate = DEFAULT_EXCHANGE_RATE,
-	className = 'bg-card-secondary border-none',
+	exchangeRate = 100,
 }) => {
+	// Get token from store or use override if provided
 	const { token: storeToken } = useSupplyWithdrawForm();
 	const token = tokenOverride ?? storeToken;
 
-	// Memoize the header to prevent unnecessary re-renders
-	const cardHeader = useMemo(
-		() => (
+	return (
+		<div className='flex flex-col gap-3'>
 			<div className='flex flex-1 items-center justify-between'>
 				<Text.Regular12>1 r{token?.symbol}</Text.Regular12>
 				<Text.Regular12>
 					{exchangeRate} {token?.symbol}
 				</Text.Regular12>
 			</div>
-		),
-		[exchangeRate, token?.symbol]
-	);
-
-	// Don't render if there's no token
-	if (!token) return null;
-
-	return (
-		<CardAccordion
-			header={cardHeader}
-			className={className}
-			collapsible={false}>
 			<div className='flex items-center justify-between'>
 				<Text.Regular12>r{token?.symbol} minted(est)</Text.Regular12>
 				<Text.Regular12>
 					{exchangeRate} {token?.symbol}
 				</Text.Regular12>
 			</div>
-		</CardAccordion>
+		</div>
 	);
 };
 

@@ -5,6 +5,8 @@ import {
 	TableCell,
 	TableHeader,
 	TableRow,
+	TableNoData,
+	TableLoader,
 } from '@/components/ui/table';
 
 import { useBorrowContext } from '../../context/borrow.context';
@@ -15,7 +17,7 @@ import { Text } from '@/components/ui/typography/Text';
 
 function BorrowTable() {
 	const { tokens, tokenBalances } = useBorrowContext();
-	const { formatted } = tokenBalances;
+	const { formatted, isLoading } = tokenBalances;
 
 	return (
 		<div className='flex flex-col gap-6'>
@@ -33,7 +35,11 @@ function BorrowTable() {
 					</TableRow>
 				</TableHeader>
 				<TableBody>
-					{tokens.map((token) => (
+					{isLoading ? (
+						<TableLoader rowCount={3} colCount={5} />
+					) : tokens.length === 0 ? (
+						<TableNoData message="No borrow markets available" colSpan={5} />
+					) : tokens.map((token) => (
 						<TableRow key={token.address}>
 							<TableCell className='font-medium'>
 								<div className='flex items-center gap-3'>

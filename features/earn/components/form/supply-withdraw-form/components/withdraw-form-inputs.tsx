@@ -1,81 +1,167 @@
-'use client';
-import React, { useMemo } from 'react';
-import { Text } from '@/components/ui/typography/Text';
-import { Input } from '@/components/ui/input';
-import { Slider } from '@/components/ui/slider';
-import { useSupplyWithdrawForm } from '../../../../hooks/useSupplyWithdrawForm';
 import { Card } from '@/components/ui/card';
+import { CustomInput } from '@/components/ui/input';
+import { Slider } from '@/components/ui/slider';
+import { SingleSelect } from '@/components/ui/select/single-select';
+import { Text } from '@/components/ui/typography/Text';
+import { useWithdrawFormInputs } from '@/features/earn/hooks/useWithdrawFormInputs';
+import { SuppliedToken } from '@/types/web3/token.types';
+import Image from 'next/image';
+import React from 'react';
+import { Skeleton } from '@/components/ui/skeleton/skeleton';
+import { ArrowsClockwise } from '@phosphor-icons/react';
+import { Btn } from '@/components/ui/button';
 
 /**
  * Component for the withdraw form inputs
  */
-const WithdrawFormInputs: React.FC = () => {
-	const { amount, setAmount, token } = useSupplyWithdrawForm();
+function WithdrawFormInputs() {
+	const {
+		amount,
+		sliderPercentage,
+		token,
+		suppliedTokens,
+		handleAmountChange,
+		handleMaxClick,
+		handleSliderChange,
+		handleTokenChange,
+		handleRefreshBalance,
+		formattedWalletBalance,
+		walletBalanceLoading,
+		walletBalanceError,
+		isFormDisabled,
+	} = useWithdrawFormInputs();
 
-	// Calculate the percentage based on amount
-	const percentage = useMemo(() => {
-		if (!amount) return 0;
-		// This would be replaced with actual balance calculation
-		const maxAmount = 1000;
-		return Math.min(
-			Math.floor((parseFloat(amount) / maxAmount) * 100),
-			100
+	// Custom render function for token options
+	const renderTokenOption = (option: SuppliedToken, isSelected: boolean) => (
+		<div
+			className={`flex items-center gap-2 px-3 py-2 ${isSelected ? 'bg-primary/10' : 'hover:bg-muted'}`}>
+			<Image
+				src={option.iconUrl}
+				alt={option.symbol}
+				className='rounded-full'
+				width={18}
+				height={18}
+			/>
+			<Text.Regular14>{option.symbol}</Text.Regular14>
+		</div>
+	);
+
+	// Custom render function for selected token
+	const renderTokenValue = (selectedToken: SuppliedToken | null) => {
+		if (!selectedToken) return null;
+		return (
+			<div className='flex items-center gap-2'>
+				<Image
+					src={selectedToken.iconUrl}
+					alt={selectedToken.symbol}
+					className='rounded-full'
+					width={18}
+					height={18}
+				/>
+				<Text.Medium14>{selectedToken.symbol}</Text.Medium14>
+			</div>
 		);
-	}, [amount]);
-
-	// Handle slider change
-	const handleSliderChange = (value: number[]) => {
-		// This would be replaced with actual balance calculation
-		const maxAmount = 1000;
-		const newAmount = ((value[0] / 100) * maxAmount).toString();
-		setAmount(newAmount);
 	};
 
-	// Handle input change
-	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setAmount(e.target.value);
+	// Render wallet balance based on loading/error state
+	const renderWalletBalance = () => {
+		if (walletBalanceLoading) {
+			return <Skeleton className='h-4 w-24' />;
+		}
+
+		if (walletBalanceError) {
+			return (
+				<div className='flex items-center gap-1 text-destructive'>
+					<Text.Regular12>
+						Failed to load Wallet Balance
+					</Text.Regular12>
+					<button
+						onClick={handleRefreshBalance}
+						className='text-destructive hover:text-destructive/80'>
+						<ArrowsClockwise size={14} />
+					</button>
+				</div>
+			);
+		}
+
+		return (
+			<Text.Regular12 textColor={600}>
+				Wallet Balance: {formattedWalletBalance} {token?.symbol || ''}
+			</Text.Regular12>
+		);
 	};
 
 	return (
-		<Card className='flex flex-col gap-4 p-4'>
-			<div className='flex items-center justify-between'>
-				<Text.Regular14>Amount</Text.Regular14>
-				<Text.Regular14>
-					Available:{' '}
-					<span className='text-primary-500'>
-						1000 {token?.symbol}
-					</span>
-				</Text.Regular14>
-			</div>
-
-			<Input
-				value={amount}
-				onChange={handleInputChange}
-				placeholder='0.0'
-				type='number'
-				min='0'
-				step='0.01'
-				className='w-full'
-			/>
-
-			<div className='flex flex-col gap-1.5'>
-				<Slider
-					value={[percentage]}
-					onValueChange={handleSliderChange}
-					showTooltip
+		<div className='flex flex-col gap-5'>
+			<Card className='flex flex-col gap-3 px-6 py-4'>
+				<SingleSelect
+					label='Select Market'
+					options={suppliedTokens}
+					value={token}
+					valueKey='address'
+					labelKey='symbol'
+					placeholder='Select a token'
+					renderOption={renderTokenOption}
+					renderValue={renderTokenValue}
+					onChange={handleTokenChange}
+					className='border-none p-0 shadow-none ring-0'
 				/>
-
-				<div className='flex items-center justify-between'>
-					<Text.Regular10>0%</Text.Regular10>
-					<Text.Regular10>100%</Text.Regular10>
+			</Card>
+			<Card className='flex flex-col gap-6 p-6'>
+				<div className='flex flex-col gap-4'>
+					<Text.Regular12 textColor={500}>Amount</Text.Regular12>
+					<div className='flex items-center gap-1 justify-between'>
+						<div className='flex-1'>
+							<CustomInput.Amount
+								autoFocus
+								type='number'
+								value={amount}
+								onChange={handleAmountChange}
+								placeholder='00.00'
+								disabled={isFormDisabled}
+							/>
+						</div>
+						<div className='flex flex-col items-end flex-1'>
+							<Btn.Self
+								onClick={handleMaxClick}
+								className='text-link'
+								disabled={isFormDisabled}>
+								MAX
+							</Btn.Self>
+							<div className='flex items-center gap-1'>
+								{renderWalletBalance()}
+							</div>
+						</div>
+					</div>
 				</div>
-			</div>
-			<div className='flex items-center justify-between'>
-				<Text.Medium12>Available Supply</Text.Medium12>
-				<Text.Medium12>103.2 {token?.symbol}</Text.Medium12>
-			</div>
-		</Card>
+				<div className='flex gap-1 items-center'>
+					<Text.Regular12 textColor={600}>
+						Available supply:
+					</Text.Regular12>
+					<Text.Regular12>
+						{token?.availableSupply || 0} {token?.symbol || ''}
+					</Text.Regular12>
+				</div>
+				<div className='flex flex-col gap-2.5'>
+					<Slider
+						value={[sliderPercentage]}
+						max={100}
+						step={1}
+						onValueChange={handleSliderChange}
+						className='mt-1'
+						disabled={isFormDisabled}
+					/>
+					<div className='flex items-center justify-between'>
+						<Text.Regular10>0%</Text.Regular10>
+						<Text.Regular10>25%</Text.Regular10>
+						<Text.Regular10>50%</Text.Regular10>
+						<Text.Regular10>75%</Text.Regular10>
+						<Text.Regular10>100%</Text.Regular10>
+					</div>
+				</div>
+			</Card>
+		</div>
 	);
-};
+}
 
 export default WithdrawFormInputs;

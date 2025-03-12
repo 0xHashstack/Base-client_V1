@@ -1,5 +1,5 @@
 import { web3DataProvider } from '@/constant/config';
-import { HstkToken } from '@/types/web3/token.types';
+import { HstkToken, SuppliedToken } from '@/types/web3/token.types';
 import { create } from 'zustand';
 
 /**
@@ -8,6 +8,9 @@ import { create } from 'zustand';
 interface TokenState {
 	tokens: HstkToken[];
 	tokensMap: Record<string, HstkToken>;
+	suppliedTokens: SuppliedToken[];
+	suppliedTokensMap: Record<string, SuppliedToken>;
+	setSuppliedTokens: (tokens: SuppliedToken[]) => void;
 }
 
 /**
@@ -25,6 +28,9 @@ const staticState: TokenState = (() => {
 			},
 			{} as Record<string, HstkToken>
 		),
+		suppliedTokens: web3DataProvider.tokens(),
+		suppliedTokensMap: {},
+		setSuppliedTokens: () => {},
 	};
 })();
 
@@ -32,6 +38,18 @@ const staticState: TokenState = (() => {
  * Token store
  * Create a store with the static state
  */
-export const useTokenStore = create<TokenState>(() => ({
+export const useTokenStore = create<TokenState>((set) => ({
 	...staticState,
+	setSuppliedTokens: (tokens) => {
+		set({
+			suppliedTokens: tokens,
+			suppliedTokensMap: tokens.reduce(
+				(map, token) => {
+					map[token.address] = token;
+					return map;
+				},
+				{} as Record<string, HstkToken>
+			),
+		});
+	},
 }));

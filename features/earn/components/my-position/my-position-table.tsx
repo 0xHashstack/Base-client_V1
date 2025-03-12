@@ -7,6 +7,8 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
+	TableNoData,
+	TableLoader,
 } from '@/components/ui/table/index';
 import { Btn } from '@/components/ui/button';
 import { Text } from '@/components/ui/typography/Text';
@@ -18,18 +20,20 @@ import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
 import MyPositionQuickStat from '../common/my-position-quick-stat';
 import SupplyWithdrawForm from '../form/supply-withdraw-form';
 import SupplyForm from '../form/supply-form';
-import { HstkToken } from '@/types/web3';
+import { SuppliedToken } from '@/types/web3';
 
 function MyPositionsTable() {
-	const { tokens, tokenBalances } = useEarnContext();
-	const { formatted } = tokenBalances;
+	const { suppliedTokens: tokens } = useEarnContext();
 	const { openDrawer, setDrawerContent } = useEarnDrawer();
+
+	// Mock loading state - replace with actual loading state from your data fetching logic
+	const isLoading = false;
 
 	/**
 	 * Handle opening the supply form
 	 */
 	const handleOpenSupplyForm = useCallback(
-		(token: HstkToken) => {
+		(token: SuppliedToken) => {
 			setDrawerContent(<SupplyForm token={token} />);
 			openDrawer();
 		},
@@ -40,7 +44,7 @@ function MyPositionsTable() {
 	 * Handle opening the withdraw form
 	 */
 	const handleOpenWithdrawForm = useCallback(
-		(token: HstkToken) => {
+		(token: SuppliedToken) => {
 			setDrawerContent(<SupplyWithdrawForm token={token} />);
 			openDrawer();
 		},
@@ -63,52 +67,61 @@ function MyPositionsTable() {
 					</TableRow>
 				</TableHeader>
 				<TableBody>
-					{tokens.map((token) => (
-						<TableRow key={token.address}>
-							<TableCell className='font-medium'>
-								<div className='flex items-center gap-3'>
-									<ImageWithLoader
-										src={token.iconUrl}
-										alt={token.name}
-										width={20}
-										height={20}
-									/>
-									{token.name}
-								</div>
-							</TableCell>
-							<TableCell>{token.name}</TableCell>
-							<TableCell>
-								<HoverPopover
-									side='bottom'
-									content={
-										<TokenInfo
-											name={token.name}
-											address={token.address}
+					{isLoading ?
+						<TableLoader
+							rowCount={3}
+							colCount={4}
+						/>
+					: tokens.length === 0 ?
+						<TableNoData
+							message='No positions found'
+							colSpan={4}
+						/>
+					:	tokens.map((token) => (
+							<TableRow key={token.address}>
+								<TableCell className='font-medium'>
+									<div className='flex items-center gap-3'>
+										<ImageWithLoader
+											src={token.iconUrl}
+											alt={token.name}
+											width={20}
+											height={20}
 										/>
-									}>
-									<span>
-										{formatted?.[token.address] || '-'}
-									</span>
-								</HoverPopover>
-							</TableCell>
-							<TableCell className='w-[200px]'>
-								<div className='flex items-center gap-4'>
-									<Btn.Outline
-										onClick={() =>
-											handleOpenSupplyForm(token)
+										{token.name}
+									</div>
+								</TableCell>
+								<TableCell>{token.name}</TableCell>
+								<TableCell>
+									<HoverPopover
+										side='bottom'
+										content={
+											<TokenInfo
+												name={token.name}
+												address={token.address}
+											/>
 										}>
-										Add
-									</Btn.Outline>
-									<Btn.Secondary
-										onClick={() =>
-											handleOpenWithdrawForm(token)
-										}>
-										Withdraw
-									</Btn.Secondary>
-								</div>
-							</TableCell>
-						</TableRow>
-					))}
+										<span>0</span>
+									</HoverPopover>
+								</TableCell>
+								<TableCell className='w-[200px]'>
+									<div className='flex items-center gap-4'>
+										<Btn.Outline
+											onClick={() =>
+												handleOpenSupplyForm(token)
+											}>
+											Add
+										</Btn.Outline>
+										<Btn.Secondary
+											onClick={() =>
+												handleOpenWithdrawForm(token)
+											}>
+											Withdraw
+										</Btn.Secondary>
+									</div>
+								</TableCell>
+							</TableRow>
+						))
+					}
 				</TableBody>
 			</Table>
 		</div>

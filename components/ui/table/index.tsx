@@ -1,7 +1,10 @@
 import * as React from 'react';
-
 import { cn } from '@/lib/utils';
 import styles from './table.module.scss';
+
+// Import the new components
+import TableNoData from './table-no-data';
+import TableLoader from './table-loader';
 
 const Table = React.forwardRef<
 	HTMLTableElement,
@@ -113,6 +116,8 @@ const TableCaption = React.forwardRef<
 ));
 TableCaption.displayName = 'TableCaption';
 
+
+
 export {
 	Table,
 	TableHeader,
@@ -122,4 +127,6 @@ export {
 	TableRow,
 	TableCell,
 	TableCaption,
+	TableNoData,
+	TableLoader,
 };

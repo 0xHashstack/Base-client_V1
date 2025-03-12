@@ -7,7 +7,7 @@ import { useEarnDrawer } from '@/features/earn/context/earn-drawer.context';
  */
 function useEarnTable() {
 	const { tokens, tokenBalances } = useEarnContext();
-	const { formatted } = tokenBalances;
+	const { formatted, isLoading, isError } = tokenBalances;
 
 	// Use the earn drawer context instead of local state
 	const { isOpen: isEarnModalOpen, openDrawer: setIsEarnModalOpen } =
@@ -16,6 +16,8 @@ function useEarnTable() {
 	return {
 		tokens,
 		formatted,
+		isLoading,
+		isError,
 		isEarnModalOpen,
 		setIsEarnModalOpen,
 	};

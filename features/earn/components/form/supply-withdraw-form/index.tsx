@@ -1,14 +1,15 @@
 'use client';
 import React from 'react';
 import { Text } from '@/components/ui/typography/Text';
-import { ConnectedBtn } from '@/components/ui/button';
-import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
+import { Btn, ConnectedBtn } from '@/components/ui/button';
 import SideDrawer from '@/components/drawer/side-drawer';
 import { SupplyWithdrawFormContextProvider } from '../../../context/supply-withdraw-form.context';
 import { useSupplyWithdrawForm } from '../../../hooks/useSupplyWithdrawForm';
 import WithdrawFormInputs from './components/withdraw-form-inputs';
 import WithdrawTokenInfoCard from './components/withdraw-token-info-card';
 import WithdrawFormPriceBreakdownCard from './components/withdraw-form-price-breakdown-card';
+import { Card } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 
 interface SupplyWithdrawFormProps {
 	token: {
@@ -45,29 +46,21 @@ function SupplyWithdrawFormContent() {
 	return (
 		<>
 			<SideDrawer.Header>
-				<Text.Medium16>Withdraw {token.symbol}</Text.Medium16>
-				<button
+				<Text.Semibold20>Withdraw</Text.Semibold20>
+				<Btn.Outline
 					onClick={closeDrawer}
-					className='text-gray-500 hover:text-gray-700'>
+					className='text-primary-500 hover:text-gray-700 h-7 w-7 p-0'>
 					✕
-				</button>
+				</Btn.Outline>
 			</SideDrawer.Header>
 			<SideDrawer.Body>
 				<div className='flex-1 flex flex-col gap-4'>
-					<div className='flex items-center gap-2 mb-2'>
-						<ImageWithLoader
-							src={token.iconUrl}
-							alt={token.name}
-							width={24}
-							height={24}
-						/>
-						<Text.Regular16>{token.name}</Text.Regular16>
-					</div>
-
 					<WithdrawFormInputs />
-					<WithdrawTokenInfoCard />
-
-					<WithdrawFormPriceBreakdownCard />
+					<Card className='flex flex-col gap-3 p-6 bg-card-secondary'>
+						<WithdrawTokenInfoCard />
+						<Separator />
+						<WithdrawFormPriceBreakdownCard />
+					</Card>
 				</div>
 			</SideDrawer.Body>
 			<SideDrawer.Footer>

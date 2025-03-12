@@ -5,6 +5,8 @@ import {
 	TableCell,
 	TableHeader,
 	TableRow,
+	TableNoData,
+	TableLoader,
 } from '@/components/ui/table';
 import { useBorrowContext } from '../../context/borrow.context';
 import { currencyFormat } from '@/utils';
@@ -19,7 +21,11 @@ import {
 import { SpendCategory } from '@/types/web3/borrow.types';
 
 function MyDebtTable() {
-	const { tokens } = useBorrowContext();
+	const { tokens, tokenBalances } = useBorrowContext();
+	const { isLoading } = tokenBalances || {};
+	
+	// You can replace this with actual debt positions data
+	const debtPositions = [];
 
 	return (
 		<div className='flex flex-col gap-6'>
@@ -41,7 +47,11 @@ function MyDebtTable() {
 					</TableRow>
 				</TableHeader>
 				<TableBody>
-					{tokens.map((token) => {
+					{isLoading ? (
+						<TableLoader rowCount={3} colCount={7} />
+					) : debtPositions.length === 0 ? (
+						<TableNoData message="No debt positions found" colSpan={7} />
+					) : tokens.map((token) => {
 						return (
 							<TableRow key={token.address}>
 								<TableCell className='font-medium'>

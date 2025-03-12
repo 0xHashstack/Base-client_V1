@@ -1,4 +1,4 @@
-import { HstkToken } from '@/types/web3';
+import { SuppliedToken } from '@/types/web3';
 import { createContext, useContext, useRef, useEffect } from 'react';
 import { create, useStore } from 'zustand';
 
@@ -6,7 +6,7 @@ import { create, useStore } from 'zustand';
 interface SupplyWithdrawFormState {
 	amount: string;
 	isLoading: boolean;
-	token: HstkToken | null;
+	token: SuppliedToken | null;
 
 	// Actions
 	setAmount: (amount: string) => void;
@@ -37,10 +37,11 @@ const createSupplyWithdrawFormStore = (
 		setToken: (token) => set({ token }),
 		setIsLoading: (isLoading) => set({ isLoading }),
 		reset: () => set({ ...initialState, token: initialToken }),
-		resetStore: (newToken) => set({ 
-			...initialState, 
-			token: newToken !== undefined ? newToken : initialToken 
-		}),
+		resetStore: (newToken) =>
+			set({
+				...initialState,
+				token: newToken !== undefined ? newToken : initialToken,
+			}),
 	}));
 
 // Create a React context for the store
