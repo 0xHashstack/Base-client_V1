@@ -1,4 +1,5 @@
 import { Btn } from '@/components/ui/button';
+import { useBorrowDrawer } from '../../context/borrow-drawer.context';
 import PrimaryCard from '@/components/ui/card/primary-card';
 import { Text } from '@/components/ui/typography/Text';
 import { HstkToken } from '@/types/web3/token.types';
@@ -14,6 +15,7 @@ interface MyDebtCardProps {
 }
 
 function MyDebtCard({ token, amount, apy, healthFactor }: MyDebtCardProps) {
+	const { openDrawer } = useBorrowDrawer();
 	const cardData = useMemo<
 		{
 			title: string;
@@ -64,7 +66,12 @@ function MyDebtCard({ token, amount, apy, healthFactor }: MyDebtCardProps) {
 						</div>
 					))}
 				</div>
-				<Btn.Primary>Repay</Btn.Primary>
+				<div className='flex flex-col gap-2 w-full mt-2'>
+					<Btn.Primary>Repay</Btn.Primary>
+					<Btn.Secondary onClick={() => openDrawer()}>
+						Add Collateral
+					</Btn.Secondary>
+				</div>
 			</PrimaryCard.Body>
 		</PrimaryCard>
 	);

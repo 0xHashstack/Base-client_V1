@@ -9,6 +9,7 @@ import {
 	TableLoader,
 } from '@/components/ui/table';
 import { useBorrowContext } from '../../context/borrow.context';
+import { useBorrowDrawer } from '../../context/borrow-drawer.context';
 import { currencyFormat } from '@/utils';
 import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
 import MyDebtQuickStat from '../common/my-debt-quick-stat';
@@ -19,10 +20,22 @@ import {
 	HoverBorrowValueCard,
 } from '../card/hover-cards';
 import { SpendCategory } from '@/types/web3/borrow.types';
+import { HstkToken } from '@/types/web3';
+import BorrowAddCollateralForm from '../form/borrow-add-collateral-form';
+import { useCallback } from 'react';
 
 function MyDebtTable() {
 	const { tokens, tokenBalances } = useBorrowContext();
 	const { isLoading } = tokenBalances || {};
+	const { openDrawer, setDrawerContent } = useBorrowDrawer();
+
+	const handleAddCollateral = useCallback(
+		(token: HstkToken) => {
+			setDrawerContent(<BorrowAddCollateralForm token={token} />);
+			openDrawer();
+		},
+		[setDrawerContent, openDrawer]
+	);
 
 	return (
 		<div className='flex flex-col gap-6'>
@@ -118,7 +131,10 @@ function MyDebtTable() {
 										</HoverBorrowHealthCard>
 									</TableCell>
 									<TableCell className='w-[100px]'>
-										<Btn.Secondary>
+										<Btn.Secondary
+											onClick={() =>
+												handleAddCollateral(token)
+											}>
 											Add Collateral
 										</Btn.Secondary>
 									</TableCell>
