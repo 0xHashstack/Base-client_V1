@@ -86,10 +86,10 @@ function EarnTable() {
 							</TableCell>
 							<TableCell>{token.name}</TableCell>
 							<TableCell className='w-[100px]'>
-								<Btn.Primary
+								<Btn.Secondary
 									onClick={() => handleSupplyClick(token)}>
 									Supply
-								</Btn.Primary>
+								</Btn.Secondary>
 							</TableCell>
 						</TableRow>
 					))}

@@ -27,9 +27,16 @@ export default {
 					'900': 'hsl(var(--text-primary-900))',
 					DEFAULT: 'hsl(var(--text-primary-900))',
 				},
+				link: {
+					DEFAULT: 'hsl(var(--link))',
+				},
+
 				badge: {
 					success: 'hsl(var(--badge-success-text))',
 					secondary: 'hsl(var(--badge-secondary-text))',
+				},
+				placeholder: {
+					DEFAULT: 'hsl(var(--placeholder))',
 				},
 			},
 			borderColor: {

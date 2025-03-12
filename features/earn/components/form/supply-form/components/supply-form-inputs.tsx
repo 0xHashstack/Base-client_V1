@@ -9,6 +9,7 @@ import Image from 'next/image';
 import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton/skeleton';
 import { ArrowsClockwise } from '@phosphor-icons/react';
+import { Btn } from '@/components/ui/button';
 
 function SupplyFormInputs() {
 	const {
@@ -54,7 +55,7 @@ function SupplyFormInputs() {
 					width={18}
 					height={18}
 				/>
-				<Text.Regular14>{selectedToken.symbol}</Text.Regular14>
+				<Text.Medium14>{selectedToken.symbol}</Text.Medium14>
 			</div>
 		);
 	};
@@ -88,62 +89,66 @@ function SupplyFormInputs() {
 	};
 
 	return (
-		<Card className='flex flex-col gap-4 p-4'>
-			<SingleSelect
-				label='Token'
-				options={tokens}
-				value={token}
-				valueKey='address'
-				labelKey='symbol'
-				placeholder='Select a token'
-				renderOption={renderTokenOption}
-				renderValue={renderTokenValue}
-				onChange={handleTokenChange}
-			/>
-
-			<div className='flex flex-col gap-2'>
-				<Input
-					label='Amount'
-					type='number'
-					value={amount}
-					onChange={handleAmountChange}
-					placeholder='0.0'
-					disabled={isFormDisabled}
-					suffix={
-						<button
-							onClick={handleMaxClick}
-							className={`text-sm ${
-								isFormDisabled ?
-									'text-muted-foreground cursor-not-allowed'
-								:	'text-primary hover:underline'
-							}`}
-							disabled={isFormDisabled}>
-							MAX
-						</button>
-					}
+		<div className='flex flex-col gap-5'>
+			<Card className='flex flex-col gap-3 px-6 py-4'>
+				<SingleSelect
+					label='Select Market'
+					options={tokens}
+					value={token}
+					valueKey='address'
+					labelKey='symbol'
+					placeholder='Select a token'
+					renderOption={renderTokenOption}
+					renderValue={renderTokenValue}
+					onChange={handleTokenChange}
+					className='border-none p-0 shadow-none ring-0'
 				/>
-				<div className='flex justify-end flex-1'>
-					<div className='flex items-center gap-1'>
-						{renderWalletBalance()}
+			</Card>
+			<Card className='flex flex-col gap-6 p-6'>
+				<div className='flex flex-col gap-4'>
+					<Text.Regular12 textColor={500}>Amount</Text.Regular12>
+					<div className='flex items-center gap-1 justify-between'>
+						<div className='flex-1'>
+							<Input
+								autoFocus
+								type='number'
+								value={amount}
+								onChange={handleAmountChange}
+								placeholder='00.00'
+								disabled={isFormDisabled}
+								className='md:text-2xl'
+								parentClassName='p-0 border-none shadow-none focus-within:ring-0 '
+							/>
+						</div>
+						<div className='flex flex-col items-end flex-1'>
+							<Btn.Self
+								onClick={handleMaxClick}
+								className='text-link'
+								disabled={isFormDisabled}>
+								MAX
+							</Btn.Self>
+							<div className='flex items-center gap-1'>
+								{renderWalletBalance()}
+							</div>
+						</div>
 					</div>
 				</div>
-			</div>
-
-			<div className='flex flex-col gap-1.5'>
-				<Slider
-					value={[sliderPercentage]}
-					max={100}
-					step={1}
-					onValueChange={handleSliderChange}
-					className='mt-1'
-					disabled={isFormDisabled}
-				/>
-				<div className='flex items-center justify-between'>
-					<Text.Regular10>0%</Text.Regular10>
-					<Text.Regular10>100%</Text.Regular10>
+				<div className='flex flex-col gap-1.5'>
+					<Slider
+						value={[sliderPercentage]}
+						max={100}
+						step={1}
+						onValueChange={handleSliderChange}
+						className='mt-1'
+						disabled={isFormDisabled}
+					/>
+					<div className='flex items-center justify-between'>
+						<Text.Regular10>0%</Text.Regular10>
+						<Text.Regular10>100%</Text.Regular10>
+					</div>
 				</div>
-			</div>
-		</Card>
+			</Card>
+		</div>
 	);
 }
 

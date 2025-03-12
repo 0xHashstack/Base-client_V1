@@ -144,7 +144,7 @@ const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps<any>>(
 				)}
 
 				<div
-					className={cn('relative w-full', className)}
+					className={cn('relative w-full')}
 					{...props}>
 					{/* Select trigger */}
 					<div
@@ -152,7 +152,8 @@ const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps<any>>(
 							'flex items-center justify-between rounded-md border border-input shadow-sm px-3 h-9 gap-2 cursor-pointer',
 							isOpen && 'ring-1 ring-ring border-input',
 							disabled && 'opacity-50 cursor-not-allowed',
-							error && 'border-destructive'
+							error && 'border-destructive',
+							className
 						)}
 						onClick={toggleDropdown}>
 						{prefix}

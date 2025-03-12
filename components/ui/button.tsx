@@ -27,11 +27,13 @@ const buttonVariants = cva(
 					'bg-button-secondary text-button-secondary-text hover:bg-button-secondary/80',
 				ghost: 'hover:bg-accent hover:text-accent-foreground',
 				link: 'text-primary underline-offset-4 hover:underline',
+				self: 'px-0',
 			},
 			size: {
 				default: 'h-8 px-[16px] text-xs',
 				lg: 'h-10 rounded-md px-8',
 				icon: 'h-9 w-9',
+				self: 'w-fit h-fit',
 			},
 		},
 		defaultVariants: {
@@ -100,6 +102,7 @@ export const Btn = {
 	Link: createButtonVariant('link', 'default'),
 	Icon: createButtonVariant('primary', 'icon'),
 	Large: createButtonVariant('primary', 'lg'),
+	Self: createButtonVariant('self', 'self'),
 };
 
 type ConnectedBtnProps = ButtonProps & {

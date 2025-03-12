@@ -22,14 +22,22 @@ interface HeaderProps {
 	onClose?: () => void;
 	children?: React.ReactNode;
 	className?: string;
+	withBorder?: boolean;
 }
 
 // Header component for the SideDrawer
-function Header({ title, onClose, children, className }: HeaderProps) {
+function Header({
+	title,
+	onClose,
+	children,
+	className,
+	withBorder = false,
+}: HeaderProps) {
 	return (
 		<div
 			className={cn(
-				'flex items-center justify-between p-6 border-b',
+				'flex items-center justify-between p-6',
+				withBorder ? 'border-b' : '',
 				className
 			)}>
 			{children ?
@@ -58,7 +66,7 @@ function Body({
 	return (
 		<div
 			className={cn(
-				'flex-1 overflow-y-auto w-screen tablet:w-[min(80vw,var(--drawer-width))] p-6',
+				'flex-1 overflow-y-auto w-screen tablet:w-[min(80vw,var(--drawer-width))] px-6 py-2',
 				className
 			)}>
 			{children}
