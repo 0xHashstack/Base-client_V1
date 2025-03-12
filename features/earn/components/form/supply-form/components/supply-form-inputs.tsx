@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { CustomInput } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 import { SingleSelect } from '@/components/ui/select/single-select';
 import { Text } from '@/components/ui/typography/Text';
@@ -109,15 +109,13 @@ function SupplyFormInputs() {
 					<Text.Regular12 textColor={500}>Amount</Text.Regular12>
 					<div className='flex items-center gap-1 justify-between'>
 						<div className='flex-1'>
-							<Input
+							<CustomInput.Amount
 								autoFocus
 								type='number'
 								value={amount}
 								onChange={handleAmountChange}
 								placeholder='00.00'
 								disabled={isFormDisabled}
-								className='md:text-2xl'
-								parentClassName='p-0 border-none shadow-none focus-within:ring-0 '
 							/>
 						</div>
 						<div className='flex flex-col items-end flex-1'>

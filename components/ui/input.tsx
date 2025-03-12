@@ -85,4 +85,17 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 );
 Input.displayName = 'Input';
 
+export const CustomInput = {
+	Amount: ({ className, parentClassName, ...props }: InputProps) => (
+		<Input
+			className={cn('md:text-2xl', className)}
+			parentClassName={cn(
+				'p-0 border-none shadow-none focus-within:ring-0 ',
+				parentClassName
+			)}
+			{...props}
+		/>
+	),
+};
+
 export { Input };
