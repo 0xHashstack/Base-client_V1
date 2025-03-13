@@ -1,5 +1,9 @@
 import { web3DataProvider } from '@/constant/config';
-import { HstkToken, SuppliedToken } from '@/types/web3/token.types';
+import {
+	CollateralToken,
+	HstkToken,
+	SuppliedToken,
+} from '@/types/web3/token.types';
 import { create } from 'zustand';
 
 /**
@@ -10,7 +14,13 @@ interface TokenState {
 	tokensMap: Record<string, HstkToken>;
 	suppliedTokens: SuppliedToken[];
 	suppliedTokensMap: Record<string, SuppliedToken>;
+	collateralTokens: CollateralToken[];
+	collateralTokensMap: Record<string, CollateralToken>;
+	borrowMarketTokens: HstkToken[];
+	borrowMarketTokensMap: Record<string, HstkToken>;
 	setSuppliedTokens: (tokens: SuppliedToken[]) => void;
+	setCollateralTokens: (tokens: CollateralToken[]) => void;
+	setBorrowMarketTokens: (tokens: HstkToken[]) => void;
 }
 
 /**
@@ -30,7 +40,13 @@ const staticState: TokenState = (() => {
 		),
 		suppliedTokens: web3DataProvider.tokens(),
 		suppliedTokensMap: {},
+		collateralTokens: web3DataProvider.tokens(),
+		collateralTokensMap: {},
+		borrowMarketTokens: web3DataProvider.tokens(),
+		borrowMarketTokensMap: {},
 		setSuppliedTokens: () => {},
+		setCollateralTokens: () => {},
+		setBorrowMarketTokens: () => {},
 	};
 })();
 
@@ -44,6 +60,30 @@ export const useTokenStore = create<TokenState>((set) => ({
 		set({
 			suppliedTokens: tokens,
 			suppliedTokensMap: tokens.reduce(
+				(map, token) => {
+					map[token.address] = token;
+					return map;
+				},
+				{} as Record<string, HstkToken>
+			),
+		});
+	},
+	setCollateralTokens: (tokens) => {
+		set({
+			collateralTokens: tokens,
+			collateralTokensMap: tokens.reduce(
+				(map, token) => {
+					map[token.address] = token;
+					return map;
+				},
+				{} as Record<string, CollateralToken>
+			),
+		});
+	},
+	setBorrowMarketTokens: (tokens) => {
+		set({
+			borrowMarketTokens: tokens,
+			borrowMarketTokensMap: tokens.reduce(
 				(map, token) => {
 					map[token.address] = token;
 					return map;

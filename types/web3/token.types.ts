@@ -11,3 +11,7 @@ export type HstkToken = {
 export type SuppliedToken = HstkToken & {
 	availableSupply?: number;
 };
+
+export type CollateralToken = HstkToken & {
+	availableCollateral?: number;
+};

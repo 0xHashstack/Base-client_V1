@@ -8,14 +8,27 @@ import {
 	TableNoData,
 } from '@/components/ui/table';
 import { useBorrowContext } from '../../context/borrow.context';
+import { useBorrowDrawer } from '../../context/borrow-drawer.context';
 import BorrowQuickStat from '../common/borrow-quick-stat';
 import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
 import { currencyFormat } from '@/utils';
 import { Text } from '@/components/ui/typography/Text';
 import If from '@/components/common/If';
+import { useCallback } from 'react';
+import BorrowForm from '../form/borrow-form';
+import { CollateralToken } from '@/types/web3/token.types';
 
 function BorrowTable() {
 	const { tokens } = useBorrowContext();
+	const { openDrawer, setDrawerContent } = useBorrowDrawer();
+
+	const handleBorrow = useCallback(
+		(token: CollateralToken) => {
+			setDrawerContent(<BorrowForm token={token} />);
+			openDrawer();
+		},
+		[setDrawerContent, openDrawer]
+	);
 
 	return (
 		<div className='flex flex-col gap-6'>
@@ -59,7 +72,10 @@ function BorrowTable() {
 									<TableCell>80.00%</TableCell>
 									<TableCell>2.5%</TableCell>
 									<TableCell className='w-[100px]'>
-										<Btn.Secondary>Borrow</Btn.Secondary>
+										<Btn.Secondary
+											onClick={() => handleBorrow(token)}>
+											Borrow
+										</Btn.Secondary>
 									</TableCell>
 								</TableRow>
 							))}

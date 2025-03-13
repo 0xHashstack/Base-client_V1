@@ -83,7 +83,13 @@ function Footer({
 	className?: string;
 }) {
 	return (
-		<div className={cn('flex-shrink-0 p-6 border-t', className)}>
+		<div
+			className={cn('flex-shrink-0 p-6 border-t shadow-md', className)}
+			style={
+				{
+					'--tw-shadow': '0 -1px 2px 0 var(--shadow-base)',
+				} as React.CSSProperties
+			}>
 			{children}
 		</div>
 	);
@@ -122,10 +128,10 @@ function SideDrawer({
 			</If>
 			<div
 				className={cn(
-					'fixed laptop:sticky h-[90vh] tablet:h-screen  tablet:pt-header bg-popover shadow-xl transition-all duration-300 ease-in-out overflow-hidden  flex-shrink-0 flex flex-col z-20 tablet:z-0 w-screen',
+					'fixed laptop:sticky h-[90vh] tablet:h-screen  tablet:pt-header bg-popover shadow-sm transition-all duration-300 ease-in-out overflow-hidden  flex-shrink-0 flex flex-col z-20 tablet:z-0 w-screen',
 					' tablet:top-0 right-0 bottom-0 ',
 					'rounded-t-xl tablet:rounded-t-none',
-					'shadow-sm tablet:shadow-none',
+					'tablet:shadow-xl',
 					// desktop
 					!open ? 'tablet:w-0' : (
 						'tablet:w-[min(80vw,var(--drawer-width))]'
