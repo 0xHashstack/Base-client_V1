@@ -60,7 +60,9 @@ export default function SlidingTab<T>({
 			const activeTabElement = tabsRef.current[activeIndex];
 			if (activeTabElement) {
 				setIndicatorStyle({
-					left: activeTabElement.offsetLeft,
+					left:
+						activeTabElement.offsetLeft +
+						(activeIndex === 0 ? 4 : 0),
 					width: activeTabElement.offsetWidth,
 				});
 			}
@@ -75,7 +77,9 @@ export default function SlidingTab<T>({
 				const activeTabElement = tabsRef.current[activeIndex];
 				if (activeTabElement) {
 					setIndicatorStyle({
-						left: activeTabElement.offsetLeft,
+						left:
+							activeTabElement.offsetLeft +
+							(activeIndex === 0 ? 4 : 0),
 						width: activeTabElement.offsetWidth,
 					});
 				}
@@ -90,7 +94,7 @@ export default function SlidingTab<T>({
 		<div className={cn('relative flex rounded-lg p-1 bg-tab', className)}>
 			{/* Sliding indicator */}
 			<motion.div
-				className='absolute top-1 bottom-1 rounded-md z-0'
+				className='absolute top-1 bottom-1 rounded-md z-0 bg-tab-active border border-card'
 				initial={false}
 				animate={{
 					left: indicatorStyle.left,
@@ -100,9 +104,6 @@ export default function SlidingTab<T>({
 					type: 'spring',
 					stiffness: 300,
 					damping: 30,
-				}}
-				style={{
-					backgroundColor: 'hsl(var(--active-tab-bg))',
 				}}
 			/>
 
@@ -115,10 +116,8 @@ export default function SlidingTab<T>({
 							tabsRef.current[index] = el;
 						}}
 						className={cn(
-							'relative flex-1 px-4 py-2 text-sm font-medium z-10 transition-colors duration-200 rounded-md',
-							activeTab === tab.id ?
-								'text-gray-800 ' + (activeTabClassName || '')
-							:	'text-gray-600 hover:text-gray-800',
+							'relative flex-1 px-4 py-2 text-xs font-medium z-10 transition-colors duration-200 rounded-md',
+							activeTab === tab.id ? activeTabClassName : '',
 							tabClassName
 						)}
 						onClick={() => onChange(tab.id)}>

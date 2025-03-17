@@ -25,7 +25,6 @@ export default function BorrowSpendTabs() {
 				]}
 				activeTab={activeTab}
 				onChange={handleTabChange}
-				className='mb-4'
 			/>
 
 			{/* Tab Content */}
