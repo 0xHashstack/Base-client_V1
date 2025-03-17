@@ -8,8 +8,10 @@ import {
 	DIAMOND_ADDRESS_MAINNET,
 	DIAMOND_ADDRESS_TESTNET,
 } from '@/constant/web3';
+import { L3_DAPP } from '@/constant/web3/dapp.constant';
 import { SupportedChain } from '@/store/useWeb3.store';
 import { ChainNetwork } from '@/types/web3';
+import { L3Dapp } from '@/types/web3/dapp.types';
 import { http } from 'viem';
 import { base, baseSepolia } from 'viem/chains';
 
@@ -109,6 +111,10 @@ class Web3DataProvider {
 	 */
 	get diamondAddress(): string {
 		return this.config.diamondAddress;
+	}
+
+	get dapps(): L3Dapp[] {
+		return L3_DAPP;
 	}
 }
 

@@ -1,87 +1,144 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Text } from '@/components/ui/typography/Text';
+import { Select } from '@/components/ui/select';
 import { useBorrowSpendForm } from '../../../../hooks/useBorrowSpendForm';
-import { cn } from '@/lib/utils';
-import { HstkToken } from '@/types/web3/token.types';
+import SlidingTab from '@/components/ui/tabs/sliding-tab';
+
+import { useL3DappStore } from '@/store/useL3DappStore';
+import { L3Dapp, L3DappPool } from '@/types/web3/dapp.types';
 
 /**
  * Component for the borrow spend tabs (Liquidity Provisioning and Swap)
  */
 export default function BorrowSpendTabs() {
-	const { activeTab, handleTabChange, market } = useBorrowSpendForm();
+	const { activeTab, handleTabChange } = useBorrowSpendForm();
 
 	return (
-		<Card className='flex flex-col gap-4 px-6 py-4'>
+		<>
 			{/* Tab Headers */}
-			<div className='flex border-b'>
-				<button
-					className={cn(
-						'px-4 py-2 text-sm font-medium',
-						activeTab === 'liquidity'
-							? 'border-b-2 border-primary-500 text-primary-500'
-							: 'text-gray-500 hover:text-gray-700'
-					)}
-					onClick={() => handleTabChange('liquidity')}>
-					Liquidity Provisioning
-				</button>
-				<button
-					className={cn(
-						'px-4 py-2 text-sm font-medium',
-						activeTab === 'swap'
-							? 'border-b-2 border-primary-500 text-primary-500'
-							: 'text-gray-500 hover:text-gray-700'
-					)}
-					onClick={() => handleTabChange('swap')}>
-					Swap
-				</button>
-			</div>
+			<SlidingTab
+				tabs={[
+					{ id: 'liquidity', label: 'Liquidity provisioning' },
+					{ id: 'swap', label: 'Swap' },
+				]}
+				activeTab={activeTab}
+				onChange={handleTabChange}
+				className='mb-4'
+			/>
 
 			{/* Tab Content */}
 			<div className='flex flex-col gap-4'>
-				{activeTab === 'liquidity' ? (
-					<LiquidityProvisioningTab market={market} />
-				) : (
-					<SwapTab />
-				)}
+				{activeTab === 'liquidity' ?
+					<LiquidityProvisioningTab />
+				:	<SwapTab />}
 			</div>
-		</Card>
+		</>
 	);
 }
 
 /**
  * Liquidity Provisioning Tab Content
  */
-function LiquidityProvisioningTab({ market }: { market: HstkToken | null }) {
+function LiquidityProvisioningTab() {
+	const { dapps } = useL3DappStore();
+	const [selectedDapp, setSelectedDapp] = useState<L3Dapp | null>(null);
+	const [selectedPool, setSelectedPool] = useState<L3DappPool | null>(null);
+
+	// Render functions for dapp select
+	const renderDappOption = (option: L3Dapp, isSelected: boolean) => {
+		return (
+			<div
+				className={`flex items-center gap-2 px-3 py-2 ${isSelected ? 'bg-primary/10' : 'hover:bg-muted'}`}>
+				<Text.Regular14>{option.name}</Text.Regular14>
+			</div>
+		);
+	};
+
+	const renderSelectedDapp = (option: L3Dapp | null) => {
+		if (!option) return 'Select Dapp';
+		return (
+			<div className='flex items-start gap-2'>
+				<div className='flex flex-col'>
+					<Text.Medium14>{option.name}</Text.Medium14>
+				</div>
+			</div>
+		);
+	};
+
+	// Render functions for pool select
+	const renderPoolOption = (option: L3DappPool, isSelected: boolean) => {
+		return (
+			<div
+				className={`flex items-center gap-2 px-3 py-2 ${isSelected ? 'bg-primary/10' : 'hover:bg-muted'}`}>
+				<Text.Regular14>{option.name}</Text.Regular14>
+			</div>
+		);
+	};
+
+	const renderSelectedPool = (option: L3DappPool | null) => {
+		if (!option) return 'Select Market';
+		return (
+			<div className='flex items-start gap-2'>
+				<div className='flex flex-col'>
+					<Text.Medium14>{option.name}</Text.Medium14>
+				</div>
+			</div>
+		);
+	};
+
 	return (
 		<div className='flex flex-col gap-4'>
-			<Text.Medium16>Liquidity Provisioning</Text.Medium16>
-			
-			{market ? (
-				<>
-					<div className='flex justify-between'>
-						<Text.Regular14 className='text-gray-500'>Market</Text.Regular14>
-						<Text.Medium14>{market.symbol}</Text.Medium14>
+			{/* Dapp Selection */}
+			<Card className='flex flex-col gap-3 px-6 py-4'>
+				<Select.SingleSelect
+					label='Select Dapp'
+					options={dapps}
+					value={selectedDapp}
+					valueKey='key'
+					labelKey='name'
+					onChange={setSelectedDapp}
+					renderOption={renderDappOption}
+					renderValue={renderSelectedDapp}
+					className='border-none p-0 shadow-none ring-0'
+				/>
+			</Card>
+
+			{/* Pool Selection */}
+			<Card className='flex flex-col gap-3 px-6 py-4'>
+				<Select.SingleSelect
+					label='Select Pool'
+					options={selectedDapp?.pools || []}
+					value={selectedPool}
+					valueKey='key'
+					labelKey='name'
+					onChange={setSelectedPool}
+					renderOption={renderPoolOption}
+					renderValue={renderSelectedPool}
+					className='border-none p-0 shadow-none ring-0'
+					disabled={!selectedDapp}
+				/>
+			</Card>
+
+			{/* Fee Breakdown Card */}
+
+			<Card className='p-4 bg-gray-50'>
+				<div className='flex flex-col gap-3'>
+					<div className='flex items-center justify-between'>
+						<Text.Regular12>Fees</Text.Regular12>
+						<Text.Regular12>0.3%</Text.Regular12>
 					</div>
-					<div className='flex justify-between'>
-						<Text.Regular14 className='text-gray-500'>Fees</Text.Regular14>
-						<Text.Medium14>0.3%</Text.Medium14>
+					<div className='flex items-center justify-between'>
+						<Text.Regular12>APR</Text.Regular12>
+						<Text.Regular12>5.2%</Text.Regular12>
 					</div>
-					<div className='flex justify-between'>
-						<Text.Regular14 className='text-gray-500'>APR</Text.Regular14>
-						<Text.Medium14>5.2%</Text.Medium14>
+					<div className='flex items-center justify-between'>
+						<Text.Regular12>Total Liquidity</Text.Regular12>
+						<Text.Regular12>$1,245,678</Text.Regular12>
 					</div>
-					<div className='flex justify-between'>
-						<Text.Regular14 className='text-gray-500'>Total Liquidity</Text.Regular14>
-						<Text.Medium14>$1,245,678</Text.Medium14>
-					</div>
-				</>
-			) : (
-				<Text.Regular14 className='text-gray-500'>
-					Select a market to view liquidity provisioning details
-				</Text.Regular14>
-			)}
+				</div>
+			</Card>
 		</div>
 	);
 }
