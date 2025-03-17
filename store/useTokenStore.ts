@@ -18,9 +18,12 @@ interface TokenState {
 	collateralTokensMap: Record<string, CollateralToken>;
 	borrowMarketTokens: HstkToken[];
 	borrowMarketTokensMap: Record<string, HstkToken>;
+	borrowTokens: HstkToken[];
+	borrowTokensMap: Record<string, HstkToken>;
 	setSuppliedTokens: (tokens: SuppliedToken[]) => void;
 	setCollateralTokens: (tokens: CollateralToken[]) => void;
 	setBorrowMarketTokens: (tokens: HstkToken[]) => void;
+	setBorrowTokens: (tokens: HstkToken[]) => void;
 }
 
 /**
@@ -44,9 +47,12 @@ const staticState: TokenState = (() => {
 		collateralTokensMap: {},
 		borrowMarketTokens: web3DataProvider.tokens(),
 		borrowMarketTokensMap: {},
+		borrowTokens: web3DataProvider.tokens(),
+		borrowTokensMap: {},
 		setSuppliedTokens: () => {},
 		setCollateralTokens: () => {},
 		setBorrowMarketTokens: () => {},
+		setBorrowTokens: () => {},
 	};
 })();
 
@@ -84,6 +90,18 @@ export const useTokenStore = create<TokenState>((set) => ({
 		set({
 			borrowMarketTokens: tokens,
 			borrowMarketTokensMap: tokens.reduce(
+				(map, token) => {
+					map[token.address] = token;
+					return map;
+				},
+				{} as Record<string, HstkToken>
+			),
+		});
+	},
+	setBorrowTokens: (tokens) => {
+		set({
+			borrowTokens: tokens,
+			borrowTokensMap: tokens.reduce(
 				(map, token) => {
 					map[token.address] = token;
 					return map;

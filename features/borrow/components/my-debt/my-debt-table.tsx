@@ -22,6 +22,7 @@ import {
 import { SpendCategory } from '@/types/web3/borrow.types';
 import { HstkToken } from '@/types/web3';
 import BorrowAddCollateralForm from '../form/borrow-add-collateral-form';
+import BorrowSpendForm from '../form/borrow-spend-form';
 import { useCallback } from 'react';
 
 function MyDebtTable() {
@@ -32,6 +33,14 @@ function MyDebtTable() {
 	const handleAddCollateral = useCallback(
 		(token: HstkToken) => {
 			setDrawerContent(<BorrowAddCollateralForm token={token} />);
+			openDrawer();
+		},
+		[setDrawerContent, openDrawer]
+	);
+
+	const handleSpend = useCallback(
+		(token: HstkToken) => {
+			setDrawerContent(<BorrowSpendForm initialMarket={token} />);
 			openDrawer();
 		},
 		[setDrawerContent, openDrawer]
@@ -98,7 +107,12 @@ function MyDebtTable() {
 									<TableCell>
 										<div className='flex items-center gap-2'>
 											<Btn.Outline>Repay</Btn.Outline>
-											<Btn.Secondary>Spend</Btn.Secondary>
+											<Btn.Secondary
+												onClick={() =>
+													handleSpend(token)
+												}>
+												Spend
+											</Btn.Secondary>
 										</div>
 									</TableCell>
 									<TableCell>
