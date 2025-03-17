@@ -3,7 +3,6 @@ import {
 	Coin,
 	FileText,
 	Magnet,
-	Meteor,
 } from '@phosphor-icons/react';
 import { NavItem } from '../types';
 import { EXTERNAL_ROUTE, LOCAL_ROUTE } from '@/constant/routes/routes.constant';
@@ -14,11 +13,6 @@ export const SIDEBAR_NAV_ITEMS: NavItem[] = [
 		icon: <Magnet size={16} />,
 		title: 'Borrow',
 		href: LOCAL_ROUTE.BORROW.HOME,
-	},
-	{
-		icon: <Meteor size={16} />,
-		title: 'Migrate',
-		href: LOCAL_ROUTE.MIGRATE.HOME,
 	},
 ];
 
