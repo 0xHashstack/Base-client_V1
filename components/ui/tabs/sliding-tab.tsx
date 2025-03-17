@@ -94,7 +94,7 @@ export default function SlidingTab<T>({
 		<div className={cn('relative flex rounded-lg p-1 bg-tab', className)}>
 			{/* Sliding indicator */}
 			<motion.div
-				className='absolute top-1 bottom-1 rounded-md z-0 bg-tab-active border border-card'
+				className='absolute top-1 bottom-1 rounded-md z-0 bg-tab-active'
 				initial={false}
 				animate={{
 					left: indicatorStyle.left,
@@ -116,7 +116,7 @@ export default function SlidingTab<T>({
 							tabsRef.current[index] = el;
 						}}
 						className={cn(
-							'relative flex-1 px-4 py-2 text-xs font-medium z-10 transition-colors duration-200 rounded-md',
+							'relative flex-1 px-4 py-2.5 text-xs font-medium z-10 transition-colors duration-200 rounded-md',
 							activeTab === tab.id ? activeTabClassName : '',
 							tabClassName
 						)}

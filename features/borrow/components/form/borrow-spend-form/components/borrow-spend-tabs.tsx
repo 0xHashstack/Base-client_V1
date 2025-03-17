@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Text } from '@/components/ui/typography/Text';
 import { Select } from '@/components/ui/select';
@@ -8,6 +8,7 @@ import SlidingTab from '@/components/ui/tabs/sliding-tab';
 
 import { useL3DappStore } from '@/store/useL3DappStore';
 import { L3Dapp, L3DappPool } from '@/types/web3/dapp.types';
+import { Barricade } from '@phosphor-icons/react';
 
 /**
  * Component for the borrow spend tabs (Liquidity Provisioning and Swap)
@@ -87,6 +88,10 @@ function LiquidityProvisioningTab() {
 		);
 	};
 
+	useEffect(() => {
+		console.log(selectedDapp);
+	}, [selectedDapp]);
+
 	return (
 		<div className='flex flex-col gap-4'>
 			{/* Dapp Selection */}
@@ -97,7 +102,7 @@ function LiquidityProvisioningTab() {
 					value={selectedDapp}
 					valueKey='key'
 					labelKey='name'
-					onChange={setSelectedDapp}
+					onChange={(_, option) => setSelectedDapp(option)}
 					renderOption={renderDappOption}
 					renderValue={renderSelectedDapp}
 					className='border-none p-0 shadow-none ring-0'
@@ -112,7 +117,7 @@ function LiquidityProvisioningTab() {
 					value={selectedPool}
 					valueKey='key'
 					labelKey='name'
-					onChange={setSelectedPool}
+					onChange={(_, option) => setSelectedPool(option)}
 					renderOption={renderPoolOption}
 					renderValue={renderSelectedPool}
 					className='border-none p-0 shadow-none ring-0'
@@ -122,7 +127,7 @@ function LiquidityProvisioningTab() {
 
 			{/* Fee Breakdown Card */}
 
-			<Card className='p-4 bg-gray-50'>
+			<Card className='p-4 bg-card-secondary'>
 				<div className='flex flex-col gap-3'>
 					<div className='flex items-center justify-between'>
 						<Text.Regular12>Fees</Text.Regular12>
@@ -147,14 +152,18 @@ function LiquidityProvisioningTab() {
  */
 function SwapTab() {
 	return (
-		<div className='flex flex-col items-center justify-center py-8 gap-4'>
-			<div className='w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center'>
-				<Text.Medium24>🔄</Text.Medium24>
+		<Card className='flex flex-col bg-card-secondary p-4 border-none'>
+			<div className='flex gap-3 items-center'>
+				<div className='w-11 h-11 bg-card rounded-md border border-card flex items-center justify-center'>
+					<Barricade size={28} />
+				</div>
+				<div className='flex-1 flex flex-col gap-1'>
+					<Text.Semibold14>It will be live soon!</Text.Semibold14>
+					<Text.Regular12>
+						This feature is currently under development.
+					</Text.Regular12>
+				</div>
 			</div>
-			<Text.Medium16>Swap Feature</Text.Medium16>
-			<Text.Regular14 className='text-gray-500 text-center'>
-				This feature will be available soon. Stay tuned for updates!
-			</Text.Regular14>
-		</div>
+		</Card>
 	);
 }
