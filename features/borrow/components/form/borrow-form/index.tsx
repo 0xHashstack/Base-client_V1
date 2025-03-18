@@ -20,7 +20,9 @@ interface BorrowFormProps {
  */
 function BorrowForm({ token, initialBorrowMarket }: BorrowFormProps) {
 	return (
-		<BorrowFormContextProvider token={token} initialBorrowMarket={initialBorrowMarket}>
+		<BorrowFormContextProvider
+			token={token}
+			initialBorrowMarket={initialBorrowMarket}>
 			<BorrowFormContent />
 		</BorrowFormContextProvider>
 	);
@@ -31,8 +33,15 @@ function BorrowForm({ token, initialBorrowMarket }: BorrowFormProps) {
  */
 function BorrowFormContent() {
 	// Get handlers from the hook
-	const { handleBorrow, token, amount, borrowAmount, borrowMarket, closeDrawer, isLoading } =
-		useBorrowForm();
+	const {
+		handleBorrow,
+		token,
+		amount,
+		borrowAmount,
+		borrowMarket,
+		closeDrawer,
+		isLoading,
+	} = useBorrowForm();
 
 	// If token is not set, don't render anything
 	if (!token) return null;
@@ -58,12 +67,15 @@ function BorrowFormContent() {
 			<SideDrawer.Footer>
 				<ConnectedBtn.Primary
 					onClick={handleBorrow}
-					disabled={!amount || !borrowAmount || !borrowMarket || isLoading}
+					disabled={
+						!amount || !borrowAmount || !borrowMarket || isLoading
+					}
 					showConnectButton
 					parentWidth>
 					{isLoading ?
 						'Processing...'
-					:	`Borrow ${borrowAmount} ${borrowMarket?.symbol || ''} with ${token.symbol} Collateral`}
+					:	`Borrow ${borrowAmount} ${borrowMarket?.symbol || ''} with ${token.symbol} Collateral`
+					}
 				</ConnectedBtn.Primary>
 			</SideDrawer.Footer>
 		</>

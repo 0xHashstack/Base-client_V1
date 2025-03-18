@@ -173,7 +173,7 @@ const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps<any>>(
 
 					{/* Dropdown */}
 					{isOpen && (
-						<div className='absolute z-50 w-full mt-1 rounded-md border border-input bg-popover shadow-md max-h-60 overflow-auto select-none'>
+						<div className='absolute z-50 w-full mt-1 rounded-xl border border-input bg-popover shadow-md max-h-60 overflow-auto select-none p-1 flex flex-col gap-1'>
 							{options.length === 0 ?
 								<div className='py-2 px-3 text-muted-foreground text-sm'>
 									No options available
@@ -205,7 +205,7 @@ const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps<any>>(
 										<div
 											key={`${String(option[valueKey])}-${index}`}
 											className={cn(
-												'py-2 px-3 cursor-pointer hover:bg-accent',
+												'py-2 px-3 cursor-pointer hover:bg-accent rounded-md',
 												isSelected && 'bg-background'
 											)}
 											onClick={() =>

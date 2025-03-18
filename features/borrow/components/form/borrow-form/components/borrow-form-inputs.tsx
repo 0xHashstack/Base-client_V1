@@ -48,7 +48,7 @@ function BorrowFormInputs() {
 		isSelected: boolean
 	) => (
 		<div
-			className={`flex items-center gap-2 px-3 py-2 ${isSelected ? 'bg-primary/10' : 'hover:bg-muted'}`}>
+			className={`flex items-center gap-2 px-3 py-2 ${isSelected ? 'bg-primary/10' : 'hover:bg-muted'} rounded-lg`}>
 			<Image
 				src={option.iconUrl}
 				alt={option.symbol}

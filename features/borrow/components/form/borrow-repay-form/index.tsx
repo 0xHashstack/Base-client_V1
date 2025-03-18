@@ -9,6 +9,7 @@ import BorrowRepayFormInputs from './components/borrow-repay-form-inputs';
 import BorrowRepayPriceBreakdownCard from './components/borrow-repay-price-breakdown-card';
 import { Card } from '@/components/ui/card';
 import { HstkToken } from '@/types/web3/token.types';
+import BorrowRepayDetailsCard from './components/borrow-repay-details-card';
 
 interface BorrowRepayFormProps {
 	token: HstkToken;
@@ -49,6 +50,8 @@ function BorrowRepayFormContent() {
 			<SideDrawer.Body>
 				<div className='flex-1 flex flex-col gap-4'>
 					<BorrowRepayFormInputs />
+					<BorrowRepayDetailsCard />
+
 					<Card className='flex flex-col gap-3 p-6 bg-card-secondary'>
 						<BorrowRepayPriceBreakdownCard />
 					</Card>
