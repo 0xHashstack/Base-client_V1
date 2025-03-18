@@ -29,15 +29,20 @@ function BorrowSpendForm({ initialMarket }: BorrowSpendFormProps) {
  */
 function BorrowSpendFormContent() {
 	// Get handlers from the hook
-	const { market, activeTab, isLoading, handleLiquidityProvision } =
-		useBorrowSpendForm();
+	const {
+		market,
+		activeTab,
+		isLoading,
+		handleLiquidityProvision,
+		closeDrawer,
+	} = useBorrowSpendForm();
 
 	return (
 		<>
 			<SideDrawer.Header>
 				<Text.Semibold20>Spend</Text.Semibold20>
 				<Btn.Outline
-					onClick={() => {}}
+					onClick={closeDrawer}
 					className='text-primary-500 hover:text-gray-700 h-7 w-7 p-0'>
 					✕
 				</Btn.Outline>

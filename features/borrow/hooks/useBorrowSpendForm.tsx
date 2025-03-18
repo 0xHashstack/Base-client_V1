@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { useBorrowSpendFormStore } from '../store/borrow-spend-form.store';
 import { useTokenStore } from '@/store/useTokenStore';
 import { HstkToken } from '@/types/web3/token.types';
+import { useBorrowDrawer } from '../context/borrow-drawer.context';
 
 /**
  * Hook to handle the borrow spend form functionality
@@ -18,22 +19,31 @@ export function useBorrowSpendForm() {
 	const setActiveTab = useBorrowSpendFormStore((state) => state.setActiveTab);
 	const reset = useBorrowSpendFormStore((state) => state.reset);
 
+	// Get drawer context functions
+	const { closeDrawer } = useBorrowDrawer();
+
 	// Get available borrow tokens from the token store
 	const borrowTokens = useTokenStore((state) => state.borrowTokens);
 
 	/**
 	 * Handle market change
 	 */
-	const handleMarketChange = useCallback((market: HstkToken) => {
-		setMarket(market);
-	}, [setMarket]);
+	const handleMarketChange = useCallback(
+		(market: HstkToken) => {
+			setMarket(market);
+		},
+		[setMarket]
+	);
 
 	/**
 	 * Handle tab change
 	 */
-	const handleTabChange = useCallback((tab: 'liquidity' | 'swap') => {
-		setActiveTab(tab);
-	}, [setActiveTab]);
+	const handleTabChange = useCallback(
+		(tab: 'liquidity' | 'swap') => {
+			setActiveTab(tab);
+		},
+		[setActiveTab]
+	);
 
 	/**
 	 * Handle liquidity provision submission
@@ -72,5 +82,6 @@ export function useBorrowSpendForm() {
 		handleTabChange,
 		handleLiquidityProvision,
 		reset,
+		closeDrawer,
 	};
 }

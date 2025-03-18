@@ -42,12 +42,12 @@ function EarnDrawerRenderer() {
 		<EarnDrawerProvider.Consumer>
 			{({ isOpen, closeDrawer, drawerContent }) => (
 				<SideDrawer
-					open={isOpen}
+					open={isOpen && drawerContent !== null}
 					setOpen={(open) => {
 						if (!open) closeDrawer();
 					}}
 					hideHeader>
-					{drawerContent}
+					{drawerContent || null}
 				</SideDrawer>
 			)}
 		</EarnDrawerProvider.Consumer>

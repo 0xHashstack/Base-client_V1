@@ -3,7 +3,6 @@ import React, { ReactNode } from 'react';
 import { BorrowDrawerProvider } from '@/features/borrow/context/borrow-drawer.context';
 import SideDrawer from '@/components/drawer/side-drawer';
 import { BorrowProvider } from '../context/borrow.context';
-import BorrowAddCollateralForm from './form/borrow-add-collateral-form';
 
 interface BorrowWrapperProps {
 	children: ReactNode;
@@ -43,23 +42,12 @@ function BorrowDrawerRenderer() {
 		<BorrowDrawerProvider.Consumer>
 			{({ isOpen, closeDrawer, drawerContent }) => (
 				<SideDrawer
-					open={isOpen}
+					open={isOpen && drawerContent !== null}
 					setOpen={(open) => {
 						if (!open) closeDrawer();
 					}}
 					hideHeader>
-					{drawerContent || (
-						<BorrowAddCollateralForm
-							token={{
-								name: 'Ethereum',
-								symbol: 'ETH',
-								address: '0x123',
-								decimals: 18,
-								iconUrl: '/images/tokens/eth.svg',
-								availableCollateral: 1.5,
-							}}
-						/>
-					)}
+					{drawerContent || null}
 				</SideDrawer>
 			)}
 		</BorrowDrawerProvider.Consumer>
