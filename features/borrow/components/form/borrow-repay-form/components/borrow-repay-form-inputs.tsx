@@ -108,7 +108,7 @@ function BorrowRepayFormInputs() {
 					placeholder='Select a token'
 					renderOption={renderTokenOption}
 					renderValue={renderTokenValue}
-					onChange={handleTokenChange}
+					onChange={(_, value) => handleTokenChange(value)}
 					className='border-none p-0 shadow-none ring-0'
 				/>
 			</Card>
@@ -117,27 +117,28 @@ function BorrowRepayFormInputs() {
 					<Text.Regular12 textColor={500}>
 						Repay Amount
 					</Text.Regular12>
-					<div className='flex items-center gap-1 justify-between'>
-						<div className='flex-1'>
-							<CustomInput.Amount
-								autoFocus
-								type='number'
-								value={amount}
-								onChange={handleAmountChange}
-								placeholder='00.00'
-								disabled={isFormDisabled}
-							/>
-						</div>
-						<div className='flex flex-col items-end flex-1'>
+					<div className='flex w-full flex-col items-end'>
+						<div className='flex items-center gap-1 justify-between w-full'>
+							<div className='flex-1'>
+								<CustomInput.Amount
+									autoFocus
+									type='number'
+									value={amount}
+									onChange={handleAmountChange}
+									placeholder={`00.00 ${token?.symbol || ''}`}
+									disabled={isFormDisabled}
+								/>
+							</div>
+
 							<Btn.Self
 								onClick={handleMaxClick}
 								className='text-link'
 								disabled={isFormDisabled}>
 								MAX
 							</Btn.Self>
-							<div className='flex items-center gap-1'>
-								{renderWalletBalance()}
-							</div>
+						</div>
+						<div className='flex items-center gap-1'>
+							{renderWalletBalance()}
 						</div>
 					</div>
 				</div>
