@@ -63,6 +63,7 @@ export default {
 				foreground: 'hsl(var(--foreground))',
 				header: {
 					DEFAULT: 'hsl(var(--primary-header))',
+					active: 'hsl(var(--primary-header-active))',
 				},
 				button: {
 					primary: {

@@ -61,7 +61,7 @@ function HeaderNav() {
 		<div className='relative flex items-center gap-3'>
 			{/* Sliding indicator */}
 			<motion.div
-				className='absolute top-0 bottom-0 rounded-md bg-background z-0'
+				className='absolute top-0 bottom-0 rounded-md bg-header-active z-0'
 				initial={false}
 				animate={{
 					left: indicatorStyle.left,
@@ -84,7 +84,7 @@ function HeaderNav() {
 						}}
 						href={item.href}
 						className={cn(
-							'relative text-[13px] text-primary-900 px-[20px] py-[10px] rounded-md hover:bg-background/50 transition-colors z-10',
+							'relative text-[13px] text-primary-900 px-[20px] py-[10px] rounded-md hover:bg-header-active transition-colors z-10',
 							{
 								'font-medium': isActive,
 							}
