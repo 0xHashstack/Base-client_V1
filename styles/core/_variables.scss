@@ -3,10 +3,12 @@
 		--background: 240 5% 96%;
 		--foreground: 240 10% 4%;
 		--card: 0 0% 100%;
-		--card-secondary: 0 0% 98%;
+		--card-secondary: 0 0% 100%;
 		--card-foreground: 240 10% 3.9%;
+		--card-bold: 0 0% 98%;
 		--popover: 0 0% 100%;
 		--popover-foreground: 240 10% 3.9%;
+		--hover-popover: 0 0% 100%;
 		--primary: 240 5.9% 10%;
 		--primary-foreground: 0 0% 98%;
 		--secondary: 240 4.8% 95.9%;
@@ -28,7 +30,7 @@
 		--radius: 0.5rem;
 		--sidebar-bg: 0 0% 100%;
 		--primary-1: 235 100% 58%;
-		--link: 235 100% 58%;
+		--link: 240 10% 4%;
 		--placeholder: 240 6% 90%;
 
 		// typography
@@ -41,27 +43,27 @@
 		--active-tab-bg: 0 0% 100%;
 
 		//border
-
 		--border-header: 0 0% 91%;
-		--border-table: var(--border);
+		--border-table: 240 5% 96%;
 		--border-tab: 0 0% 91%;
 		--border-popup: var(--border);
 		--border-form: 240 6% 90%;
 		--border-card: 240 6% 90%;
+		--border-quick-stat: 240 5% 96%;
 
 		// rainbowkit
 		--rk-background: 0 0% 100%;
 		--rk-foreground: 0 0% 0%;
 
 		// button
-		--primary-button: 0 0% 98%;
-		--primary-button-text: 240 10% 4%;
-		--secondary-button: 240 5% 90%;
-		--secondary-button-text: 240 6% 10%;
-		--outline-button-border: 240 6% 90%;
-		--outline-button-text: 240 6% 10%;
-		--wallet-connect-button: 235 100% 58%;
-		--wallet-connect-button-text: 0 0% 100%;
+		--primary-button: 240 10% 4%;
+		--primary-button-text: 0 0% 98%;
+		--secondary-button: 240 5% 96%;
+		--secondary-button-text: 240 10% 4%;
+		--outline-button-border: 240 5% 90%;
+		--outline-button-text: 240 10% 4%;
+		--wallet-connect-button: 230 100% 60%;
+		--wallet-connect-button-text: 0 0% 98%;
 
 		// table
 		--table-bg: 0 0% 100%;
@@ -91,8 +93,8 @@
 		--shadow-base: #0000000d;
 
 		// slider
-		--slider-bg: 235 100% 58%;
-		--slider-thumb: 235 100% 58%;
+		--slider-bg: 240 10% 4%;
+		--slider-thumb: 240 10% 4%;
 
 		// sizes
 		--max-section-width: 1110px;
@@ -101,10 +103,14 @@
 	[data-theme-id='dark'] {
 		--background: 240 10% 4%;
 		--foreground: 0 0% 98%;
-		--card: 240 10% 3.9%;
+		--card: 240 6% 10%;
+		--card-secondary: 240 10% 4%;
 		--card-foreground: 0 0% 98%;
+		--card-bold: 240 4% 16%;
 		--popover: 240 6% 10%;
 		--popover-foreground: 0 0% 98%;
+		--hover-popover: 240 10% 4%;
+
 		--primary: 0 0% 98%;
 		--primary-foreground: 240 5.9% 10%;
 		--secondary: 240 3.7% 15.9%;
@@ -115,7 +121,7 @@
 		--accent-foreground: 0 0% 98%;
 		--destructive: 0 62.8% 30.6%;
 		--destructive-foreground: 0 0% 98%;
-		--border: 240 6% 10%;
+		--border: 240 4% 16%;
 		--input: 240 3.7% 15.9%;
 		--ring: 240 4.9% 83.9%;
 		--chart-1: 220 70% 50%;
@@ -124,6 +130,7 @@
 		--chart-4: 280 65% 60%;
 		--chart-5: 340 75% 55%;
 		--sidebar-bg: 0 0% 0%;
+		--link: 0, 0%, 98%;
 		--placeholder: 240 3% 35%;
 
 		// typography
@@ -136,10 +143,14 @@
 		--active-tab-bg: 0 0% 0%;
 
 		//border
-		--border-header: 0 0% 91%;
+		--border-header: 240 4% 16%;
+		--border-table: 240 6% 10%;
+		--border-card: 240 4% 16%;
+		--border-quick-stat: 240 6% 10%;
+		--border-popup: 240 4% 16%;
 
 		// header
-		--primary-header: 250 4% 16%;
+		--primary-header: 240 10% 4%;
 
 		// Shimmer colors
 		--shimmer-base: 0 0% 94%;
@@ -162,5 +173,19 @@
 		--bade-error-text: 222 47% 11%;
 		--badge-positive: 139 51% 52%;
 		--badge-positive-text: 222 47% 11%;
+
+		// button
+		--primary-button: 0 0% 98%;
+		--primary-button-text: 240 10% 4%;
+		--secondary-button: 240 4% 16%;
+		--secondary-button-text: 0 0% 98%;
+		--outline-button-border: 240 4% 16%;
+		--outline-button-text: 0 0% 98%;
+		--wallet-connect-button: 230 100% 60%;
+		--wallet-connect-button-text: 0 0% 98%;
+
+		// slider
+		--slider-bg: 0 0% 98%;
+		--slider-thumb: 0 0% 98%;
 	}
 }

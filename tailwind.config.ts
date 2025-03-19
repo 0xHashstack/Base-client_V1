@@ -46,6 +46,7 @@ export default {
 				popup: 'hsl(var(--border-popup))',
 				form: 'hsl(var(--border-form))',
 				card: 'hsl(var(--border-card))',
+				'quick-stat': 'hsl(var(--border-quick-stat))',
 			},
 			height: {
 				header: 'var(--header-height)',
@@ -85,10 +86,12 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))',
 					secondary: 'hsl(var(--card-secondary))',
+					bold: 'hsl(var(--card-bold))',
 				},
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',
 					foreground: 'hsl(var(--popover-foreground))',
+					hover: 'hsl(var(--hover-popover))',
 				},
 				primary: {
 					'1': 'hsl(var(--primary-1))',

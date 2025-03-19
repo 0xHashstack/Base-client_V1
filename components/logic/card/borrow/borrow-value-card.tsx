@@ -60,7 +60,7 @@ function BorrowValueCard({
 	]);
 
 	return (
-		<div className='flex flex-col gap-4 bg-card'>
+		<div className='flex flex-col gap-4'>
 			<div className='flex items-start justify-between gap-2'>
 				<div className='flex flex-col gap-1'>
 					<Text.Regular12 textColor={500}>

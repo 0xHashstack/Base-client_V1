@@ -47,7 +47,7 @@ export function HoverPopover({
 			</PopoverTrigger>
 			<PopoverContent
 				className={cn(
-					'border border-popup shadow-lg',
+					'border border-popup shadow-lg bg-popover-hover',
 					removePadding ? 'p-0' : 'p-4',
 					contentClassName
 				)}

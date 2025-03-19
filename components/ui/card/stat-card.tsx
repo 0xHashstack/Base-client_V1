@@ -22,7 +22,7 @@ export function StatCard({
 	return (
 		<div
 			className={cn(
-				'flex items-center gap-3 rounded-md py-3 px-4 bg-card',
+				'flex items-center gap-3 rounded-md py-3 px-4 bg-card-secondary border border-quick-stat',
 				className
 			)}
 			{...props}>

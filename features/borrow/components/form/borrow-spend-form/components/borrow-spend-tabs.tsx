@@ -50,7 +50,7 @@ function LiquidityProvisioningTab() {
 	const renderDappOption = (option: L3Dapp, isSelected: boolean) => {
 		return (
 			<div
-				className={`flex items-center gap-2 px-3 py-2 ${isSelected ? 'bg-primary/10' : 'hover:bg-muted'}`}>
+				className={`flex items-center gap-2 px-3 py-2 ${isSelected ? 'bg-primary/10' : 'hover:bg-muted'} rounded-lg`}>
 				<Text.Regular14>{option.name}</Text.Regular14>
 			</div>
 		);
@@ -71,7 +71,7 @@ function LiquidityProvisioningTab() {
 	const renderPoolOption = (option: L3DappPool, isSelected: boolean) => {
 		return (
 			<div
-				className={`flex items-center gap-2 px-3 py-2 ${isSelected ? 'bg-primary/10' : 'hover:bg-muted'}`}>
+				className={`flex items-center gap-2 px-3 py-2 ${isSelected ? 'bg-primary/10' : 'hover:bg-muted'} rounded-lg`}>
 				<Text.Regular14>{option.name}</Text.Regular14>
 			</div>
 		);
@@ -127,7 +127,7 @@ function LiquidityProvisioningTab() {
 
 			{/* Fee Breakdown Card */}
 
-			<Card className='p-4 bg-card-secondary'>
+			<Card className='p-4 bg-card-bold'>
 				<div className='flex flex-col gap-3'>
 					<div className='flex items-center justify-between'>
 						<Text.Regular12>Fees</Text.Regular12>
@@ -152,7 +152,7 @@ function LiquidityProvisioningTab() {
  */
 function SwapTab() {
 	return (
-		<Card className='flex flex-col bg-card-secondary p-4 border-none'>
+		<Card className='flex flex-col bg-card-bold p-4 border-none'>
 			<div className='flex gap-3 items-center'>
 				<div className='w-11 h-11 bg-card rounded-md border border-card flex items-center justify-center'>
 					<Barricade size={28} />

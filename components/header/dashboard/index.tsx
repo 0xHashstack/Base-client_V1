@@ -1,7 +1,7 @@
 'use client';
 
 import HstkLogo from '@/components/logo/hstk-logo';
-import HeaderNotification from './components/header-notification';
+import ThemeToggleButton from './components/theme-toggle-button';
 import Web3ConnectButton from '@/components/web3/button/connect-button';
 import HeaderNav from './components/header-nav';
 import SidebarToggleButton from '@/components/sidebar/components/sidebar-toggle-button';
@@ -22,7 +22,7 @@ function DashboardHeader() {
 				</div>
 			</div>
 			<div className='flex items-center gap-4'>
-				<HeaderNotification />
+				<ThemeToggleButton />
 				<Web3ConnectButton />
 			</div>
 		</header>

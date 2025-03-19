@@ -52,7 +52,7 @@ function BorrowRepayFormContent() {
 					<BorrowRepayFormInputs />
 					<BorrowRepayDetailsCard />
 
-					<Card className='flex flex-col gap-3 p-6 bg-card-secondary'>
+					<Card className='flex flex-col gap-3 p-6 bg-card-bold'>
 						<BorrowRepayPriceBreakdownCard />
 					</Card>
 				</div>

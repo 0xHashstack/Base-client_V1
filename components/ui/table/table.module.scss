@@ -5,6 +5,7 @@
 	&.primary {
 		background: hsl(var(--table-bg));
 		border-radius: 12px;
+		border: 1px solid hsl(var(--border-table));
 		thead {
 			tr:hover {
 				background: none !important;

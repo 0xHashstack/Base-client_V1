@@ -59,7 +59,7 @@ function BorrowFormContent() {
 			<SideDrawer.Body>
 				<div className='flex-1 flex flex-col gap-4'>
 					<BorrowFormInputs />
-					<Card className='flex flex-col gap-3 p-6 bg-card-secondary'>
+					<Card className='flex flex-col gap-3 p-6 bg-card-bold'>
 						<BorrowPriceBreakdownCard />
 					</Card>
 				</div>

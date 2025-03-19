@@ -56,7 +56,7 @@ function SupplyWithdrawFormContent() {
 			<SideDrawer.Body>
 				<div className='flex-1 flex flex-col gap-4'>
 					<WithdrawFormInputs />
-					<Card className='flex flex-col gap-3 p-6 bg-card-secondary'>
+					<Card className='flex flex-col gap-3 p-6 bg-card-bold'>
 						<WithdrawTokenInfoCard />
 						<Separator />
 						<WithdrawFormPriceBreakdownCard />
