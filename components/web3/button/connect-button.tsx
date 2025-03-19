@@ -86,7 +86,7 @@ const ConnectedActionArea = ({
 }) => {
 	return (
 		<div
-			className='flex bg-background h-8 items-center justify-center cursor-pointer rounded-md  px-2 gap-2'
+			className='flex bg-rk h-8 items-center justify-center cursor-pointer rounded-md  px-2 gap-2'
 			onClick={openAccountModal}>
 			<If isTrue={chain.hasIcon && chain.iconUrl}>
 				<ImageWithLoader

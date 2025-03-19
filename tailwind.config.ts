@@ -128,9 +128,7 @@ export default {
 					'4': 'hsl(var(--chart-4))',
 					'5': 'hsl(var(--chart-5))',
 				},
-				sidebar: {
-					bg: 'hsl(var(--sidebar-bg))',
-				},
+
 				tab: {
 					DEFAULT: 'hsl(var(--tab-bg))',
 					active: 'hsl(var(--active-tab-bg))',
@@ -142,6 +140,9 @@ export default {
 				slider: {
 					bg: 'hsl(var(--slider-bg))',
 					thumb: 'hsl(var(--slider-thumb))',
+				},
+				rk: {
+					DEFAULT: 'hsl(var(--rk-connect-area))',
 				},
 			},
 			borderRadius: {

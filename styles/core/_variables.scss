@@ -28,7 +28,6 @@
 		--chart-4: 43 74% 66%;
 		--chart-5: 27 87% 67%;
 		--radius: 0.5rem;
-		--sidebar-bg: 0 0% 100%;
 		--primary-1: 235 100% 58%;
 		--link: 240 10% 4%;
 		--placeholder: 240 6% 90%;
@@ -54,6 +53,7 @@
 		// rainbowkit
 		--rk-background: 0 0% 100%;
 		--rk-foreground: 0 0% 0%;
+		--rk-connect-area: 0 0% 96%;
 
 		// button
 		--primary-button: 240 10% 4%;
@@ -130,7 +130,6 @@
 		--chart-3: 30 80% 55%;
 		--chart-4: 280 65% 60%;
 		--chart-5: 340 75% 55%;
-		--sidebar-bg: 0 0% 0%;
 		--link: 0, 0%, 98%;
 		--placeholder: 240 3% 35%;
 
@@ -159,8 +158,9 @@
 		--shimmer-highlight: 0 0% 89%;
 
 		// rainbowkit
-		--rk-background: 240 4% 16%;
+		--rk-background: 240 6% 10%;
 		--rk-foreground: 0 0% 98%;
+		--rk-connect-area: 240 6% 10%;
 
 		// table
 		--table-bg: 240 10% 4%;
