@@ -115,6 +115,7 @@ export const withWalletConnection = <P extends ConnectedBtnProps>(
 ) => {
 	const WithWalletConnection = ({
 		showConnectButton = false,
+		size = 'lg',
 		...props
 	}: P) => {
 		const { isConnected } = useAccount();
@@ -134,7 +135,7 @@ export const withWalletConnection = <P extends ConnectedBtnProps>(
 							)}>
 							<Component
 								{...props}
-								size={'lg'}
+								size={size}
 								disabled={!isConnected || props.disabled}
 							/>
 						</div>

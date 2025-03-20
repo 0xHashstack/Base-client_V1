@@ -8,6 +8,7 @@ export const LOCAL_ROUTE = {
 	MIGRATE: {
 		HOME: '/migrate',
 	},
+	FAUCET: '/faucet',
 };
 
 export const EXTERNAL_ROUTE = {

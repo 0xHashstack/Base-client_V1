@@ -72,6 +72,13 @@ class Web3DataProvider {
 	}
 
 	/**
+	 * Check if current network is testnet
+	 */
+	get isTestnet(): boolean {
+		return this.currentNetwork === ChainNetwork.TESTNET;
+	}
+
+	/**
 	 * Get the RPC URL for the current network
 	 */
 	get rpcURL(): string {

@@ -4,6 +4,7 @@ import { HSTK_THEME_KEY } from '@/constant/config';
 import { HstkTheme } from '@/types/ui/theme.types';
 import { useSetCookie } from 'cookies-next/client';
 import { createContext, useContext, useState } from 'react';
+import { Toaster } from 'sonner';
 
 interface ThemeAndLanguageContext {
 	theme: HstkTheme;
@@ -45,6 +46,11 @@ export const ThemeAndLanguageProvider = ({
 				data-theme-id={theme}
 				className={`hstk-theme antialiased`}>
 				{children}
+				<Toaster
+					theme={theme}
+					closeButton
+					duration={4000}
+				/>
 			</body>
 		</ThemeAndLanguageContext.Provider>
 	);

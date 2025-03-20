@@ -63,7 +63,6 @@ function MyPositionsTable() {
 						<TableHead>Market</TableHead>
 						<TableHead>Value</TableHead>
 						<TableHead>APR</TableHead>
-						<TableHead>Actions</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
@@ -107,15 +106,15 @@ function MyPositionsTable() {
 									<div className='flex items-center gap-4'>
 										<Btn.Outline
 											onClick={() =>
-												handleOpenSupplyForm(token)
-											}>
-											Add
-										</Btn.Outline>
-										<Btn.Secondary
-											onClick={() =>
 												handleOpenWithdrawForm(token)
 											}>
 											Withdraw
+										</Btn.Outline>
+										<Btn.Secondary
+											onClick={() =>
+												handleOpenSupplyForm(token)
+											}>
+											Add
 										</Btn.Secondary>
 									</div>
 								</TableCell>
