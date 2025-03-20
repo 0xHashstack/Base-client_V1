@@ -134,6 +134,7 @@ export const withWalletConnection = <P extends ConnectedBtnProps>(
 							)}>
 							<Component
 								{...props}
+								size={'lg'}
 								disabled={!isConnected || props.disabled}
 							/>
 						</div>
