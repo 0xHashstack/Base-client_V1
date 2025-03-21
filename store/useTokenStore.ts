@@ -1,4 +1,3 @@
-import { web3DataProvider } from '@/constant/config';
 import {
 	CollateralToken,
 	HstkToken,
@@ -31,23 +30,16 @@ interface TokenState {
  * Initialize with tokens and create a map of tokens by address
  */
 const staticState: TokenState = (() => {
-	const tokens = web3DataProvider.tokens();
 	return {
-		tokens,
-		tokensMap: tokens.reduce(
-			(map, token) => {
-				map[token.address] = token;
-				return map;
-			},
-			{} as Record<string, HstkToken>
-		),
-		suppliedTokens: web3DataProvider.tokens(),
+		tokens: [],
+		tokensMap: {},
+		suppliedTokens: [],
 		suppliedTokensMap: {},
-		collateralTokens: web3DataProvider.tokens(),
+		collateralTokens: [],
 		collateralTokensMap: {},
-		borrowMarketTokens: web3DataProvider.tokens(),
+		borrowMarketTokens: [],
 		borrowMarketTokensMap: {},
-		borrowTokens: web3DataProvider.tokens(),
+		borrowTokens: [],
 		borrowTokensMap: {},
 		setSuppliedTokens: () => {},
 		setCollateralTokens: () => {},
