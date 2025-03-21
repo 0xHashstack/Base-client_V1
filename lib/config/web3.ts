@@ -4,13 +4,17 @@ import {
 	WALLET_CONNECT_PROJECT_ID,
 } from '@/constant/config';
 import {
+	BASESCAN_SEPOLIA_TX_URL,
+	BASESCAN_TX_URL,
+} from '@/constant/config/urls.constant';
+import {
 	CHAIN_TOKEN_MAP,
 	DIAMOND_ADDRESS_MAINNET,
 	DIAMOND_ADDRESS_TESTNET,
 } from '@/constant/web3';
 import { L3_DAPP } from '@/constant/web3/dapp.constant';
 import { SupportedChain } from '@/store/useWeb3.store';
-import { ChainNetwork } from '@/types/web3';
+import { ChainNetwork, Web3Address } from '@/types/web3';
 import { L3Dapp } from '@/types/web3/dapp.types';
 import { http } from 'viem';
 import { base, baseSepolia } from 'viem/chains';
@@ -122,6 +126,12 @@ class Web3DataProvider {
 
 	get dapps(): L3Dapp[] {
 		return L3_DAPP;
+	}
+
+	viewInExplorer(hash: Web3Address) {
+		return (
+			(this.isMainnet ? BASESCAN_TX_URL : BASESCAN_SEPOLIA_TX_URL) + hash
+		);
 	}
 }
 

@@ -20,6 +20,8 @@ import { Web3Address } from '@/types/web3';
 import { FaucetToken, useFaucetStore } from '@/store/useFaucetStore';
 import TokenUtil from '@/lib/config/token';
 import erc20ABI from '@abi/erc_20.abi.json';
+import { Abi } from 'viem';
+import { useCurrentTransactionStore } from '@/store/useCurrentTransactionStore';
 
 function FaucetView() {
 	const config = useConfig();
@@ -101,31 +103,50 @@ interface TokenRowProps {
 
 function TokenRow({ token }: TokenRowProps) {
 	const { address } = useAccount();
-	const { writeContractAsync, isPending } = useWriteContract();
+	const { writeContractAsync, isPending, isError, error } =
+		useWriteContract();
 	const { setMintingToken, mintingTokens } = useFaucetStore();
+	const { setTransaction } = useCurrentTransactionStore();
 	const isMinting = mintingTokens[token.address];
+
+	// Show error message when transaction fails to submit
+	useEffect(() => {
+		if (isError && error) {
+			console.error('Error calling requestTokens:', error);
+			toast.error(`Failed to mint ${token.name}. Please try again.`);
+			setMintingToken(token.address, false);
+		}
+	}, [isError, error, token.name, setMintingToken, token.address]);
 
 	// Handle minting tokens using the contract's requestTokens method
 	const handleMintClick = async () => {
+		// Set minting state
+		setMintingToken(token.address, true);
+
 		try {
 			// Call the contract's requestTokens method
-			setMintingToken(token.address, true);
-
-			await writeContractAsync({
-				address: token.address as `0x${string}`,
-				abi: erc20ABI,
+			const txHash = await writeContractAsync({
+				address: token.address as Web3Address,
+				abi: erc20ABI as Abi,
 				functionName: 'requestTokens',
 				account: address,
 			});
 
-			// Call the parent's onMint callback to update the UI
-			toast.success(
-				`${token.name} tokens have been minted to your wallet.`
-			);
+			if (txHash) {
+				// Set transaction in the store for monitoring
+				setTransaction({
+					hash: txHash,
+					successToastMessage: `${token.name} tokens minted successfully.`,
+					onSuccess: () => setMintingToken(token.address, false),
+					onError: () => setMintingToken(token.address, false),
+				});
+
+				// Show initial info toast
+				toast.info(`${token.name} tokens minting started.`);
+			}
 		} catch (error) {
-			console.error('Error calling requestTokens:', error);
+			console.error('Error initiating transaction:', error);
 			toast.error(`Failed to mint ${token.name}. Please try again.`);
-		} finally {
 			setMintingToken(token.address, false);
 		}
 	};
@@ -144,7 +165,11 @@ function TokenRow({ token }: TokenRowProps) {
 					size='default'
 					onClick={handleMintClick}
 					disabled={isMinting || isPending}>
-					{isMinting || isPending ? 'Minting...' : 'Mint'}
+					{isPending ?
+						'Processing...'
+					: isMinting ?
+						'Minting...'
+					:	'Mint'}
 				</ConnectedBtn.Primary>
 			</TableCell>
 		</TableRow>

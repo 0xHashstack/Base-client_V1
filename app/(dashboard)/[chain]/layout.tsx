@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { SUPPORTED_CHAINS } from '@/constant/config';
 import { SupportedChain } from '@/store/useWeb3.store';
 import { DappUserProvider } from '@/context/user-data.context';
+import { TransactionStatusListener } from '@/components/transaction/transaction-status-listener';
 
 async function layout({
 	children,
@@ -18,7 +19,12 @@ async function layout({
 		notFound();
 	}
 
-	return <DappUserProvider>{children}</DappUserProvider>;
+	return (
+		<DappUserProvider>
+			<TransactionStatusListener />
+			{children}
+		</DappUserProvider>
+	);
 }
 
 export default layout;
