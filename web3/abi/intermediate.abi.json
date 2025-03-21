@@ -1,0 +1,645 @@
+[
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_diamond",
+				"type": "address"
+			},
+			{ "internalType": "address", "name": "_pricer", "type": "address" },
+			{
+				"internalType": "address",
+				"name": "_interestRate",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "requester",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "dataType",
+				"type": "string"
+			}
+		],
+		"name": "DataRequested",
+		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "diamond",
+		"outputs": [
+			{ "internalType": "address", "name": "", "type": "address" }
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "tokenAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "walletAddress",
+				"type": "address"
+			}
+		],
+		"name": "getFreeRTokens",
+		"outputs": [
+			{ "internalType": "uint256", "name": "", "type": "uint256" }
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getSupplyMarketOverview",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "marketDeposit",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "marketApr",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct SupplyDataAggregator.MarketOverview",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "tokenAddress",
+				"type": "address"
+			}
+		],
+		"name": "getSupplyVaultDetails",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "totalSupply",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "totalAssets",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "totalUniqueSuppliers",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "incentiveAccruedInterest",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "supplyInterestRate",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "exchangeRate",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "walletAddress",
+				"type": "address"
+			}
+		],
+		"name": "getUserSupply",
+		"outputs": [
+			{
+				"components": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "address_",
+								"type": "address"
+							},
+							{
+								"components": [
+									{
+										"internalType": "address",
+										"name": "address_",
+										"type": "address"
+									},
+									{
+										"internalType": "string",
+										"name": "name",
+										"type": "string"
+									},
+									{
+										"internalType": "string",
+										"name": "logoURI",
+										"type": "string"
+									},
+									{
+										"internalType": "uint8",
+										"name": "decimals",
+										"type": "uint8"
+									},
+									{
+										"internalType": "uint256",
+										"name": "priceUSD",
+										"type": "uint256"
+									},
+									{
+										"internalType": "string",
+										"name": "symbol",
+										"type": "string"
+									}
+								],
+								"internalType": "struct SupplyDataAggregator.AssetInfo",
+								"name": "asset",
+								"type": "tuple"
+							},
+							{
+								"components": [
+									{
+										"internalType": "uint256",
+										"name": "totalSupply",
+										"type": "uint256"
+									},
+									{
+										"internalType": "uint256",
+										"name": "totalAssets",
+										"type": "uint256"
+									},
+									{
+										"internalType": "uint256",
+										"name": "totalAssetsUsd",
+										"type": "uint256"
+									},
+									{
+										"internalType": "uint256",
+										"name": "annualApy",
+										"type": "uint256"
+									}
+								],
+								"internalType": "struct SupplyDataAggregator.SupplyStateData",
+								"name": "state",
+								"type": "tuple"
+							},
+							{
+								"internalType": "uint256",
+								"name": "walletBalance",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "userAssetValue",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct SupplyDataAggregator.SupplyMarketData[]",
+						"name": "markets",
+						"type": "tuple[]"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalSuppliedValueUsd",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "weightedNetApy",
+						"type": "uint256"
+					},
+					{
+						"components": [
+							{
+								"components": [
+									{
+										"internalType": "address",
+										"name": "address_",
+										"type": "address"
+									},
+									{
+										"internalType": "string",
+										"name": "name",
+										"type": "string"
+									},
+									{
+										"internalType": "string",
+										"name": "logoURI",
+										"type": "string"
+									},
+									{
+										"internalType": "uint8",
+										"name": "decimals",
+										"type": "uint8"
+									},
+									{
+										"internalType": "uint256",
+										"name": "priceUSD",
+										"type": "uint256"
+									},
+									{
+										"internalType": "string",
+										"name": "symbol",
+										"type": "string"
+									}
+								],
+								"internalType": "struct SupplyDataAggregator.AssetInfo",
+								"name": "supplyAsset",
+								"type": "tuple"
+							},
+							{
+								"components": [
+									{
+										"internalType": "address",
+										"name": "address_",
+										"type": "address"
+									},
+									{
+										"internalType": "string",
+										"name": "name",
+										"type": "string"
+									},
+									{
+										"internalType": "string",
+										"name": "logoURI",
+										"type": "string"
+									},
+									{
+										"internalType": "uint8",
+										"name": "decimals",
+										"type": "uint8"
+									},
+									{
+										"internalType": "uint256",
+										"name": "priceUSD",
+										"type": "uint256"
+									},
+									{
+										"internalType": "string",
+										"name": "symbol",
+										"type": "string"
+									}
+								],
+								"internalType": "struct SupplyDataAggregator.AssetInfo",
+								"name": "underlyingAsset",
+								"type": "tuple"
+							},
+							{
+								"internalType": "uint256",
+								"name": "suppliedAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "marketValue",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "receiptTokens",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "exchangeRate",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "yieldRate",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "effectiveYield",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct SupplyDataAggregator.SupplyPosition[]",
+						"name": "supplyPositions",
+						"type": "tuple[]"
+					}
+				],
+				"internalType": "struct SupplyDataAggregator.UserSupplyData",
+				"name": "userData",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address[]",
+				"name": "tokenAddresses",
+				"type": "address[]"
+			},
+			{
+				"internalType": "address",
+				"name": "walletAddress",
+				"type": "address"
+			}
+		],
+		"name": "getUserSupplyMarketData",
+		"outputs": [
+			{
+				"components": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "address_",
+								"type": "address"
+							},
+							{
+								"components": [
+									{
+										"internalType": "address",
+										"name": "address_",
+										"type": "address"
+									},
+									{
+										"internalType": "string",
+										"name": "name",
+										"type": "string"
+									},
+									{
+										"internalType": "string",
+										"name": "logoURI",
+										"type": "string"
+									},
+									{
+										"internalType": "uint8",
+										"name": "decimals",
+										"type": "uint8"
+									},
+									{
+										"internalType": "uint256",
+										"name": "priceUSD",
+										"type": "uint256"
+									},
+									{
+										"internalType": "string",
+										"name": "symbol",
+										"type": "string"
+									}
+								],
+								"internalType": "struct SupplyDataAggregator.AssetInfo",
+								"name": "asset",
+								"type": "tuple"
+							},
+							{
+								"components": [
+									{
+										"internalType": "uint256",
+										"name": "totalSupply",
+										"type": "uint256"
+									},
+									{
+										"internalType": "uint256",
+										"name": "totalAssets",
+										"type": "uint256"
+									},
+									{
+										"internalType": "uint256",
+										"name": "totalAssetsUsd",
+										"type": "uint256"
+									},
+									{
+										"internalType": "uint256",
+										"name": "annualApy",
+										"type": "uint256"
+									}
+								],
+								"internalType": "struct SupplyDataAggregator.SupplyStateData",
+								"name": "state",
+								"type": "tuple"
+							},
+							{
+								"internalType": "uint256",
+								"name": "walletBalance",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "userAssetValue",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct SupplyDataAggregator.SupplyMarketData[]",
+						"name": "markets",
+						"type": "tuple[]"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalSuppliedValueUsd",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "weightedNetApy",
+						"type": "uint256"
+					},
+					{
+						"components": [
+							{
+								"components": [
+									{
+										"internalType": "address",
+										"name": "address_",
+										"type": "address"
+									},
+									{
+										"internalType": "string",
+										"name": "name",
+										"type": "string"
+									},
+									{
+										"internalType": "string",
+										"name": "logoURI",
+										"type": "string"
+									},
+									{
+										"internalType": "uint8",
+										"name": "decimals",
+										"type": "uint8"
+									},
+									{
+										"internalType": "uint256",
+										"name": "priceUSD",
+										"type": "uint256"
+									},
+									{
+										"internalType": "string",
+										"name": "symbol",
+										"type": "string"
+									}
+								],
+								"internalType": "struct SupplyDataAggregator.AssetInfo",
+								"name": "supplyAsset",
+								"type": "tuple"
+							},
+							{
+								"components": [
+									{
+										"internalType": "address",
+										"name": "address_",
+										"type": "address"
+									},
+									{
+										"internalType": "string",
+										"name": "name",
+										"type": "string"
+									},
+									{
+										"internalType": "string",
+										"name": "logoURI",
+										"type": "string"
+									},
+									{
+										"internalType": "uint8",
+										"name": "decimals",
+										"type": "uint8"
+									},
+									{
+										"internalType": "uint256",
+										"name": "priceUSD",
+										"type": "uint256"
+									},
+									{
+										"internalType": "string",
+										"name": "symbol",
+										"type": "string"
+									}
+								],
+								"internalType": "struct SupplyDataAggregator.AssetInfo",
+								"name": "underlyingAsset",
+								"type": "tuple"
+							},
+							{
+								"internalType": "uint256",
+								"name": "suppliedAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "marketValue",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "receiptTokens",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "exchangeRate",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "yieldRate",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "effectiveYield",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct SupplyDataAggregator.SupplyPosition[]",
+						"name": "supplyPositions",
+						"type": "tuple[]"
+					}
+				],
+				"internalType": "struct SupplyDataAggregator.UserSupplyData",
+				"name": "userData",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "interestRate",
+		"outputs": [
+			{ "internalType": "address", "name": "", "type": "address" }
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "pricer",
+		"outputs": [
+			{ "internalType": "address", "name": "", "type": "address" }
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address[]",
+				"name": "vaults",
+				"type": "address[]"
+			}
+		],
+		"name": "setKnownSupplyVaults",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "tokenAddress",
+				"type": "address"
+			},
+			{ "internalType": "string", "name": "name", "type": "string" },
+			{ "internalType": "string", "name": "symbol", "type": "string" },
+			{ "internalType": "uint8", "name": "decimals", "type": "uint8" },
+			{ "internalType": "string", "name": "logoURI", "type": "string" }
+		],
+		"name": "setTokenMetadata",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]
