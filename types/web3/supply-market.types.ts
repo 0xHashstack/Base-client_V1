@@ -85,3 +85,13 @@ export interface UserSupplyData {
 	/** Array of user's supply positions */
 	supplyPositions: SupplyPosition[];
 }
+
+/**
+ * Supply market quick overview data
+ */
+export interface SupplyMarketQuickOverview {
+	/** Total deposit as a bigint */
+	marketApr: bigint;
+	/** Average APR as a bigint */
+	marketDeposit: bigint;
+}

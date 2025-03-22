@@ -5,6 +5,7 @@ import {
 } from '@/types/web3/token.types';
 import {
 	SupplyMarketData,
+	SupplyMarketQuickOverview,
 	SupplyPosition,
 	UserSupplyData,
 } from '@/types/web3/supply-market.types';
@@ -31,10 +32,12 @@ interface TokenState {
 	userSupplyPositions: SupplyPosition[];
 	totalSuppliedValueUsd: bigint;
 	weightedNetApy: bigint;
+	supplyMarketQuickOverview: SupplyMarketQuickOverview;
 
 	// Loading states
 	isLoadingSupplyMarket: boolean;
 	isLoadingBorrowMarket: boolean;
+	isLoadingSupplyMarketOverview: boolean;
 
 	// Actions
 	setSuppliedTokens: (tokens: SuppliedToken[]) => void;
@@ -44,6 +47,8 @@ interface TokenState {
 	setSupplyMarketData: (data: UserSupplyData) => void;
 	setSupplyMarketLoading: (isLoading: boolean) => void;
 	setBorrowMarketLoading: (isLoading: boolean) => void;
+	setSupplyMarketOverview: (data: SupplyMarketQuickOverview) => void;
+	setSupplyMarketOverviewLoading: (isLoading: boolean) => void;
 	resetMarketData: () => void;
 }
 
@@ -70,10 +75,14 @@ const staticState: TokenState = (() => {
 		userSupplyPositions: [],
 		totalSuppliedValueUsd: BigInt(0),
 		weightedNetApy: BigInt(0),
-
+		supplyMarketQuickOverview: {
+			marketApr: BigInt(0),
+			marketDeposit: BigInt(0),
+		},
 		// Loading states
 		isLoadingSupplyMarket: false,
 		isLoadingBorrowMarket: false,
+		isLoadingSupplyMarketOverview: false,
 
 		// Actions
 		setSuppliedTokens: () => {},
@@ -83,6 +92,8 @@ const staticState: TokenState = (() => {
 		setSupplyMarketData: () => {},
 		setSupplyMarketLoading: () => {},
 		setBorrowMarketLoading: () => {},
+		setSupplyMarketOverview: () => {},
+		setSupplyMarketOverviewLoading: () => {},
 		resetMarketData: () => {},
 	};
 })();
@@ -164,6 +175,19 @@ export const useTokenStore = create<TokenState>((set) => ({
 		set({ isLoadingBorrowMarket: isLoading });
 	},
 
+	// Set market overview data
+	setSupplyMarketOverview: (data: SupplyMarketQuickOverview) => {
+		set({
+			supplyMarketQuickOverview: data,
+			isLoadingSupplyMarketOverview: false,
+		});
+	},
+
+	// Set market overview loading state
+	setSupplyMarketOverviewLoading: (isLoading: boolean) => {
+		set({ isLoadingSupplyMarketOverview: isLoading });
+	},
+
 	// Reset market data
 	resetMarketData: () => {
 		set({
@@ -171,8 +195,13 @@ export const useTokenStore = create<TokenState>((set) => ({
 			userSupplyPositions: [],
 			totalSuppliedValueUsd: BigInt(0),
 			weightedNetApy: BigInt(0),
+			supplyMarketQuickOverview: {
+				marketApr: BigInt(0),
+				marketDeposit: BigInt(0),
+			},
 			isLoadingSupplyMarket: false,
 			isLoadingBorrowMarket: false,
+			isLoadingSupplyMarketOverview: false,
 		});
 	},
 }));

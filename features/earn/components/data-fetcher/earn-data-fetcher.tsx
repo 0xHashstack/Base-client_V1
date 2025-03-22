@@ -6,7 +6,10 @@ import {
 	web3DataProvider,
 } from '@/constant/config/web3-config.constant';
 import { useTokenStore } from '@/store/useTokenStore';
-import { UserSupplyData } from '@/types/web3/supply-market.types';
+import {
+	SupplyMarketQuickOverview,
+	UserSupplyData,
+} from '@/types/web3/supply-market.types';
 import { useDappUser } from '@/context/user-data.context';
 import { FALLBACK_USER_ADDRESS } from '@/constant/web3';
 
@@ -18,7 +21,12 @@ const EarnDataFetcher: React.FC = () => {
 	const { address = FALLBACK_USER_ADDRESS } = useDappUser();
 
 	// Get token store actions
-	const { setSupplyMarketData, setSupplyMarketLoading } = useTokenStore();
+	const {
+		setSupplyMarketData,
+		setSupplyMarketLoading,
+		setSupplyMarketOverview: setMarketOverview,
+		setSupplyMarketOverviewLoading: setMarketOverviewLoading,
+	} = useTokenStore();
 
 	// Call getUserSupplyMarketData from the intermediate contract
 	const {
@@ -38,19 +46,40 @@ const EarnDataFetcher: React.FC = () => {
 		},
 	});
 
-	// Update loading state when fetching starts
+	// Call getSupplyMarketOverview from the intermediate contract
+	const {
+		data: marketOverviewData,
+		isLoading: isLoadingMarketOverview,
+		isError: isMarketOverviewError,
+		refetch: refetchMarketOverview,
+	} = useReadContract({
+		...intermediateContract.getContractConfig(
+			'getSupplyMarketOverview',
+			[]
+		),
+		query: {
+			refetchOnWindowFocus: false,
+			refetchOnMount: true,
+			refetchOnReconnect: true,
+		},
+	});
+
+	// Update loading states when fetching starts
 	useEffect(() => {
 		setSupplyMarketLoading(isLoadingSupplyMarket);
 	}, [isLoadingSupplyMarket, setSupplyMarketLoading]);
 
-	// Update token store with fetched data
+	useEffect(() => {
+		setMarketOverviewLoading(isLoadingMarketOverview);
+	}, [isLoadingMarketOverview, setMarketOverviewLoading]);
+
+	// Update token store with fetched supply market data
 	useEffect(() => {
 		if (
 			supplyMarketData &&
 			!isLoadingSupplyMarket &&
 			!isSupplyMarketError
 		) {
-			console.log('Supply market data:', supplyMarketData);
 			setSupplyMarketData(supplyMarketData as unknown as UserSupplyData);
 		}
 	}, [
@@ -60,12 +89,31 @@ const EarnDataFetcher: React.FC = () => {
 		setSupplyMarketData,
 	]);
 
+	// Update token store with fetched market overview data
+	useEffect(() => {
+		if (
+			marketOverviewData &&
+			!isLoadingMarketOverview &&
+			!isMarketOverviewError
+		) {
+			setMarketOverview(
+				marketOverviewData as unknown as SupplyMarketQuickOverview
+			);
+		}
+	}, [
+		marketOverviewData,
+		isLoadingMarketOverview,
+		isMarketOverviewError,
+		setMarketOverview,
+	]);
+
 	// Refetch data when account changes
 	useEffect(() => {
 		if (address) {
 			refetchSupplyMarket();
+			refetchMarketOverview();
 		}
-	}, [address, refetchSupplyMarket]);
+	}, [address, refetchSupplyMarket, refetchMarketOverview]);
 
 	return null;
 };
