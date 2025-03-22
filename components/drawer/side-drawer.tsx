@@ -124,7 +124,7 @@ function SideDrawer({
 			<If isTrue={open}>
 				<div
 					className='fixed inset-0 tablet:hidden z-[15] bg-background opacity-50'
-					data-ui-lock-body={open}></div>
+					data-ui-lock-body={open ? 'mobile' : 'false'}></div>
 			</If>
 			<div
 				className={cn(
