@@ -1,24 +1,18 @@
-import If from '@/components/common/If';
-import { Badge } from '@/components/ui/badge';
 import { Btn } from '@/components/ui/button';
 import PrimaryCard from '@/components/ui/card/primary-card';
 import { Text } from '@/components/ui/typography/Text';
 import { cn } from '@/lib/utils';
-import { HstkToken } from '@/types/web3/token.types';
-import { currencyFormat } from '@/utils';
 import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
 import React, { useMemo } from 'react';
 import { useEarnDrawer } from '@/features/earn/context/earn-drawer.context';
 import SupplyForm from '../form/supply-form';
+import { SupplyMarketData } from '@/types/web3/supply-market.types';
+import '@prototype/bigint.prototype';
 
 interface EarnSupplyCardProps {
-	token: HstkToken;
-	price?: string;
-	liquidity?: string;
-	netApy?: string;
-	walletBalance?: string;
-	supply?: string;
+	market: SupplyMarketData;
 	priceChangePercentage?: number;
+	onSupplyClick?: () => void;
 }
 
 interface CardDataItem {
@@ -29,52 +23,61 @@ interface CardDataItem {
 }
 
 function EarnSupplyCard({
-	token,
-	price,
-	liquidity,
-	netApy,
-	walletBalance,
-	supply,
+	market,
 	priceChangePercentage,
+	onSupplyClick,
 }: EarnSupplyCardProps) {
 	const { openDrawer, setDrawerContent } = useEarnDrawer();
 
 	// Handle opening the supply drawer
 	const handleSupplyClick = () => {
-		// Set the drawer content to the supply form
-		setDrawerContent(<SupplyForm token={token} />);
-		// Open the drawer
-		openDrawer();
+		if (onSupplyClick) {
+			// Use the provided handler if available
+			onSupplyClick();
+		} else {
+			// Set the drawer content to the supply form with the market data
+			setDrawerContent(<SupplyForm market={market} />);
+			// Open the drawer
+			openDrawer();
+		}
 	};
+
+	// Format the data from the market object
+	const formattedPrice =
+		'$' + market.asset.priceUSD.formatBalance(market.asset.decimals);
+	const formattedLiquidity = market.state.totalSupply.formatBalance(
+		market.asset.decimals
+	);
+	const formattedNetApy =
+		market.state.annualApy.formatToString(market.asset.decimals) + '%';
+	const formattedWalletBalance =
+		market.walletBalance.formatBalance(market.asset.decimals) +
+		' ' +
+		market.asset.symbol;
 
 	const cardData = useMemo<CardDataItem[]>(
 		() =>
 			[
 				{
 					title: 'Price',
-					value: currencyFormat(price),
-					rawValue: price,
+					value: formattedPrice,
+					rawValue: formattedPrice,
 					change: priceChangePercentage,
 				},
 				{
 					title: 'Liquidity',
-					value: liquidity,
-					rawValue: liquidity,
+					value: formattedLiquidity,
+					rawValue: formattedLiquidity,
 				},
 				{
 					title: 'Net APY',
-					value: netApy,
-					rawValue: netApy,
+					value: formattedNetApy,
+					rawValue: formattedNetApy,
 				},
 				{
 					title: 'Wallet Balance',
-					value: walletBalance,
-					rawValue: walletBalance,
-				},
-				{
-					title: 'Supply',
-					value: supply,
-					rawValue: supply,
+					value: formattedWalletBalance,
+					rawValue: formattedWalletBalance,
 				},
 			].filter(
 				(
@@ -82,7 +85,13 @@ function EarnSupplyCard({
 				): item is CardDataItem & { value: string; rawValue: string } =>
 					item.rawValue !== null && item.rawValue !== undefined
 			),
-		[price, liquidity, netApy, walletBalance, supply, priceChangePercentage]
+		[
+			formattedPrice,
+			formattedLiquidity,
+			formattedNetApy,
+			formattedWalletBalance,
+			priceChangePercentage,
+		]
 	);
 
 	return (
@@ -91,20 +100,15 @@ function EarnSupplyCard({
 				<div className='flex items-center justify-between flex-1'>
 					<div className='flex gap-3 items-center'>
 						<ImageWithLoader
-							src={token.iconUrl}
-							alt={token.name}
+							src={market.asset.logoURI}
+							alt={market.asset.name}
 							width={24}
 							height={24}
 							className='rounded-full'
 						/>
-						<Text.Semibold20>{token.name}</Text.Semibold20>
+						<Text.Semibold20>{market.asset.name}</Text.Semibold20>
 					</div>
-					<If isTrue={token.isPaused || token.isNew}>
-						<Badge
-							variant={token.isPaused ? 'secondary' : 'success'}>
-							{token.isPaused ? 'Paused' : 'New'}
-						</Badge>
-					</If>
+					{/* Badge can be added here if needed based on market data */}
 				</div>
 			</PrimaryCard.Header>
 			<PrimaryCard.Body>

@@ -80,9 +80,9 @@ const staticState: TokenState = (() => {
 			marketDeposit: BigInt(0),
 		},
 		// Loading states
-		isLoadingSupplyMarket: false,
-		isLoadingBorrowMarket: false,
-		isLoadingSupplyMarketOverview: false,
+		isLoadingSupplyMarket: true,
+		isLoadingBorrowMarket: true,
+		isLoadingSupplyMarketOverview: true,
 
 		// Actions
 		setSuppliedTokens: () => {},
