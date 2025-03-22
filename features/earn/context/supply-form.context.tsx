@@ -1,16 +1,11 @@
 'use client';
 import React, { ReactNode } from 'react';
 import { SupplyFormProvider } from '../store/supply-form.store';
+import { SupplyMarketData } from '@/types/web3/supply-market.types';
 
 interface SupplyFormContextProviderProps {
 	children: ReactNode;
-	token: {
-		name: string;
-		symbol: string;
-		address: string;
-		iconUrl: string;
-		decimals: number;
-	} | null;
+	market: SupplyMarketData | null;
 }
 
 /**
@@ -18,10 +13,10 @@ interface SupplyFormContextProviderProps {
  */
 export function SupplyFormContextProvider({
 	children,
-	token,
+	market,
 }: SupplyFormContextProviderProps) {
 	return (
-		<SupplyFormProvider initialToken={token}>
+		<SupplyFormProvider initialMarket={market}>
 			{children}
 		</SupplyFormProvider>
 	);

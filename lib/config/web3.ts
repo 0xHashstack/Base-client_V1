@@ -11,6 +11,8 @@ import {
 	CHAIN_TOKEN_MAP,
 	DIAMOND_ADDRESS_MAINNET,
 	DIAMOND_ADDRESS_TESTNET,
+	INTERMEDIATE_ADDRESS_MAINNET,
+	INTERMEDIATE_ADDRESS_TESTNET,
 } from '@/constant/web3';
 import { L3_DAPP } from '@/constant/web3/dapp.constant';
 import { SupportedChain } from '@/store/useWeb3.store';
@@ -25,6 +27,7 @@ interface Web3Config {
 	transport: ReturnType<typeof http>;
 	walletConnectProjectId: string;
 	diamondAddress: string;
+	intermediateAddress: string;
 }
 
 /**
@@ -53,6 +56,10 @@ class Web3DataProvider {
 		const rpcURL = isMainnet ? BASE_MAINNET_RPC_URL : BASE_SEPOLIA_RPC_URL;
 		const diamondAddress =
 			isMainnet ? DIAMOND_ADDRESS_MAINNET : DIAMOND_ADDRESS_TESTNET;
+		const intermediateAddress =
+			isMainnet ?
+				INTERMEDIATE_ADDRESS_MAINNET
+			:	INTERMEDIATE_ADDRESS_TESTNET;
 		if (!rpcURL) {
 			throw new Error(
 				`RPC URL not configured for ${this.currentNetwork}`
@@ -65,6 +72,7 @@ class Web3DataProvider {
 			transport: http(rpcURL),
 			walletConnectProjectId: WALLET_CONNECT_PROJECT_ID,
 			diamondAddress,
+			intermediateAddress,
 		};
 	}
 
@@ -126,6 +134,13 @@ class Web3DataProvider {
 
 	get dapps(): L3Dapp[] {
 		return L3_DAPP;
+	}
+
+	/**
+	 * Get the intermediate address for the current network
+	 */
+	get intermediateAddress(): string {
+		return this.config.intermediateAddress;
 	}
 
 	viewInExplorer(hash: Web3Address) {

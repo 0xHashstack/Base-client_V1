@@ -4,10 +4,12 @@ import EarnMobile from '../components/earn-mobile';
 
 import MyPositionsTable from '../components/my-position/my-position-table';
 import EarnWrapper from '../components/earn-wrapper';
+import EarnDataFetcher from '../components/data-fetcher/earn-data-fetcher';
 
 function EarnView() {
 	return (
 		<EarnWrapper>
+			<EarnDataFetcher />
 			<div className='flex flex-col flex-1 relative'>
 				<div className='block tablet:hidden'>
 					<EarnMobile />

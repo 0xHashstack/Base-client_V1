@@ -12,24 +12,23 @@ import {
 } from '@/components/ui/table/index';
 import { Btn } from '@/components/ui/button';
 import { Text } from '@/components/ui/typography/Text';
-import { HoverPopover } from '@/components/ui/popover/hover-popover';
-import { TokenInfo } from '@/components/web3/token/token-info';
 import EarnQuickStat from '../common/earn-quick-stat';
 import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
 import AddTokenToWallet from '@/components/actions/cta/add-token-to-wallet';
-import useEarnTable from '../../hooks/useEarnTable';
 import { useEarnDrawer } from '@/features/earn/context/earn-drawer.context';
+import { useTokenStore } from '@/store/useTokenStore';
+import { SupplyMarketData } from '@/types/web3/supply-market.types';
+import '@prototype/bigint.prototype';
+import If from '@/components/common/If';
 import SupplyForm from '../form/supply-form';
-import { HstkToken } from '@/types/web3';
 
 function EarnTable() {
-	const { formatted, tokens, isLoading } = useEarnTable();
 	const { openDrawer, setDrawerContent } = useEarnDrawer();
+	const { supplyMarketData, isLoadingSupplyMarket } = useTokenStore();
 
 	// Handle opening the supply drawer
-	const handleSupplyClick = (token: HstkToken) => {
-		// Set the drawer content to the supply form
-		setDrawerContent(<SupplyForm token={token} />);
+	const handleSupplyClick = (market: SupplyMarketData) => {
+		setDrawerContent(<SupplyForm market={market} />);
 		// Open the drawer
 		openDrawer();
 	};
@@ -45,60 +44,100 @@ function EarnTable() {
 					<TableRow>
 						<TableHead>Market</TableHead>
 						<TableHead>Price</TableHead>
+						<TableHead>Liquidity</TableHead>
+						<TableHead>Net APR</TableHead>
 						<TableHead>Wallet balance</TableHead>
-						<TableHead>Total Supply</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
-					{isLoading ? (
-						<TableLoader rowCount={3} colCount={5} />
-					) : tokens.length === 0 ? (
-						<TableNoData message="No markets available" colSpan={5} />
-					) : tokens.map((token) => (
-						<TableRow key={token.address}>
-							<TableCell className='font-medium'>
-								<div className='flex items-center gap-3'>
-									<ImageWithLoader
-										src={token.iconUrl}
-										alt={token.name}
-										width={20}
-										height={20}
-									/>
-									{token.name}
-									<AddTokenToWallet
-										className='bg-background w-6 h-6 rounded-full'
-										address={token.address}
-										symbol={token.symbol}
-										decimals={token.decimals}
-										name={token.name}
-									/>
-								</div>
-							</TableCell>
-							<TableCell>{token.name}</TableCell>
-							<TableCell>
-								<HoverPopover
-									side='bottom'
-									content={
-										<TokenInfo
-											name={token.name}
-											address={token.address}
-										/>
-									}
-									contentClassName='w-80 p-3'>
-									<span>
-										{formatted?.[token.address] || '-'}
-									</span>
-								</HoverPopover>
-							</TableCell>
-							<TableCell>{token.name}</TableCell>
-							<TableCell className='w-[100px]'>
-								<Btn.Secondary
-									onClick={() => handleSupplyClick(token)}>
-									Supply
-								</Btn.Secondary>
-							</TableCell>
-						</TableRow>
-					))}
+					<If isTrue={isLoadingSupplyMarket}>
+						<TableLoader
+							rowCount={4}
+							colCount={6}
+						/>
+						<If isTrue={supplyMarketData.length === 0}>
+							<TableNoData
+								message='No markets available'
+								colSpan={6}
+							/>
+							<>
+								{supplyMarketData.map((market) => {
+									return (
+										<TableRow key={market.asset.address_}>
+											<TableCell className='font-medium'>
+												<div className='flex items-center gap-3'>
+													<ImageWithLoader
+														src={
+															market.asset.logoURI
+														}
+														alt={market.asset.name}
+														width={20}
+														height={20}
+													/>
+													{market.asset.name}
+													<AddTokenToWallet
+														className='bg-background w-6 h-6 rounded-full'
+														address={
+															market.asset
+																.address_
+														}
+														symbol={
+															market.asset.symbol
+														}
+														decimals={
+															market.asset
+																.decimals
+														}
+														name={market.asset.name}
+														iconUrl={
+															market.asset.logoURI
+														}
+													/>
+												</div>
+											</TableCell>
+											<TableCell>
+												$
+												{market.asset.priceUSD.formatBalance(
+													market.asset.decimals
+												)}
+											</TableCell>
+											<TableCell>
+												{market.state.totalSupply.formatBalance(
+													market.asset.decimals
+												)}
+											</TableCell>
+											<TableCell>
+												{market.state.annualApy.formatToString(
+													market.asset.decimals
+												)}
+												%
+											</TableCell>
+
+											<TableCell>
+												<span>
+													{market.walletBalance.formatBalance(
+														market.asset.decimals
+													)}{' '}
+													{market.asset.symbol}
+												</span>
+											</TableCell>
+
+											<TableCell className='w-20'>
+												<Btn.Secondary
+													onClick={() =>
+														handleSupplyClick(
+															market
+														)
+													}>
+													Supply
+												</Btn.Secondary>
+											</TableCell>
+										</TableRow>
+									);
+								})}
+							</>
+						</If>
+					</If>
 				</TableBody>
 			</Table>
 			{/* The SideDrawer is now managed by the EarnDrawerProvider */}

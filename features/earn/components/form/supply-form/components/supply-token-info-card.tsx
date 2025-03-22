@@ -30,7 +30,7 @@ const SupplyTokenInfoCard: React.FC<SupplyTokenInfoCardProps> = ({
 	exchangeRate = 100,
 }) => {
 	// Get token from store or use override if provided
-	const tokenFromStore = useSupplyFormStore((state) => state.token);
+	const tokenFromStore = useSupplyFormStore((state) => state.market);
 	const token = tokenOverride ?? tokenFromStore;
 
 	return (

@@ -22,7 +22,7 @@ const TableLoader: React.FC<TableLoaderProps> = ({
 	const cols = Array.from({ length: colCount }, (_, i) => i);
 
 	return (
-		<tbody>
+		<>
 			{rows.map((row) => (
 				<tr
 					key={`loader-row-${row}`}
@@ -36,7 +36,7 @@ const TableLoader: React.FC<TableLoaderProps> = ({
 					))}
 				</tr>
 			))}
-		</tbody>
+		</>
 	);
 };
 

@@ -77,20 +77,20 @@ function FaucetView() {
 						</TableRow>
 					</TableHeader>
 
-					{tokensLoading ?
-						<TableLoader
-							rowCount={4}
-							colCount={3}
-						/>
-					:	<TableBody>
-							{tokens.map((token) => (
+					<TableBody>
+						{tokensLoading ?
+							<TableLoader
+								rowCount={4}
+								colCount={3}
+							/>
+						:	tokens.map((token) => (
 								<TokenRow
 									key={token.address}
 									token={token}
 								/>
-							))}
-						</TableBody>
-					}
+							))
+						}
+					</TableBody>
 				</Table>
 			</div>
 		</Card>

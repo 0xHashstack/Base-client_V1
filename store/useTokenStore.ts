@@ -3,12 +3,18 @@ import {
 	HstkToken,
 	SuppliedToken,
 } from '@/types/web3/token.types';
+import {
+	SupplyMarketData,
+	SupplyPosition,
+	UserSupplyData,
+} from '@/types/web3/supply-market.types';
 import { create } from 'zustand';
 
 /**
  * State shape
  */
 interface TokenState {
+	// Token data
 	tokens: HstkToken[];
 	tokensMap: Record<string, HstkToken>;
 	suppliedTokens: SuppliedToken[];
@@ -19,10 +25,26 @@ interface TokenState {
 	borrowMarketTokensMap: Record<string, HstkToken>;
 	borrowTokens: HstkToken[];
 	borrowTokensMap: Record<string, HstkToken>;
+
+	// Supply market data
+	supplyMarketData: SupplyMarketData[];
+	userSupplyPositions: SupplyPosition[];
+	totalSuppliedValueUsd: bigint;
+	weightedNetApy: bigint;
+
+	// Loading states
+	isLoadingSupplyMarket: boolean;
+	isLoadingBorrowMarket: boolean;
+
+	// Actions
 	setSuppliedTokens: (tokens: SuppliedToken[]) => void;
 	setCollateralTokens: (tokens: CollateralToken[]) => void;
 	setBorrowMarketTokens: (tokens: HstkToken[]) => void;
 	setBorrowTokens: (tokens: HstkToken[]) => void;
+	setSupplyMarketData: (data: UserSupplyData) => void;
+	setSupplyMarketLoading: (isLoading: boolean) => void;
+	setBorrowMarketLoading: (isLoading: boolean) => void;
+	resetMarketData: () => void;
 }
 
 /**
@@ -31,6 +53,7 @@ interface TokenState {
  */
 const staticState: TokenState = (() => {
 	return {
+		// Token data
 		tokens: [],
 		tokensMap: {},
 		suppliedTokens: [],
@@ -41,10 +64,26 @@ const staticState: TokenState = (() => {
 		borrowMarketTokensMap: {},
 		borrowTokens: [],
 		borrowTokensMap: {},
+
+		// Supply market data
+		supplyMarketData: [],
+		userSupplyPositions: [],
+		totalSuppliedValueUsd: BigInt(0),
+		weightedNetApy: BigInt(0),
+
+		// Loading states
+		isLoadingSupplyMarket: false,
+		isLoadingBorrowMarket: false,
+
+		// Actions
 		setSuppliedTokens: () => {},
 		setCollateralTokens: () => {},
 		setBorrowMarketTokens: () => {},
 		setBorrowTokens: () => {},
+		setSupplyMarketData: () => {},
+		setSupplyMarketLoading: () => {},
+		setBorrowMarketLoading: () => {},
+		resetMarketData: () => {},
 	};
 })();
 
@@ -54,6 +93,7 @@ const staticState: TokenState = (() => {
  */
 export const useTokenStore = create<TokenState>((set) => ({
 	...staticState,
+	// Set supplied tokens and update the map
 	setSuppliedTokens: (tokens) => {
 		set({
 			suppliedTokens: tokens,
@@ -100,6 +140,39 @@ export const useTokenStore = create<TokenState>((set) => ({
 				},
 				{} as Record<string, HstkToken>
 			),
+		});
+	},
+
+	// Set supply market data and update related fields
+	setSupplyMarketData: (data) => {
+		set({
+			supplyMarketData: data.markets,
+			userSupplyPositions: data.supplyPositions,
+			totalSuppliedValueUsd: data.totalSuppliedValueUsd,
+			weightedNetApy: data.weightedNetApy,
+			isLoadingSupplyMarket: false,
+		});
+	},
+
+	// Set supply market loading state
+	setSupplyMarketLoading: (isLoading) => {
+		set({ isLoadingSupplyMarket: isLoading });
+	},
+
+	// Set borrow market loading state
+	setBorrowMarketLoading: (isLoading) => {
+		set({ isLoadingBorrowMarket: isLoading });
+	},
+
+	// Reset market data
+	resetMarketData: () => {
+		set({
+			supplyMarketData: [],
+			userSupplyPositions: [],
+			totalSuppliedValueUsd: BigInt(0),
+			weightedNetApy: BigInt(0),
+			isLoadingSupplyMarket: false,
+			isLoadingBorrowMarket: false,
 		});
 	},
 }));

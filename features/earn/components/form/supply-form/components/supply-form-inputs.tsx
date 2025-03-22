@@ -4,19 +4,19 @@ import { Slider } from '@/components/ui/slider';
 import { SingleSelect } from '@/components/ui/select/single-select';
 import { Text } from '@/components/ui/typography/Text';
 import { useSupplyFormInputs } from '@/features/earn/hooks/useSupplyFormInputs';
-import { HstkToken } from '@/types/web3/token.types';
 import Image from 'next/image';
 import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton/skeleton';
 import { ArrowsClockwise } from '@phosphor-icons/react';
 import { Btn } from '@/components/ui/button';
+import { SupplyMarketData } from '@/types/web3/supply-market.types';
 
 function SupplyFormInputs() {
 	const {
 		amount,
 		sliderPercentage,
-		token,
-		tokens,
+		market,
+		supplyMarket,
 		handleAmountChange,
 		handleMaxClick,
 		handleSliderChange,
@@ -29,33 +29,36 @@ function SupplyFormInputs() {
 	} = useSupplyFormInputs();
 
 	// Custom render function for token options
-	const renderTokenOption = (option: HstkToken, isSelected: boolean) => (
+	const renderTokenOption = (
+		option: SupplyMarketData,
+		isSelected: boolean
+	) => (
 		<div
 			className={`flex items-center gap-2 px-3 py-2 ${isSelected ? 'bg-primary/10' : 'hover:bg-muted'} rounded-lg`}>
 			<Image
-				src={option.iconUrl}
-				alt={option.symbol}
+				src={option.asset.logoURI}
+				alt={option.asset.symbol}
 				className='rounded-full'
 				width={18}
 				height={18}
 			/>
-			<Text.Regular14>{option.symbol}</Text.Regular14>
+			<Text.Regular14>{option.asset.symbol}</Text.Regular14>
 		</div>
 	);
 
 	// Custom render function for selected token
-	const renderTokenValue = (selectedToken: HstkToken | null) => {
+	const renderTokenValue = (selectedToken: SupplyMarketData | null) => {
 		if (!selectedToken) return null;
 		return (
 			<div className='flex items-center gap-2'>
 				<Image
-					src={selectedToken.iconUrl}
-					alt={selectedToken.symbol}
+					src={selectedToken.asset.logoURI}
+					alt={selectedToken.asset.symbol}
 					className='rounded-full'
 					width={18}
 					height={18}
 				/>
-				<Text.Medium14>{selectedToken.symbol}</Text.Medium14>
+				<Text.Medium14>{selectedToken.asset.symbol}</Text.Medium14>
 			</div>
 		);
 	};
@@ -83,7 +86,8 @@ function SupplyFormInputs() {
 
 		return (
 			<Text.Regular12 textColor={600}>
-				Wallet balance: {formattedWalletBalance} {token?.symbol || ''}
+				Wallet balance: {formattedWalletBalance}{' '}
+				{market?.asset.symbol || ''}
 			</Text.Regular12>
 		);
 	};
@@ -93,10 +97,10 @@ function SupplyFormInputs() {
 			<Card className='flex flex-col gap-3 px-6 py-4'>
 				<SingleSelect
 					label='Select Market'
-					options={tokens}
-					value={token}
-					valueKey='address'
-					labelKey='symbol'
+					options={supplyMarket}
+					value={market}
+					valueKey='address_'
+					labelKey='address_'
 					placeholder='Select a token'
 					renderOption={renderTokenOption}
 					renderValue={renderTokenValue}
@@ -115,7 +119,7 @@ function SupplyFormInputs() {
 									type='number'
 									value={amount}
 									onChange={handleAmountChange}
-									placeholder={`00.00 ${token?.symbol || ''}`}
+									placeholder={`00.00 ${market?.asset.symbol || ''}`}
 									disabled={isFormDisabled}
 								/>
 							</div>

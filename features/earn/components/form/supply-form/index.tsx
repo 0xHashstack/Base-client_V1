@@ -11,23 +11,18 @@ import SupplyFormAPR from './components/supply-form-apr';
 import SupplyFormPriceBreakdownCard from './components/supply-form-price-breakdown-card';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { SupplyMarketData } from '@/types/web3/supply-market.types';
 
 interface SupplyFormProps {
-	token: {
-		name: string;
-		symbol: string;
-		address: string;
-		iconUrl: string;
-		decimals: number;
-	};
+	market: SupplyMarketData;
 }
 
 /**
  * Form component for supplying tokens to the protocol
  */
-function SupplyForm({ token }: SupplyFormProps) {
+function SupplyForm({ market }: SupplyFormProps) {
 	return (
-		<SupplyFormContextProvider token={token}>
+		<SupplyFormContextProvider market={market}>
 			<SupplyFormContent />
 		</SupplyFormContextProvider>
 	);
@@ -38,11 +33,11 @@ function SupplyForm({ token }: SupplyFormProps) {
  */
 function SupplyFormContent() {
 	// Get handlers from the hook
-	const { handleSupply, token, amount, closeDrawer, isLoading } =
+	const { handleSupply, market, amount, closeDrawer, isLoading } =
 		useSupplyForm();
 
 	// If token is not set, don't render anything
-	if (!token) return null;
+	if (!market) return null;
 
 	return (
 		<>
@@ -72,7 +67,9 @@ function SupplyFormContent() {
 					disabled={!amount || isLoading}
 					showConnectButton
 					parentWidth>
-					{isLoading ? 'Processing...' : `Supply ${token.symbol}`}
+					{isLoading ?
+						'Processing...'
+					:	`Supply ${market.asset.symbol}`}
 				</ConnectedBtn.Primary>
 			</SideDrawer.Footer>
 		</>

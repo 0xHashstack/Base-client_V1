@@ -11,9 +11,9 @@ export function useSupplyForm() {
 	// Use selectors to get only what we need from the store
 	const amount = useSupplyFormStore((state) => state.amount);
 	const isLoading = useSupplyFormStore((state) => state.isLoading);
-	const token = useSupplyFormStore((state) => state.token);
+	const market = useSupplyFormStore((state) => state.market);
 	const setAmount = useSupplyFormStore((state) => state.setAmount);
-	const setToken = useSupplyFormStore((state) => state.setToken);
+	const setMarket = useSupplyFormStore((state) => state.setMarket);
 	const setIsLoading = useSupplyFormStore((state) => state.setIsLoading);
 	const reset = useSupplyFormStore((state) => state.reset);
 
@@ -23,12 +23,10 @@ export function useSupplyForm() {
 	 * Handle supply submission
 	 */
 	const handleSupply = useCallback(async () => {
-		if (!token) return;
+		if (!market) return;
 
 		try {
 			setIsLoading(true);
-			// In a real implementation, this would call the contract to supply tokens
-			console.log(`Supplying ${amount} ${token.symbol}`);
 
 			// Simulate API call
 			await new Promise((resolve) => setTimeout(resolve, 1500));
@@ -43,18 +41,18 @@ export function useSupplyForm() {
 		} finally {
 			setIsLoading(false);
 		}
-	}, [amount, token, closeDrawer, setIsLoading, reset]);
+	}, [market, closeDrawer, setIsLoading, reset]);
 
 	return {
 		// State
 		amount,
 		isLoading,
-		token,
+		market,
 		handleSupply,
 
 		// Actions
 		setAmount,
-		setToken,
+		setMarket,
 		reset,
 		closeDrawer,
 	};

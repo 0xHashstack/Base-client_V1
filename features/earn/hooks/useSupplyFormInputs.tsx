@@ -1,10 +1,10 @@
 import { useCallback, useMemo } from 'react';
 import { useSupplyFormStore } from '../store/supply-form.store';
 import { useTokenStore } from '@/store/useTokenStore';
-import { HstkToken } from '@/types/web3/token.types';
 import { useBalance } from 'wagmi';
 import { Web3Address } from '@/types/web3';
 import { formatUnits } from 'viem';
+import { SupplyMarketData } from '@/types/web3/supply-market.types';
 
 /**
  * Hook to manage supply form input logic
@@ -12,12 +12,12 @@ import { formatUnits } from 'viem';
  */
 export function useSupplyFormInputs() {
 	const amount = useSupplyFormStore((state) => state.amount);
-	const token = useSupplyFormStore((state) => state.token);
+	const market = useSupplyFormStore((state) => state.market);
 	const setAmount = useSupplyFormStore((state) => state.setAmount);
-	const setToken = useSupplyFormStore((state) => state.setToken);
+	const setMarket = useSupplyFormStore((state) => state.setMarket);
 
 	// Get tokens from token store
-	const tokens = useTokenStore((state) => state.tokens);
+	const supplyMarket = useTokenStore((state) => state.supplyMarketData);
 
 	const {
 		data: walletBalance,
@@ -25,14 +25,14 @@ export function useSupplyFormInputs() {
 		isError: walletBalanceError,
 		refetch: refetchWalletBalance,
 	} = useBalance({
-		address: token?.address as Web3Address,
+		address: market?.asset.address_ as Web3Address,
 	});
 
 	// Get formatted wallet balance
 	const formattedWalletBalance = useMemo(() => {
-		if (!walletBalance || !token) return '0';
-		return formatUnits(walletBalance.value, token.decimals);
-	}, [walletBalance, token]);
+		if (!walletBalance || !market) return '0';
+		return formatUnits(walletBalance.value, market.asset.decimals);
+	}, [walletBalance, market]);
 
 	// Maximum amount for the slider (from wallet balance)
 	const MAX_AMOUNT = useMemo(() => {
@@ -99,9 +99,15 @@ export function useSupplyFormInputs() {
 
 			const percentage = value[0];
 			const newAmount = (percentage / 100) * MAX_AMOUNT;
-			setAmount(newAmount.toFixed(token?.decimals || 6));
+			setAmount(newAmount.toFixed(market?.asset.decimals || 6));
 		},
-		[setAmount, MAX_AMOUNT, walletBalanceLoading, walletBalanceError, token]
+		[
+			setAmount,
+			MAX_AMOUNT,
+			walletBalanceLoading,
+			walletBalanceError,
+			market,
+		]
 	);
 
 	/**
@@ -110,10 +116,10 @@ export function useSupplyFormInputs() {
 	 * @param selectedToken Selected token object
 	 */
 	const handleTokenChange = useCallback(
-		(tokenAddress: string, selectedToken: HstkToken) => {
-			setToken(selectedToken);
+		(tokenAddress: string, selectedToken: SupplyMarketData) => {
+			setMarket(selectedToken);
 		},
-		[setToken]
+		[setMarket]
 	);
 
 	/**
@@ -133,8 +139,8 @@ export function useSupplyFormInputs() {
 		amountValue,
 		sliderPercentage,
 		MAX_AMOUNT,
-		token,
-		tokens,
+		market,
+		supplyMarket,
 		handleAmountChange,
 		handleMaxClick,
 		handleSliderChange,

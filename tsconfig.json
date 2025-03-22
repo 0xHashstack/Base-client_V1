@@ -20,7 +20,8 @@
 		],
 		"paths": {
 			"@/*": ["./*"],
-			"@abi/*": ["./web3/abi/*"]
+			"@abi/*": ["./web3/abi/*"],
+			"@prototype/*": ["./utils/prototype/*"]
 		}
 	},
 	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

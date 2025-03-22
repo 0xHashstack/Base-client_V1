@@ -1,4 +1,4 @@
-import { HstkToken } from '@/types/web3';
+import { SupplyMarketData } from '@/types/web3/supply-market.types';
 import { createContext, useContext, useRef, useEffect } from 'react';
 import { create, useStore } from 'zustand';
 
@@ -6,15 +6,15 @@ import { create, useStore } from 'zustand';
 interface SupplyFormState {
 	amount: string;
 	isLoading: boolean;
-	token: HstkToken | null;
+	market: SupplyMarketData | null;
 
 	// Actions
 	setAmount: (amount: string) => void;
 	setMaxAmount: () => void;
-	setToken: (token: SupplyFormState['token']) => void;
+	setMarket: (market: SupplyFormState['market']) => void;
 	setIsLoading: (isLoading: boolean) => void;
 	reset: () => void;
-	resetStore: (newToken?: SupplyFormState['token']) => void;
+	resetStore: (newMarket?: SupplyFormState['market']) => void;
 }
 
 const initialState = {
@@ -24,21 +24,24 @@ const initialState = {
 };
 
 // Create a Zustand store
-const createSupplyFormStore = (initialToken: SupplyFormState['token'] = null) =>
+const createSupplyFormStore = (
+	initialToken: SupplyFormState['market'] = null
+) =>
 	create<SupplyFormState>((set) => ({
 		...initialState,
-		token: initialToken,
+		market: initialToken,
 		setAmount: (amount) => set({ amount }),
 		setMaxAmount: () => {
 			set({ amount: '1000' });
 		},
-		setToken: (token) => set({ token }),
+		setMarket: (token) => set({ market: token }),
 		setIsLoading: (isLoading) => set({ isLoading }),
-		reset: () => set({ ...initialState, token: initialToken }),
-		resetStore: (newToken) => set({ 
-			...initialState, 
-			token: newToken !== undefined ? newToken : initialToken 
-		}),
+		reset: () => set({ ...initialState, market: initialToken }),
+		resetStore: (newToken) =>
+			set({
+				...initialState,
+				market: newToken !== undefined ? newToken : initialToken,
+			}),
 	}));
 
 // Create a React context for the store
@@ -49,12 +52,12 @@ const SupplyFormStoreContext = createContext<ReturnType<
 // Provider component
 interface SupplyFormProviderProps {
 	children: React.ReactNode;
-	initialToken: SupplyFormState['token'];
+	initialMarket: SupplyFormState['market'];
 }
 
 export const SupplyFormProvider = ({
 	children,
-	initialToken,
+	initialMarket,
 }: SupplyFormProviderProps) => {
 	const storeRef = useRef<ReturnType<typeof createSupplyFormStore> | null>(
 		null
@@ -62,17 +65,16 @@ export const SupplyFormProvider = ({
 
 	// Create the store if it doesn't exist
 	if (!storeRef.current) {
-		storeRef.current = createSupplyFormStore(initialToken);
+		storeRef.current = createSupplyFormStore(initialMarket);
 	}
 
 	// Update the token when it changes
 	useEffect(() => {
 		if (storeRef.current) {
 			// Reset the form with the new token
-			storeRef.current.getState().resetStore(initialToken);
+			storeRef.current.getState().resetStore(initialMarket);
 		}
-	}, [initialToken]);
-
+	}, [initialMarket]);
 
 	return (
 		<SupplyFormStoreContext.Provider value={storeRef.current}>

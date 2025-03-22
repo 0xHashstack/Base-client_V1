@@ -30,9 +30,10 @@ function AddTokenToWallet({
 	className,
 	customIcon,
 }: AddTokenToWalletProps) {
-	const { watchAsset, isPending, isSuccess, isError } = useWatchAsset();
+	const { watchAsset, isPending, isSuccess, isError, error } =
+		useWatchAsset();
 
-	const handleAddToken = async () =>
+	const handleAddToken = async () => {
 		watchAsset({
 			type: 'ERC20',
 			options: {
@@ -42,6 +43,7 @@ function AddTokenToWallet({
 				image: iconUrl,
 			},
 		});
+	};
 
 	useEffect(() => {
 		if (isSuccess) {
@@ -52,6 +54,7 @@ function AddTokenToWallet({
 	useEffect(() => {
 		if (isError) {
 			toast.error('Failed to add token to wallet');
+			console.error(error);
 		}
 	}, [isError]);
 
