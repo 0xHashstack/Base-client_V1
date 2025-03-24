@@ -7,6 +7,14 @@
 @layer base {
 	* {
 		@apply border-border;
+		transition:
+			background 0.2s ease-in,
+			border-color 0.2s ease-in;
+	}
+	html {
+		&:has([data-theme-id='dark']) {
+			color-scheme: dark;
+		}
 	}
 	body {
 		@apply bg-background text-foreground;
@@ -18,17 +26,8 @@
 				overflow: hidden;
 			}
 		}
-	}
-}
-
-@layer base {
-	* {
-		@apply border-border outline-ring/50;
-		transition:
-			background 0.2s ease-in,
-			border-color 0.2s ease-in;
-	}
-	body {
-		@apply bg-background text-foreground;
+		&[data-theme-id='dark'] {
+			color-scheme: dark;
+		}
 	}
 }

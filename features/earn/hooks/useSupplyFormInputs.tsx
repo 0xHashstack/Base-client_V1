@@ -1,10 +1,9 @@
 import { useCallback, useMemo } from 'react';
 import { useSupplyFormStore } from '../store/supply-form.store';
 import { useTokenStore } from '@/store/useTokenStore';
-import { useBalance } from 'wagmi';
 import { Web3Address } from '@/types/web3';
-import { formatUnits } from 'viem';
 import { SupplyMarketData } from '@/types/web3/supply-market.types';
+import { useWalletTokenBalance } from '@/hooks/useWalletTokenBalance';
 
 /**
  * Hook to manage supply form input logic
@@ -21,18 +20,13 @@ export function useSupplyFormInputs() {
 
 	const {
 		data: walletBalance,
-		isFetching: walletBalanceLoading,
 		isError: walletBalanceError,
+		isLoading: walletBalanceLoading,
 		refetch: refetchWalletBalance,
-	} = useBalance({
-		address: market?.asset.address_ as Web3Address,
+		formatted: formattedWalletBalance,
+	} = useWalletTokenBalance(market?.asset.address_ as Web3Address, {
+		decimals: market?.asset.decimals,
 	});
-
-	// Get formatted wallet balance
-	const formattedWalletBalance = useMemo(() => {
-		if (!walletBalance || !market) return '0';
-		return formatUnits(walletBalance.value, market.asset.decimals);
-	}, [walletBalance, market]);
 
 	// Maximum amount for the slider (from wallet balance)
 	const MAX_AMOUNT = useMemo(() => {
@@ -99,15 +93,9 @@ export function useSupplyFormInputs() {
 
 			const percentage = value[0];
 			const newAmount = (percentage / 100) * MAX_AMOUNT;
-			setAmount(newAmount.toFixed(market?.asset.decimals || 6));
+			setAmount(newAmount.toString());
 		},
-		[
-			setAmount,
-			MAX_AMOUNT,
-			walletBalanceLoading,
-			walletBalanceError,
-			market,
-		]
+		[setAmount, MAX_AMOUNT, walletBalanceLoading, walletBalanceError]
 	);
 
 	/**
@@ -133,6 +121,8 @@ export function useSupplyFormInputs() {
 	const isFormDisabled = useMemo(() => {
 		return walletBalanceError || MAX_AMOUNT <= 0;
 	}, [walletBalanceError, MAX_AMOUNT]);
+
+	// formatted value
 
 	return {
 		amount,

@@ -37,7 +37,7 @@ const extractValue = (result: ContractResult): bigint | undefined => {
  * Hook to fetch and format token balance for a single token
  */
 export const useWalletTokenBalance = (
-	tokenAddress: string,
+	tokenAddress: Web3Address,
 	{ decimals = 18, address }: TokenBalanceParams = {}
 ) => {
 	const { address: walletAccount } = useDappUser();
