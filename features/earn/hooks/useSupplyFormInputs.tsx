@@ -1,5 +1,8 @@
 import { useCallback, useMemo } from 'react';
-import { useSupplyFormStore } from '../store/supply-form.store';
+import {
+	TransactionStatus,
+	useSupplyFormStore,
+} from '../store/supply-form.store';
 import { useTokenStore } from '@/store/useTokenStore';
 import { SupplyMarketData } from '@/types/web3/supply-market.types';
 import { useWalletToken } from '@/context/wallet-token-provider';
@@ -13,6 +16,9 @@ export function useSupplyFormInputs() {
 	const market = useSupplyFormStore((state) => state.market);
 	const setAmount = useSupplyFormStore((state) => state.setAmount);
 	const setMarket = useSupplyFormStore((state) => state.setMarket);
+	const transactionStatus = useSupplyFormStore(
+		(state) => state.transactionStatus
+	);
 
 	// Get tokens from token store
 	const supplyMarket = useTokenStore((state) => state.supplyMarketData);
@@ -55,19 +61,21 @@ export function useSupplyFormInputs() {
 	 */
 	const handleAmountChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
+			if (transactionStatus !== TransactionStatus.IDLE) return;
 			const value = e.target.value;
 			// Validate input: only allow numbers and decimals
 			if (value === '' || /^[0-9]*\.?[0-9]*$/.test(value)) {
 				setAmount(value);
 			}
 		},
-		[setAmount]
+		[setAmount, transactionStatus]
 	);
 
 	/**
 	 * Handle max button click
 	 */
 	const handleMaxClick = useCallback(() => {
+		if (transactionStatus !== TransactionStatus.IDLE) return;
 		if (walletBalanceLoading || walletBalanceError || MAX_AMOUNT <= 0)
 			return;
 		setAmount(parseFloat(formattedWalletBalance).toFixed(3));
@@ -77,6 +85,7 @@ export function useSupplyFormInputs() {
 		walletBalanceLoading,
 		walletBalanceError,
 		MAX_AMOUNT,
+		transactionStatus,
 	]);
 
 	/**
@@ -85,6 +94,7 @@ export function useSupplyFormInputs() {
 	 */
 	const handleSliderChange = useCallback(
 		(value: number[]) => {
+			if (transactionStatus !== TransactionStatus.IDLE) return;
 			if (walletBalanceLoading || walletBalanceError || MAX_AMOUNT <= 0)
 				return;
 
@@ -92,7 +102,13 @@ export function useSupplyFormInputs() {
 			const newAmount = (percentage / 100) * MAX_AMOUNT;
 			setAmount(newAmount.toFixed(3));
 		},
-		[setAmount, MAX_AMOUNT, walletBalanceLoading, walletBalanceError]
+		[
+			setAmount,
+			MAX_AMOUNT,
+			walletBalanceLoading,
+			walletBalanceError,
+			transactionStatus,
+		]
 	);
 
 	/**
@@ -116,8 +132,12 @@ export function useSupplyFormInputs() {
 
 	// Check if form inputs should be disabled
 	const isFormDisabled = useMemo(() => {
-		return walletBalanceError || MAX_AMOUNT <= 0;
-	}, [walletBalanceError, MAX_AMOUNT]);
+		return (
+			walletBalanceError ||
+			MAX_AMOUNT <= 0 ||
+			transactionStatus !== TransactionStatus.IDLE
+		);
+	}, [walletBalanceError, MAX_AMOUNT, transactionStatus]);
 
 	return {
 		amount,
@@ -136,5 +156,6 @@ export function useSupplyFormInputs() {
 		walletBalanceLoading,
 		walletBalanceError,
 		isFormDisabled,
+		transactionStatus,
 	};
 }

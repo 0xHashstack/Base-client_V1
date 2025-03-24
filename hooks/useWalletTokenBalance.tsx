@@ -1,6 +1,5 @@
 import { Web3Address } from '@/types/web3';
 import {
-	useAccount,
 	useReadContract,
 	useReadContracts,
 	type UseReadContractsParameters,
@@ -74,7 +73,7 @@ export const useWalletTokenBalances = (
 	tokenAddresses: string[],
 	{ decimals = 18, address }: TokenBalanceParams = {}
 ) => {
-	const { address: walletAccount } = useAccount();
+	const { address: walletAccount } = useDappUser();
 	const wAccount = address ?? walletAccount;
 
 	const contracts = tokenAddresses.map((tokenAddress) => ({

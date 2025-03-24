@@ -33,19 +33,6 @@ export function TransactionStatusListener() {
 					'Transaction completed successfully.'
 			);
 
-			// Add link to transaction explorer
-			toast.message('View transaction', {
-				description: 'View on BaseScan',
-				action: {
-					label: 'Open',
-					onClick: () =>
-						window.open(
-							web3DataProvider.viewInExplorer(transaction.hash),
-							'_blank'
-						),
-				},
-			});
-
 			// Call onSuccess callback if provided
 			if (transaction.onSuccess) {
 				transaction.onSuccess();

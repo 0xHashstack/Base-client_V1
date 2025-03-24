@@ -38,21 +38,23 @@ const initialState = {
 
 // Create a Zustand store
 const createSupplyFormStore = (
-	initialToken: SupplyFormState['market'] = null
+	initialMarket: SupplyFormState['market'] = null
 ) =>
-	create<SupplyFormState>((set) => ({
+	create<SupplyFormState>((set, get) => ({
 		...initialState,
-		market: initialToken,
+		market: initialMarket,
 		setAmount: (amount) => set({ amount }),
-		setMarket: (token) => set({ market: token }),
+		setMarket: (market) => {
+			get().resetStore(market);
+		},
 		setIsLoading: (isLoading) => set({ isLoading }),
 		setTransactionStatus: (status) => set({ transactionStatus: status }),
 
-		reset: () => set({ ...initialState, market: initialToken }),
-		resetStore: (newToken) =>
+		reset: () => set({ ...initialState, market: initialMarket }),
+		resetStore: (newMarket) =>
 			set({
 				...initialState,
-				market: newToken !== undefined ? newToken : initialToken,
+				market: newMarket !== undefined ? newMarket : initialMarket,
 			}),
 	}));
 

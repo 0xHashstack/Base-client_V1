@@ -6,10 +6,13 @@ import {
 } from '../store/supply-form.store';
 import { useEarnDrawer } from '../context/earn-drawer.context';
 import { SupplyTokenModel } from '@/lib/model/supply-token.model';
-import { useAccount } from 'wagmi';
 import { Web3Address } from '@/types/web3';
 import { useWalletTokenBalance } from '@/hooks/useWalletTokenBalance';
 import { useWalletToken } from '@/context/wallet-token-provider';
+import { useDappUser } from '@/context/user-data.context';
+import { useWriteContract } from 'wagmi';
+import { useCurrentTransactionStore } from '@/store/useCurrentTransactionStore';
+import { toast } from 'sonner';
 
 /**
  * Hook to handle the supply form functionality
@@ -29,13 +32,12 @@ export function useSupplyForm() {
 	const setTransactionStatus = useSupplyFormStore(
 		(state) => state.setTransactionStatus
 	);
-
 	const reset = useSupplyFormStore((state) => state.reset);
-
+	// We'll use walletAddress from useDappUser instead of address
 	const { closeDrawer } = useEarnDrawer();
 
 	// Get the current wallet address
-	const { address: walletAddress } = useAccount();
+	const { address: walletAddress } = useDappUser();
 
 	// Fetch wallet balance for the current token
 	const { formatted: formattedWalletBalance } = useWalletTokenBalance(
@@ -59,6 +61,9 @@ export function useSupplyForm() {
 	/**
 	 * Handle token approval for supply
 	 */
+	const { writeContractAsync } = useWriteContract();
+	const { setTransaction } = useCurrentTransactionStore();
+
 	const handleApprove = useCallback(async () => {
 		if (!market || !tokenModel || !walletAddress) return;
 		console.log('Approving tokens...', amount);
@@ -66,17 +71,52 @@ export function useSupplyForm() {
 		try {
 			setTransactionStatus(TransactionStatus.APPROVING);
 
-			// In a real implementation, we would call the ERC20 approve function here
-			// For now, we'll simulate the approval process
-			await new Promise((resolve) => setTimeout(resolve, 1000));
+			// Get the parameters for the approve transaction
+			const approveParams = tokenModel.getApproveParams({
+				spender: market.address_, // Use the market address as the spender
+				amount,
+			});
 
-			// Set status to approved
-			setTransactionStatus(TransactionStatus.APPROVED);
+			// Call the approve function on the token contract
+			const txHash = await writeContractAsync({
+				...approveParams,
+			});
+
+			if (txHash) {
+				// Set transaction in the store for monitoring
+				setTransaction({
+					hash: txHash,
+					successToastMessage: `Approved ${market.asset.name} for supply`,
+					onSuccess: () => {
+						setTransactionStatus(TransactionStatus.APPROVED);
+					},
+					onError: () => {
+						setTransactionStatus(
+							TransactionStatus.TRANSACTION_FAILED
+						);
+						toast.error(`Failed to approve ${market.asset.name}`);
+					},
+				});
+
+				// Show initial info toast
+				toast.info(`Approving ${market.asset.name} tokens...`);
+			}
 		} catch (error) {
 			console.error('Error approving tokens:', error);
+			toast.error(
+				`Failed to approve ${market.asset.name}. Please try again.`
+			);
 			setTransactionStatus(TransactionStatus.TRANSACTION_FAILED);
 		}
-	}, [market, tokenModel, amount, walletAddress, setTransactionStatus]);
+	}, [
+		market,
+		tokenModel,
+		amount,
+		walletAddress,
+		setTransactionStatus,
+		writeContractAsync,
+		setTransaction,
+	]);
 
 	/**
 	 * Validate if the amount is valid for supply
@@ -154,18 +194,35 @@ export function useSupplyForm() {
 			});
 
 			console.log('Deposit params:', depositParams);
-			// In a real implementation, we would use wagmi's useWriteContract here
-			// For now, we'll simulate the deposit process
-			await new Promise((resolve) => setTimeout(resolve, 1500));
 
-			// Set status to success
-			setTransactionStatus(TransactionStatus.TRANSACTION_SUCCESS);
+			// Call the deposit function on the diamond contract
+			const txHash = await writeContractAsync({
+				...depositParams,
+			});
 
-			// Close the drawer after successful supply
-			closeDrawer();
+			if (txHash) {
+				// Set transaction in the store for monitoring
+				setTransaction({
+					hash: txHash,
+					successToastMessage: `Successfully supplied ${amount} ${market.asset.symbol}`,
+					onSuccess: () => {
+						// Set status to success
+						setTransactionStatus(TransactionStatus.TRANSACTION_SUCCESS);
+						// Close the drawer after successful supply
+						closeDrawer();
+						// Reset the form
+						reset();
+					},
+					onError: () => {
+						setTransactionStatus(TransactionStatus.TRANSACTION_FAILED);
+						setIsLoading(false);
+						toast.error(`Failed to supply ${market.asset.symbol}`);
+					},
+				});
 
-			// Reset the form
-			reset();
+				// Show initial info toast
+				toast.info(`Supplying ${amount} ${market.asset.symbol}...`);
+			}
 		} catch (error) {
 			console.error('Error supplying tokens:', error);
 			setTransactionStatus(TransactionStatus.TRANSACTION_FAILED);
@@ -184,6 +241,8 @@ export function useSupplyForm() {
 		setIsLoading,
 		setTransactionStatus,
 		reset,
+		writeContractAsync,
+		setTransaction,
 	]);
 
 	/**
@@ -196,7 +255,7 @@ export function useSupplyForm() {
 			case TransactionStatus.APPROVING:
 				return `Approving ${market.asset.symbol}...`;
 			case TransactionStatus.APPROVED:
-				return `Supply ${market.asset.symbol}`;
+				return `Approved! Supply ${market.asset.symbol}`;
 			case TransactionStatus.TRANSACTION_PROCESSING:
 				return 'Processing...';
 			case TransactionStatus.TRANSACTION_FAILED:

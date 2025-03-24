@@ -1,4 +1,5 @@
 import diamondAbi from '@/web3/abi/diamond.abi.json';
+import erc20Abi from '@/web3/abi/erc_20.abi.json';
 import { Web3Address } from '@/types/web3';
 import { Abi, parseUnits } from 'viem';
 
@@ -74,6 +75,30 @@ export class SupplyTokenModel {
 			abi: this.getDiamondAbi(),
 			functionName: 'deposit',
 			args: [this.address, amountInWei, receiver],
+		};
+	}
+
+	/**
+	 * Get the parameters for an approve transaction
+	 * @param spender The address of the contract that will spend the tokens
+	 * @param amount The amount to approve in human-readable format (e.g., "10.5")
+	 * @returns Parameters for useWriteContract
+	 */
+	getApproveParams({
+		spender,
+		amount,
+	}: {
+		spender: Web3Address;
+		amount: string;
+	}) {
+		// Convert the amount from human-readable format to wei
+		const amountInWei = this.convertToWei(amount);
+
+		return {
+			address: this.address,
+			abi: erc20Abi as Abi,
+			functionName: 'approve',
+			args: [spender, amountInWei],
 		};
 	}
 }

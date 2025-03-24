@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Text } from '@/components/ui/typography/Text';
 import { BASE_SEPOLIA_TOKEN_ADDRESS_LIST } from '@/constant/web3/token.constant';
 import React, { useEffect } from 'react';
-import { useAccount, useConfig, useWriteContract } from 'wagmi';
+import { useConfig, useWriteContract } from 'wagmi';
 import { ConnectedBtn } from '@/components/ui/button';
 import {
 	Table,
@@ -22,6 +22,7 @@ import TokenUtil from '@/lib/config/token';
 import erc20ABI from '@abi/erc_20.abi.json';
 import { Abi } from 'viem';
 import { useCurrentTransactionStore } from '@/store/useCurrentTransactionStore';
+import { useDappUser } from '@/context/user-data.context';
 
 function FaucetView() {
 	const config = useConfig();
@@ -102,7 +103,7 @@ interface TokenRowProps {
 }
 
 function TokenRow({ token }: TokenRowProps) {
-	const { address } = useAccount();
+	const { address } = useDappUser();
 	const { writeContractAsync, isPending, isError, error } =
 		useWriteContract();
 	const { setMintingToken, mintingTokens } = useFaucetStore();
