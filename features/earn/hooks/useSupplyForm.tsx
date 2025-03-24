@@ -1,10 +1,15 @@
 'use client';
 import { useCallback, useMemo } from 'react';
-import { useSupplyFormStore, TransactionStatus } from '../store/supply-form.store';
+import {
+	useSupplyFormStore,
+	TransactionStatus,
+} from '../store/supply-form.store';
 import { useEarnDrawer } from '../context/earn-drawer.context';
 import { SupplyTokenModel } from '@/lib/model/supply-token.model';
 import { useAccount } from 'wagmi';
 import { Web3Address } from '@/types/web3';
+import { useWalletTokenBalance } from '@/hooks/useWalletTokenBalance';
+import { useWalletToken } from '@/context/wallet-token-provider';
 
 /**
  * Hook to handle the supply form functionality
@@ -15,17 +20,32 @@ export function useSupplyForm() {
 	const amount = useSupplyFormStore((state) => state.amount);
 	const isLoading = useSupplyFormStore((state) => state.isLoading);
 	const market = useSupplyFormStore((state) => state.market);
-	const transactionStatus = useSupplyFormStore((state) => state.transactionStatus);
+	const transactionStatus = useSupplyFormStore(
+		(state) => state.transactionStatus
+	);
 	const setAmount = useSupplyFormStore((state) => state.setAmount);
 	const setMarket = useSupplyFormStore((state) => state.setMarket);
 	const setIsLoading = useSupplyFormStore((state) => state.setIsLoading);
-	const setTransactionStatus = useSupplyFormStore((state) => state.setTransactionStatus);
+	const setTransactionStatus = useSupplyFormStore(
+		(state) => state.setTransactionStatus
+	);
+
 	const reset = useSupplyFormStore((state) => state.reset);
 
 	const { closeDrawer } = useEarnDrawer();
 
 	// Get the current wallet address
 	const { address: walletAddress } = useAccount();
+
+	// Fetch wallet balance for the current token
+	const { formatted: formattedWalletBalance } = useWalletTokenBalance(
+		market?.asset.address_ as Web3Address,
+		{
+			decimals: market?.asset.decimals,
+		}
+	);
+
+	const { formatted: walletBalance } = useWalletToken();
 
 	// Create a token model instance when the market changes
 	const tokenModel = useMemo(() => {
@@ -59,11 +79,58 @@ export function useSupplyForm() {
 	}, [market, tokenModel, amount, walletAddress, setTransactionStatus]);
 
 	/**
+	 * Validate if the amount is valid for supply
+	 */
+	const validateAmount = useCallback(() => {
+		if (!amount || amount === '0') {
+			return {
+				valid: false,
+				error: 'Please enter an amount',
+			};
+		}
+
+		const amountNum = parseFloat(amount);
+		const walletBalanceNum = parseFloat(walletBalance);
+
+		if (isNaN(amountNum)) {
+			return {
+				valid: false,
+				error: 'Invalid amount',
+			};
+		}
+
+		if (amountNum <= 0) {
+			return {
+				valid: false,
+				error: 'Amount must be greater than 0',
+			};
+		}
+
+		if (amountNum > walletBalanceNum) {
+			return {
+				valid: false,
+				error: 'Insufficient balance',
+			};
+		}
+
+		return {
+			valid: true,
+			error: '',
+		};
+	}, [amount, walletBalance]);
+
+	/**
 	 * Handle supply submission
 	 */
 	const handleSupply = useCallback(async () => {
 		if (!market || !tokenModel || !walletAddress) return;
-		console.log('Supplying tokens...', amount);
+
+		// Validate amount before proceeding
+		const validation = validateAmount();
+		if (!validation.valid) {
+			console.error('Validation error:', validation.error);
+			return;
+		}
 
 		// If not approved yet, start the approval process
 		if (transactionStatus === TransactionStatus.IDLE) {
@@ -105,7 +172,19 @@ export function useSupplyForm() {
 		} finally {
 			setIsLoading(false);
 		}
-	}, [market, tokenModel, amount, walletAddress, transactionStatus, handleApprove, closeDrawer, setIsLoading, setTransactionStatus, reset]);
+	}, [
+		market,
+		tokenModel,
+		amount,
+		walletAddress,
+		transactionStatus,
+		validateAmount,
+		handleApprove,
+		closeDrawer,
+		setIsLoading,
+		setTransactionStatus,
+		reset,
+	]);
 
 	/**
 	 * Get the button text based on the current transaction status
@@ -134,12 +213,19 @@ export function useSupplyForm() {
 	 */
 	const isButtonDisabled = useCallback(() => {
 		return (
-			!amount || 
-			isLoading || 
+			!amount ||
+			isLoading ||
 			transactionStatus === TransactionStatus.APPROVING ||
 			transactionStatus === TransactionStatus.TRANSACTION_PROCESSING
 		);
 	}, [amount, isLoading, transactionStatus]);
+
+	/**
+	 * Get validation error message if any
+	 */
+	const getValidationError = useCallback(() => {
+		return validateAmount().error;
+	}, [validateAmount]);
 
 	return {
 		// State
@@ -147,9 +233,13 @@ export function useSupplyForm() {
 		isLoading,
 		market,
 		transactionStatus,
+		walletBalance,
+		formattedWalletBalance,
 		handleSupply,
 		getButtonText,
 		isButtonDisabled,
+		validateAmount,
+		getValidationError,
 
 		// Actions
 		setAmount,

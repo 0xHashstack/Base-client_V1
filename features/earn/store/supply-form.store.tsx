@@ -21,10 +21,10 @@ interface SupplyFormState {
 
 	// Actions
 	setAmount: (amount: string) => void;
-	setMaxAmount: () => void;
 	setMarket: (market: SupplyFormState['market']) => void;
 	setIsLoading: (isLoading: boolean) => void;
 	setTransactionStatus: (status: TransactionStatus) => void;
+
 	reset: () => void;
 	resetStore: (newMarket?: SupplyFormState['market']) => void;
 }
@@ -32,7 +32,7 @@ interface SupplyFormState {
 const initialState = {
 	amount: '',
 	isLoading: false,
-	token: null,
+	market: null,
 	transactionStatus: TransactionStatus.IDLE,
 };
 
@@ -44,12 +44,10 @@ const createSupplyFormStore = (
 		...initialState,
 		market: initialToken,
 		setAmount: (amount) => set({ amount }),
-		setMaxAmount: () => {
-			set({ amount: '1000' });
-		},
 		setMarket: (token) => set({ market: token }),
 		setIsLoading: (isLoading) => set({ isLoading }),
 		setTransactionStatus: (status) => set({ transactionStatus: status }),
+
 		reset: () => set({ ...initialState, market: initialToken }),
 		resetStore: (newToken) =>
 			set({

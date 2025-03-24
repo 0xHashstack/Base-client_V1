@@ -51,6 +51,8 @@ export const useWalletTokenBalance = (
 			args: [wAccount],
 			query: {
 				enabled: !!wAccount,
+				refetchOnMount: true,
+				refetchOnWindowFocus: true,
 			},
 		});
 

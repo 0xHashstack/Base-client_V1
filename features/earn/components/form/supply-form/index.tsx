@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Text } from '@/components/ui/typography/Text';
 import { Btn, ConnectedBtn } from '@/components/ui/button';
 import SideDrawer from '@/components/drawer/side-drawer';
@@ -33,13 +33,21 @@ function SupplyForm({ market }: SupplyFormProps) {
  */
 function SupplyFormContent() {
 	// Get handlers from the hook
-	const { 
-		handleSupply, 
-		market, 
-		closeDrawer, 
+	const {
+		handleSupply,
+		market,
+		closeDrawer,
 		getButtonText,
-		isButtonDisabled
+		isButtonDisabled,
+		validateAmount,
+		amount,
+		walletBalance,
 	} = useSupplyForm();
+
+	// Validate amount and get error message if any
+	const { valid: isAmountValid, error: validationError } = useMemo(() => {
+		return validateAmount();
+	}, [validateAmount]);
 
 	// If token is not set, don't render anything
 	if (!market) return null;
@@ -67,9 +75,24 @@ function SupplyFormContent() {
 				</div>
 			</SideDrawer.Body>
 			<SideDrawer.Footer>
+				{amount && !isAmountValid && (
+					<div className='mb-2 py-2 px-3 bg-red-50 border border-red-200 rounded-md'>
+						<p className='text-sm text-red-600'>
+							{validationError}
+							{validationError === 'Insufficient balance' && (
+								<span className='block text-xs mt-1'>
+									Available: {walletBalance}{' '}
+									{market.asset.symbol}
+								</span>
+							)}
+						</p>
+					</div>
+				)}
 				<ConnectedBtn.Primary
 					onClick={handleSupply}
-					disabled={isButtonDisabled()}
+					disabled={
+						isButtonDisabled() || (amount !== '' && !isAmountValid)
+					}
 					showConnectButton
 					parentWidth>
 					{getButtonText()}

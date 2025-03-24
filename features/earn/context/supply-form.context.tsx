@@ -2,6 +2,7 @@
 import React, { ReactNode } from 'react';
 import { SupplyFormProvider } from '../store/supply-form.store';
 import { SupplyMarketData } from '@/types/web3/supply-market.types';
+import { WalletTokenProvider } from '@/context/wallet-token-provider';
 
 interface SupplyFormContextProviderProps {
 	children: ReactNode;
@@ -15,9 +16,12 @@ export function SupplyFormContextProvider({
 	children,
 	market,
 }: SupplyFormContextProviderProps) {
+	if (!market) return null;
 	return (
 		<SupplyFormProvider initialMarket={market}>
-			{children}
+			<WalletTokenProvider tokenAddress={market.asset.address_}>
+				{children}
+			</WalletTokenProvider>
 		</SupplyFormProvider>
 	);
 }

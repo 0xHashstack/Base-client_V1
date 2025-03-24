@@ -1,9 +1,8 @@
 import { useCallback, useMemo } from 'react';
 import { useSupplyFormStore } from '../store/supply-form.store';
 import { useTokenStore } from '@/store/useTokenStore';
-import { Web3Address } from '@/types/web3';
 import { SupplyMarketData } from '@/types/web3/supply-market.types';
-import { useWalletTokenBalance } from '@/hooks/useWalletTokenBalance';
+import { useWalletToken } from '@/context/wallet-token-provider';
 
 /**
  * Hook to manage supply form input logic
@@ -24,9 +23,7 @@ export function useSupplyFormInputs() {
 		isLoading: walletBalanceLoading,
 		refetch: refetchWalletBalance,
 		formatted: formattedWalletBalance,
-	} = useWalletTokenBalance(market?.asset.address_ as Web3Address, {
-		decimals: market?.asset.decimals,
-	});
+	} = useWalletToken();
 
 	// Maximum amount for the slider (from wallet balance)
 	const MAX_AMOUNT = useMemo(() => {

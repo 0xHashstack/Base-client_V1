@@ -2,12 +2,14 @@
  * Types for the supply market data returned by the intermediate contract
  */
 
+import { Web3Address } from './web3-core.types';
+
 /**
  * Asset information
  */
 export interface AssetInfo {
 	/** Contract address of the asset */
-	address_: string;
+	address_: Web3Address;
 	/** Name of the asset */
 	name: string;
 	/** URL to the asset's logo */
@@ -39,7 +41,7 @@ export interface SupplyStateData {
  */
 export interface SupplyMarketData {
 	/** Contract address of the market */
-	address_: string;
+	address_: Web3Address;
 	/** Asset information */
 	asset: AssetInfo;
 	/** Market state data */
