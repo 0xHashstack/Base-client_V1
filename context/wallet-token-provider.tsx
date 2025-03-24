@@ -16,7 +16,7 @@ const WalletTokenContext = createContext<WalletTokenContextType | undefined>(
 interface WalletTokenProviderProps {
 	children: ReactNode;
 	tokenAddress: Web3Address;
-	decimals?: number;
+	decimals: number;
 	walletAddress?: Web3Address;
 }
 

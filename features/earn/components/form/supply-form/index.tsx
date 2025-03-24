@@ -3,7 +3,10 @@ import React, { useMemo } from 'react';
 import { Text } from '@/components/ui/typography/Text';
 import { Btn, ConnectedBtn } from '@/components/ui/button';
 import SideDrawer from '@/components/drawer/side-drawer';
-import { SupplyFormContextProvider } from '../../../context/supply-form.context';
+import {
+	SupplyFormContextProvider,
+	useSupplyFormStore,
+} from '../../../context/supply-form.context';
 import { useSupplyForm } from '../../../hooks/useSupplyForm';
 import SupplyFormInputs from './components/supply-form-inputs';
 import SupplyTokenInfoCard from './components/supply-token-info-card';
@@ -12,6 +15,7 @@ import SupplyFormPriceBreakdownCard from './components/supply-form-price-breakdo
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { SupplyMarketData } from '@/types/web3/supply-market.types';
+import { WalletTokenProvider } from '@/context/wallet-token-provider';
 
 interface SupplyFormProps {
 	market: SupplyMarketData;
@@ -23,8 +27,20 @@ interface SupplyFormProps {
 function SupplyForm({ market }: SupplyFormProps) {
 	return (
 		<SupplyFormContextProvider market={market}>
-			<SupplyFormContent />
+			<SupplyFormWithTokenProvider market={market} />
 		</SupplyFormContextProvider>
+	);
+}
+
+function SupplyFormWithTokenProvider({ market }: SupplyFormProps) {
+	const storeMarket = useSupplyFormStore((state) => state.market);
+
+	return (
+		<WalletTokenProvider
+			tokenAddress={(storeMarket || market)?.asset.address_}
+			decimals={(storeMarket || market)?.asset.decimals}>
+			<SupplyFormContent />
+		</WalletTokenProvider>
 	);
 }
 
