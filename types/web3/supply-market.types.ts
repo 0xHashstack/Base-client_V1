@@ -53,14 +53,30 @@ export interface SupplyMarketData {
 }
 
 /**
- * Supply position data for a user
+ * Supply asset data
  */
+export interface SupplyAsset {
+	/** Contract address of the asset */
+	address_: Web3Address;
+	/** Name of the asset */
+	name: string;
+	/** URL to the asset's logo */
+	logoURI: string;
+	/** Number of decimals for the asset */
+	decimals: number;
+	/** Price in USD as a bigint*/
+	priceUSD: bigint;
+	/** Symbol of the asset */
+	symbol: string;
+}
+export type UnderlyingAsset = SupplyAsset;
+
 export interface SupplyPosition {
-	/** Supply asset information */
-	supplyAsset: AssetInfo;
-	/** Underlying asset information */
-	underlyingAsset: AssetInfo;
-	/** Amount supplied as a bigint */
+	/** Supply asset */
+	supplyAsset: SupplyAsset;
+	/** Underlying asset */
+	underlyingAsset: UnderlyingAsset;
+	/** Supplied amount as a bigint */
 	suppliedAmount: bigint;
 	/** Market value as a bigint */
 	marketValue: bigint;
