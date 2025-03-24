@@ -33,8 +33,13 @@ function SupplyForm({ market }: SupplyFormProps) {
  */
 function SupplyFormContent() {
 	// Get handlers from the hook
-	const { handleSupply, market, amount, closeDrawer, isLoading } =
-		useSupplyForm();
+	const { 
+		handleSupply, 
+		market, 
+		closeDrawer, 
+		getButtonText,
+		isButtonDisabled
+	} = useSupplyForm();
 
 	// If token is not set, don't render anything
 	if (!market) return null;
@@ -64,12 +69,10 @@ function SupplyFormContent() {
 			<SideDrawer.Footer>
 				<ConnectedBtn.Primary
 					onClick={handleSupply}
-					disabled={!amount || isLoading}
+					disabled={isButtonDisabled()}
 					showConnectButton
 					parentWidth>
-					{isLoading ?
-						'Processing...'
-					:	`Supply ${market.asset.symbol}`}
+					{getButtonText()}
 				</ConnectedBtn.Primary>
 			</SideDrawer.Footer>
 		</>

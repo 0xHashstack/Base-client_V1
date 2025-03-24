@@ -73,7 +73,7 @@ export function useSupplyFormInputs() {
 	const handleMaxClick = useCallback(() => {
 		if (walletBalanceLoading || walletBalanceError || MAX_AMOUNT <= 0)
 			return;
-		setAmount(formattedWalletBalance);
+		setAmount(parseFloat(formattedWalletBalance).toFixed(3));
 	}, [
 		setAmount,
 		formattedWalletBalance,
@@ -93,7 +93,7 @@ export function useSupplyFormInputs() {
 
 			const percentage = value[0];
 			const newAmount = (percentage / 100) * MAX_AMOUNT;
-			setAmount(newAmount.toString());
+			setAmount(newAmount.toFixed(3));
 		},
 		[setAmount, MAX_AMOUNT, walletBalanceLoading, walletBalanceError]
 	);
@@ -121,8 +121,6 @@ export function useSupplyFormInputs() {
 	const isFormDisabled = useMemo(() => {
 		return walletBalanceError || MAX_AMOUNT <= 0;
 	}, [walletBalanceError, MAX_AMOUNT]);
-
-	// formatted value
 
 	return {
 		amount,

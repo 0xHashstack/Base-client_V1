@@ -2,17 +2,29 @@ import { SupplyMarketData } from '@/types/web3/supply-market.types';
 import { createContext, useContext, useRef, useEffect } from 'react';
 import { create, useStore } from 'zustand';
 
+// Define transaction status enum
+export enum TransactionStatus {
+	IDLE = 'idle',
+	APPROVING = 'approving',
+	APPROVED = 'approved',
+	TRANSACTION_PROCESSING = 'transactionProcessing',
+	TRANSACTION_FAILED = 'transactionFailed',
+	TRANSACTION_SUCCESS = 'transactionSuccess',
+}
+
 // Define the store state and actions
 interface SupplyFormState {
 	amount: string;
 	isLoading: boolean;
 	market: SupplyMarketData | null;
+	transactionStatus: TransactionStatus;
 
 	// Actions
 	setAmount: (amount: string) => void;
 	setMaxAmount: () => void;
 	setMarket: (market: SupplyFormState['market']) => void;
 	setIsLoading: (isLoading: boolean) => void;
+	setTransactionStatus: (status: TransactionStatus) => void;
 	reset: () => void;
 	resetStore: (newMarket?: SupplyFormState['market']) => void;
 }
@@ -21,6 +33,7 @@ const initialState = {
 	amount: '',
 	isLoading: false,
 	token: null,
+	transactionStatus: TransactionStatus.IDLE,
 };
 
 // Create a Zustand store
@@ -36,6 +49,7 @@ const createSupplyFormStore = (
 		},
 		setMarket: (token) => set({ market: token }),
 		setIsLoading: (isLoading) => set({ isLoading }),
+		setTransactionStatus: (status) => set({ transactionStatus: status }),
 		reset: () => set({ ...initialState, market: initialToken }),
 		resetStore: (newToken) =>
 			set({
