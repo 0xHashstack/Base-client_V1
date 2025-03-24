@@ -6,6 +6,7 @@ import {
 	web3DataProvider,
 } from '@/constant/config/web3-config.constant';
 import { useTokenStore } from '@/store/useTokenStore';
+import { useQueryKeyStore } from '@/store/useQueryKeyStore';
 import {
 	SupplyMarketQuickOverview,
 	UserSupplyData,
@@ -28,12 +29,21 @@ const EarnDataFetcher: React.FC = () => {
 		setSupplyMarketOverviewLoading: setMarketOverviewLoading,
 	} = useTokenStore();
 
+	// Get query key store actions
+	const setSupplyMarketDataQueryKey = useQueryKeyStore(
+		(state) => state.setSupplyMarketDataQueryKey
+	);
+	const setSupplyMarketOverviewQueryKey = useQueryKeyStore(
+		(state) => state.setSupplyMarketOverviewQueryKey
+	);
+
 	// Call getUserSupplyMarketData from the intermediate contract
 	const {
 		data: supplyMarketData,
 		isLoading: isLoadingSupplyMarket,
 		isError: isSupplyMarketError,
 		refetch: refetchSupplyMarket,
+		queryKey,
 	} = useReadContract({
 		...intermediateContract.getContractConfig('getUserSupplyMarketData', [
 			web3DataProvider.tokens(),
@@ -52,6 +62,7 @@ const EarnDataFetcher: React.FC = () => {
 		isLoading: isLoadingMarketOverview,
 		isError: isMarketOverviewError,
 		refetch: refetchMarketOverview,
+		queryKey: marketQueryKey,
 	} = useReadContract({
 		...intermediateContract.getContractConfig(
 			'getSupplyMarketOverview',
@@ -89,6 +100,13 @@ const EarnDataFetcher: React.FC = () => {
 		setSupplyMarketData,
 	]);
 
+	// Store the query key in a separate effect to avoid infinite loops
+	useEffect(() => {
+		if (queryKey) {
+			setSupplyMarketDataQueryKey(queryKey);
+		}
+	}, [queryKey, setSupplyMarketDataQueryKey]);
+
 	// Update token store with fetched market overview data
 	useEffect(() => {
 		if (
@@ -106,6 +124,14 @@ const EarnDataFetcher: React.FC = () => {
 		isMarketOverviewError,
 		setMarketOverview,
 	]);
+
+	// Store the market overview query key in a separate effect
+	useEffect(() => {
+		if (marketQueryKey) {
+			// Use separate effect to avoid infinite loops
+			setSupplyMarketOverviewQueryKey(marketQueryKey);
+		}
+	}, [marketQueryKey, setSupplyMarketOverviewQueryKey]);
 
 	// Refetch data when account changes
 	useEffect(() => {

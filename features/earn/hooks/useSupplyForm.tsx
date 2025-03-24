@@ -13,6 +13,8 @@ import { useDappUser } from '@/context/user-data.context';
 import { useWriteContract } from 'wagmi';
 import { useCurrentTransactionStore } from '@/store/useCurrentTransactionStore';
 import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
+import { useQueryKeyStore } from '@/store/useQueryKeyStore';
 
 /**
  * Hook to handle the supply form functionality
@@ -35,6 +37,8 @@ export function useSupplyForm() {
 	const reset = useSupplyFormStore((state) => state.reset);
 	// We'll use walletAddress from useDappUser instead of address
 	const { closeDrawer } = useEarnDrawer();
+	const { supplyMarketDataQueryKey, supplyMarketOverviewQueryKey } =
+		useQueryKeyStore();
 
 	// Get the current wallet address
 	const { address: walletAddress } = useDappUser();
@@ -48,6 +52,7 @@ export function useSupplyForm() {
 	);
 
 	const { formatted: walletBalance } = useWalletToken();
+	const queryClient = useQueryClient();
 
 	// Create a token model instance when the market changes
 	const tokenModel = useMemo(() => {
@@ -193,8 +198,6 @@ export function useSupplyForm() {
 				receiver: walletAddress as Web3Address,
 			});
 
-			console.log('Deposit params:', depositParams);
-
 			// Call the deposit function on the diamond contract
 			const txHash = await writeContractAsync({
 				...depositParams,
@@ -206,15 +209,27 @@ export function useSupplyForm() {
 					hash: txHash,
 					successToastMessage: `Successfully supplied ${amount} ${market.asset.symbol}`,
 					onSuccess: () => {
+						// Invalidate the supply market data query
+						queryClient.invalidateQueries({
+							queryKey: supplyMarketDataQueryKey,
+						});
+						// Invalidate the supply market overview query
+						queryClient.invalidateQueries({
+							queryKey: supplyMarketOverviewQueryKey,
+						});
 						// Set status to success
-						setTransactionStatus(TransactionStatus.TRANSACTION_SUCCESS);
+						setTransactionStatus(
+							TransactionStatus.TRANSACTION_SUCCESS
+						);
 						// Close the drawer after successful supply
 						closeDrawer();
 						// Reset the form
 						reset();
 					},
 					onError: () => {
-						setTransactionStatus(TransactionStatus.TRANSACTION_FAILED);
+						setTransactionStatus(
+							TransactionStatus.TRANSACTION_FAILED
+						);
 						setIsLoading(false);
 						toast.error(`Failed to supply ${market.asset.symbol}`);
 					},

@@ -13,7 +13,12 @@ import { Skeleton } from '@/components/ui/skeleton/skeleton';
 
 function EarnCardStack() {
 	const { openDrawer, setDrawerContent } = useEarnDrawer();
-	const { supplyMarketData, isLoadingSupplyMarket } = useTokenStore();
+	const { supplyMarketData, isLoadingSupplyMarket } = useTokenStore(
+		(state) => ({
+			supplyMarketData: state.supplyMarketData,
+			isLoadingSupplyMarket: state.isLoadingSupplyMarket,
+		})
+	);
 
 	// Handle opening the supply drawer
 	const handleSupplyClick = (market: SupplyMarketData) => {

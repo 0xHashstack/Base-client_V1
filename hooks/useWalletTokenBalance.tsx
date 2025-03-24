@@ -42,7 +42,7 @@ export const useWalletTokenBalance = (
 	const { address: walletAccount } = useDappUser();
 	const wAccount = address ?? walletAccount;
 
-	const { data, isError, isLoading, isSuccess, error, refetch } =
+	const { data, isError, isLoading, isSuccess, error, refetch, queryKey } =
 		useReadContract({
 			address: tokenAddress as Web3Address,
 			abi: erc20ABI,
@@ -63,6 +63,7 @@ export const useWalletTokenBalance = (
 		isSuccess,
 		error,
 		refetch,
+		queryKey,
 	};
 };
 
@@ -83,7 +84,7 @@ export const useWalletTokenBalances = (
 		args: [wAccount],
 	})) as UseReadContractsParameters['contracts'];
 
-	const { data, isError, isLoading, isSuccess, error, refetch } =
+	const { data, isError, isLoading, isSuccess, error, refetch, queryKey } =
 		useReadContracts({
 			contracts,
 			allowFailure: true,
@@ -126,5 +127,6 @@ export const useWalletTokenBalances = (
 		isSuccess,
 		error,
 		refetch,
+		queryKey,
 	};
 };

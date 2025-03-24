@@ -12,7 +12,9 @@ function MyPositionQuickStat() {
 				title='Total Positions'
 				value={
 					'$' +
-					userSupplyQuickOverview.totalSuppliedValueUsd.formatBalance(18)
+					userSupplyQuickOverview.totalSuppliedValueUsd.formatBalance(
+						18
+					)
 				}
 				isLoading={isLoadingSupplyMarket}
 				className='min-w-[200px]'
@@ -21,7 +23,8 @@ function MyPositionQuickStat() {
 			<StatCard
 				title='Total APR'
 				value={
-					userSupplyQuickOverview.weightedNetApy.formatBalance(18) + '%'
+					userSupplyQuickOverview.weightedNetApy.formatBalance(18) +
+					'%'
 				}
 				isLoading={isLoadingSupplyMarket}
 				valueClassName='text-success'

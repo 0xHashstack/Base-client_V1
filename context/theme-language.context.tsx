@@ -50,6 +50,7 @@ export const ThemeAndLanguageProvider = ({
 					theme={theme}
 					closeButton
 					duration={4000}
+					position='top-right'
 				/>
 			</body>
 		</ThemeAndLanguageContext.Provider>
