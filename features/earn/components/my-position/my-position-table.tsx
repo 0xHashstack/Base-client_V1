@@ -22,11 +22,17 @@ import { SupplyPosition } from '@/types/web3/supply-market.types';
 import '@prototype/bigint.prototype';
 import If from '@/components/common/If';
 import AddTokenToWallet from '@/components/actions/cta/add-token-to-wallet';
+import { HoverSupplyValueCard } from '../card/hover-cards';
 
 function MyPositionsTable() {
 	const { openDrawer, setDrawerContent } = useEarnDrawer();
-	const { userSupplyPositions, supplyMarketData, isLoadingSupplyMarket } =
-		useTokenStore();
+	const userSupplyPositions = useTokenStore(
+		(state) => state.userSupplyPositions
+	);
+	const supplyMarketData = useTokenStore((state) => state.supplyMarketData);
+	const isLoadingSupplyMarket = useTokenStore(
+		(state) => state.isLoadingSupplyMarket
+	);
 
 	/**
 	 * Handle opening the supply form
@@ -139,10 +145,16 @@ function MyPositionsTable() {
 											</div>
 										</TableCell>
 										<TableCell>
-											$
-											{position.marketValue.formatBalance(
-												position.supplyAsset.decimals
-											)}
+											<HoverSupplyValueCard
+												supplyData={position}>
+												<span>
+													$
+													{position.marketValue.formatBalance(
+														position.supplyAsset
+															.decimals
+													)}
+												</span>
+											</HoverSupplyValueCard>
 										</TableCell>
 										<TableCell>
 											{position.effectiveYield.formatToString(
