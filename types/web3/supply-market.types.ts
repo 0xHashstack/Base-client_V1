@@ -113,3 +113,10 @@ export interface SupplyMarketQuickOverview {
 	/** Average APR as a bigint */
 	marketDeposit: bigint;
 }
+
+export interface UserSupplyQuickOverview {
+	/** Total deposit as a bigint */
+	weightedNetApy: bigint;
+	/** Average APR as a bigint */
+	totalSuppliedValueUsd: bigint;
+}

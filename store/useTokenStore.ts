@@ -8,6 +8,7 @@ import {
 	SupplyMarketQuickOverview,
 	SupplyPosition,
 	UserSupplyData,
+	UserSupplyQuickOverview,
 } from '@/types/web3/supply-market.types';
 import { create } from 'zustand';
 
@@ -30,8 +31,7 @@ interface TokenState {
 	// Supply market data
 	supplyMarketData: SupplyMarketData[];
 	userSupplyPositions: SupplyPosition[];
-	totalSuppliedValueUsd: bigint;
-	weightedNetApy: bigint;
+	userSupplyQuickOverview: UserSupplyQuickOverview;
 	supplyMarketQuickOverview: SupplyMarketQuickOverview;
 
 	// Loading states
@@ -73,8 +73,10 @@ const staticState: TokenState = (() => {
 		// Supply market data
 		supplyMarketData: [],
 		userSupplyPositions: [],
-		totalSuppliedValueUsd: BigInt(0),
-		weightedNetApy: BigInt(0),
+		userSupplyQuickOverview: {
+			weightedNetApy: BigInt(0),
+			totalSuppliedValueUsd: BigInt(0),
+		},
 		supplyMarketQuickOverview: {
 			marketApr: BigInt(0),
 			marketDeposit: BigInt(0),
@@ -159,8 +161,10 @@ export const useTokenStore = create<TokenState>((set) => ({
 		set({
 			supplyMarketData: data.markets,
 			userSupplyPositions: data.supplyPositions,
-			totalSuppliedValueUsd: data.totalSuppliedValueUsd,
-			weightedNetApy: data.weightedNetApy,
+			userSupplyQuickOverview: {
+				weightedNetApy: data.weightedNetApy,
+				totalSuppliedValueUsd: data.totalSuppliedValueUsd,
+			},
 			isLoadingSupplyMarket: false,
 		});
 	},
@@ -193,8 +197,10 @@ export const useTokenStore = create<TokenState>((set) => ({
 		set({
 			supplyMarketData: [],
 			userSupplyPositions: [],
-			totalSuppliedValueUsd: BigInt(0),
-			weightedNetApy: BigInt(0),
+			userSupplyQuickOverview: {
+				weightedNetApy: BigInt(0),
+				totalSuppliedValueUsd: BigInt(0),
+			},
 			supplyMarketQuickOverview: {
 				marketApr: BigInt(0),
 				marketDeposit: BigInt(0),

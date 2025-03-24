@@ -9,6 +9,7 @@ import '@prototype/bigint.prototype';
 import If from '@/components/common/If';
 import SupplyForm from '../form/supply-form';
 import { Text } from '@/components/ui/typography/Text';
+import { Skeleton } from '@/components/ui/skeleton/skeleton';
 
 function EarnCardStack() {
 	const { openDrawer, setDrawerContent } = useEarnDrawer();
@@ -28,7 +29,14 @@ function EarnCardStack() {
 				<EarnQuickStat />
 			</div>
 			<If isTrue={isLoadingSupplyMarket}>
-				<div className='py-4 text-center'>Loading markets...</div>
+				<div className='flex flex-col gap-4'>
+					{[...Array(3)].map((_, index) => (
+						<Skeleton
+							className='h-48 w-full'
+							key={`shimmer-${index}`}
+						/>
+					))}
+				</div>
 			</If>
 			{!isLoadingSupplyMarket && supplyMarketData.length === 0 && (
 				<div className='text-center py-4'>No markets available</div>
