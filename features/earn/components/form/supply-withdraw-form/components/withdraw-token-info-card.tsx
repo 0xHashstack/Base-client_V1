@@ -30,25 +30,25 @@ const WithdrawTokenInfoCard: React.FC<WithdrawTokenInfoCardProps> = ({
 	exchangeRate = 100,
 }) => {
 	// Get token from store or use override if provided
-	const { token: storeToken } = useSupplyWithdrawForm();
-	const token = tokenOverride ?? storeToken;
+	const { position: storePosition } = useSupplyWithdrawForm();
+	const position = tokenOverride ?? storePosition;
 
 	return (
 		<div className='flex flex-col gap-3'>
 			<div className='flex flex-1 items-center justify-between'>
 				<Text.Regular12>
-					1 r{token?.underlyingAsset.symbol}
+					1 r{position?.underlyingAsset.symbol}
 				</Text.Regular12>
 				<Text.Regular12>
-					{exchangeRate} {token?.underlyingAsset.symbol}
+					{exchangeRate} {position?.underlyingAsset.symbol}
 				</Text.Regular12>
 			</div>
 			<div className='flex items-center justify-between'>
 				<Text.Regular12>
-					r{token?.underlyingAsset.symbol} minted(est)
+					r{position?.underlyingAsset.symbol} minted(est)
 				</Text.Regular12>
 				<Text.Regular12>
-					{exchangeRate} {token?.underlyingAsset.symbol}
+					{exchangeRate} {position?.underlyingAsset.symbol}
 				</Text.Regular12>
 			</div>
 		</div>

@@ -32,11 +32,24 @@ function SupplyWithdrawForm({ position }: SupplyWithdrawFormProps) {
  */
 function SupplyWithdrawFormContent() {
 	// Get handlers from the hook
-	const { handleWithdraw, token, amount, closeDrawer, isLoading } =
-		useSupplyWithdrawForm();
+	const {
+		handleWithdraw,
+		position,
+		amount,
+		closeDrawer,
+		validateAmount,
+		getButtonText,
+		isButtonDisabled,
+	} = useSupplyWithdrawForm();
 
-	// If token is not set, don't render anything
-	if (!token) return null;
+	// Validate amount and get error message if any
+	const { valid: isAmountValid, error: validationError } =
+		React.useMemo(() => {
+			return validateAmount();
+		}, [validateAmount]);
+
+	// If position is not set, don't render anything
+	if (!position) return null;
 
 	return (
 		<>
@@ -59,12 +72,31 @@ function SupplyWithdrawFormContent() {
 				</div>
 			</SideDrawer.Body>
 			<SideDrawer.Footer>
+				{amount && !isAmountValid && (
+					<div className='mb-2 py-2 px-3 bg-red-50 border border-red-200 rounded-md'>
+						<p className='text-sm text-red-600'>
+							{validationError}
+							{validationError ===
+								'Insufficient available balance' && (
+								<span className='block text-xs mt-1'>
+									Available:{' '}
+									{position.receiptTokens.formatBalance(
+										position.underlyingAsset.decimals
+									)}{' '}
+									{position.underlyingAsset.symbol}
+								</span>
+							)}
+						</p>
+					</div>
+				)}
 				<ConnectedBtn.Primary
 					onClick={handleWithdraw}
-					disabled={!amount || isLoading}
+					disabled={
+						isButtonDisabled() || (amount !== '' && !isAmountValid)
+					}
 					showConnectButton
 					parentWidth>
-					{isLoading ? 'Processing...' : `Withdraw`}
+					{getButtonText()}
 				</ConnectedBtn.Primary>
 			</SideDrawer.Footer>
 		</>

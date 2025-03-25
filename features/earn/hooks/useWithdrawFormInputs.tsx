@@ -4,6 +4,7 @@ import { useTokenStore } from '@/store/useTokenStore';
 import { SupplyPosition } from '@/types/web3/supply-market.types';
 // Import the BigInt prototype extension to ensure it's loaded
 import '@prototype/bigint.prototype';
+import { TransactionStatus } from '../store/supply-form.store';
 
 /**
  * Hook to manage withdraw form input logic
@@ -17,6 +18,9 @@ export function useWithdrawFormInputs() {
 	const setAmount = useSupplyWithdrawFormStore((state) => state.setAmount);
 	const setPosition = useSupplyWithdrawFormStore(
 		(state) => state.setSupplyPosition
+	);
+	const transactionStatus = useSupplyWithdrawFormStore(
+		(state) => state.transactionStatus
 	);
 
 	// Get tokens from token store
@@ -124,19 +128,14 @@ export function useWithdrawFormInputs() {
 		[setPosition]
 	);
 
-	/**
-	 * Handle balance refresh
-	 * Note: This would need to be connected to a refetch mechanism for position data
-	 */
-	const handleRefreshBalance = useCallback(() => {
-		// This would need to be implemented with a refetch mechanism for position data
-		console.log('Refresh balance requested');
-	}, []);
-
 	// Check if form inputs should be disabled
 	const isFormDisabled = useMemo(() => {
-		return availableBalanceError || MAX_AMOUNT <= 0;
-	}, [availableBalanceError, MAX_AMOUNT]);
+		return (
+			availableBalanceError ||
+			MAX_AMOUNT <= 0 ||
+			transactionStatus !== TransactionStatus.IDLE
+		);
+	}, [availableBalanceError, MAX_AMOUNT, transactionStatus]);
 
 	return {
 		amount,
@@ -149,11 +148,7 @@ export function useWithdrawFormInputs() {
 		handleMaxClick,
 		handleSliderChange,
 		handleTokenChange,
-		handleRefreshBalance,
-		availableBalance: position?.suppliedAmount,
 		formattedAvailableBalance,
-		availableBalanceLoading,
-		availableBalanceError,
 		isFormDisabled,
 	};
 }

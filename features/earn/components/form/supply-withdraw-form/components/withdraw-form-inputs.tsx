@@ -6,8 +6,6 @@ import { Text } from '@/components/ui/typography/Text';
 import { useWithdrawFormInputs } from '@/features/earn/hooks/useWithdrawFormInputs';
 import Image from 'next/image';
 import React from 'react';
-import { Skeleton } from '@/components/ui/skeleton/skeleton';
-import { ArrowsClockwise } from '@phosphor-icons/react';
 import { Btn } from '@/components/ui/button';
 import { SupplyPosition } from '@/types/web3/supply-market.types';
 
@@ -24,10 +22,8 @@ function WithdrawFormInputs() {
 		handleMaxClick,
 		handleSliderChange,
 		handleTokenChange,
-		handleRefreshBalance,
+
 		formattedAvailableBalance,
-		availableBalanceLoading,
-		availableBalanceError,
 		isFormDisabled,
 	} = useWithdrawFormInputs();
 
@@ -67,25 +63,6 @@ function WithdrawFormInputs() {
 
 	// Render available balance based on loading/error state
 	const renderAvailableBalance = () => {
-		if (availableBalanceLoading) {
-			return <Skeleton className='h-4 w-24' />;
-		}
-
-		if (availableBalanceError) {
-			return (
-				<div className='flex items-center gap-1 text-destructive'>
-					<Text.Regular12>
-						Failed to load Available Balance
-					</Text.Regular12>
-					<button
-						onClick={handleRefreshBalance}
-						className='text-destructive hover:text-destructive/80'>
-						<ArrowsClockwise size={14} />
-					</button>
-				</div>
-			);
-		}
-
 		return (
 			<Text.Regular12 textColor={600}>
 				Available Balance: {formattedAvailableBalance}{' '}
