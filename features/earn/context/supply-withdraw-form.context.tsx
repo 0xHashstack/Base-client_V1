@@ -1,16 +1,11 @@
 'use client';
 import React, { ReactNode } from 'react';
 import { SupplyWithdrawFormProvider } from '../store/supply-withdraw-form.store';
+import { SupplyPosition } from '@/types/web3/supply-market.types';
 
 interface SupplyWithdrawFormContextProviderProps {
 	children: ReactNode;
-	token: {
-		name: string;
-		symbol: string;
-		address: string;
-		iconUrl: string;
-		decimals: number;
-	} | null;
+	position: SupplyPosition | null;
 }
 
 /**
@@ -18,10 +13,10 @@ interface SupplyWithdrawFormContextProviderProps {
  */
 export function SupplyWithdrawFormContextProvider({
 	children,
-	token,
+	position,
 }: SupplyWithdrawFormContextProviderProps) {
 	return (
-		<SupplyWithdrawFormProvider initialToken={token}>
+		<SupplyWithdrawFormProvider initialPosition={position}>
 			{children}
 		</SupplyWithdrawFormProvider>
 	);

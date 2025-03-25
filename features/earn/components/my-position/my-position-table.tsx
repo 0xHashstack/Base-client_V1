@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import React, { useCallback } from 'react';
 import {
@@ -15,7 +16,7 @@ import { Text } from '@/components/ui/typography/Text';
 import { useEarnDrawer } from '../../context/earn-drawer.context';
 import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
 import MyPositionQuickStat from '../common/my-position-quick-stat';
-// import SupplyWithdrawForm from '../form/supply-withdraw-form';
+import SupplyWithdrawForm from '../form/supply-withdraw-form';
 import SupplyForm from '../form/supply-form';
 import { useTokenStore } from '@/store/useTokenStore';
 import { SupplyPosition } from '@/types/web3/supply-market.types';
@@ -50,7 +51,7 @@ function MyPositionsTable() {
 				openDrawer();
 			}
 		},
-		[setDrawerContent, openDrawer, supplyMarketData]
+		[openDrawer, supplyMarketData]
 	);
 
 	/**
@@ -66,11 +67,11 @@ function MyPositionsTable() {
 			if (market) {
 				// For now, we'll just pass the market to the withdraw form
 				// You might need to adjust this based on what the SupplyWithdrawForm expects
-				// setDrawerContent(<SupplyWithdrawForm market={market} position={position} />);
+				setDrawerContent(<SupplyWithdrawForm position={position} />);
 				openDrawer();
 			}
 		},
-		[setDrawerContent, openDrawer, supplyMarketData]
+		[openDrawer, supplyMarketData]
 	);
 
 	return (

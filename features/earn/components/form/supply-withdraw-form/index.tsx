@@ -10,23 +10,18 @@ import WithdrawTokenInfoCard from './components/withdraw-token-info-card';
 import WithdrawFormPriceBreakdownCard from './components/withdraw-form-price-breakdown-card';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { SupplyPosition } from '@/types/web3/supply-market.types';
 
 interface SupplyWithdrawFormProps {
-	token: {
-		name: string;
-		symbol: string;
-		address: string;
-		iconUrl: string;
-		decimals: number;
-	};
+	position: SupplyPosition;
 }
 
 /**
  * Form component for withdrawing tokens from the protocol
  */
-function SupplyWithdrawForm({ token }: SupplyWithdrawFormProps) {
+function SupplyWithdrawForm({ position }: SupplyWithdrawFormProps) {
 	return (
-		<SupplyWithdrawFormContextProvider token={token}>
+		<SupplyWithdrawFormContextProvider position={position}>
 			<SupplyWithdrawFormContent />
 		</SupplyWithdrawFormContextProvider>
 	);
@@ -69,7 +64,7 @@ function SupplyWithdrawFormContent() {
 					disabled={!amount || isLoading}
 					showConnectButton
 					parentWidth>
-					{isLoading ? 'Processing...' : `Withdraw ${token.symbol}`}
+					{isLoading ? 'Processing...' : `Withdraw`}
 				</ConnectedBtn.Primary>
 			</SideDrawer.Footer>
 		</>

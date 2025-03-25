@@ -1,4 +1,4 @@
-import { SuppliedToken } from '@/types/web3';
+import { SupplyPosition } from '@/types/web3/supply-market.types';
 import { createContext, useContext, useRef, useEffect } from 'react';
 import { create, useStore } from 'zustand';
 
@@ -6,15 +6,17 @@ import { create, useStore } from 'zustand';
 interface SupplyWithdrawFormState {
 	amount: string;
 	isLoading: boolean;
-	token: SuppliedToken | null;
+	supplyPosition: SupplyPosition | null;
 
 	// Actions
 	setAmount: (amount: string) => void;
 	setMaxAmount: () => void;
-	setToken: (token: SupplyWithdrawFormState['token']) => void;
+	setSupplyPosition: (
+		token: SupplyWithdrawFormState['supplyPosition']
+	) => void;
 	setIsLoading: (isLoading: boolean) => void;
 	reset: () => void;
-	resetStore: (newToken?: SupplyWithdrawFormState['token']) => void;
+	resetStore: (newToken?: SupplyWithdrawFormState['supplyPosition']) => void;
 }
 
 const initialState = {
@@ -25,22 +27,23 @@ const initialState = {
 
 // Create a Zustand store
 const createSupplyWithdrawFormStore = (
-	initialToken: SupplyWithdrawFormState['token'] = null
+	initialSupply: SupplyWithdrawFormState['supplyPosition'] = null
 ) =>
-	create<SupplyWithdrawFormState>((set) => ({
+	create<SupplyWithdrawFormState>((set, get) => ({
 		...initialState,
-		token: initialToken,
+		supplyPosition: initialSupply,
 		setAmount: (amount) => set({ amount }),
 		setMaxAmount: () => {
 			set({ amount: '1000' }); // This would be replaced with actual balance logic
 		},
-		setToken: (token) => set({ token }),
+		setSupplyPosition: (token) => get().resetStore(token),
 		setIsLoading: (isLoading) => set({ isLoading }),
-		reset: () => set({ ...initialState, token: initialToken }),
+		reset: () => set({ ...initialState, supplyPosition: initialSupply }),
 		resetStore: (newToken) =>
 			set({
 				...initialState,
-				token: newToken !== undefined ? newToken : initialToken,
+				supplyPosition:
+					newToken !== undefined ? newToken : initialSupply,
 			}),
 	}));
 
@@ -52,12 +55,12 @@ const SupplyWithdrawFormStoreContext = createContext<ReturnType<
 // Provider component
 interface SupplyWithdrawFormProviderProps {
 	children: React.ReactNode;
-	initialToken: SupplyWithdrawFormState['token'];
+	initialPosition: SupplyWithdrawFormState['supplyPosition'];
 }
 
 export const SupplyWithdrawFormProvider = ({
 	children,
-	initialToken,
+	initialPosition,
 }: SupplyWithdrawFormProviderProps) => {
 	const storeRef = useRef<ReturnType<
 		typeof createSupplyWithdrawFormStore
@@ -65,16 +68,16 @@ export const SupplyWithdrawFormProvider = ({
 
 	// Create the store if it doesn't exist
 	if (!storeRef.current) {
-		storeRef.current = createSupplyWithdrawFormStore(initialToken);
+		storeRef.current = createSupplyWithdrawFormStore(initialPosition);
 	}
 
 	// Update the token when it changes
 	useEffect(() => {
 		if (storeRef.current) {
 			// Reset the form with the new token
-			storeRef.current.getState().resetStore(initialToken);
+			storeRef.current.getState().resetStore(initialPosition);
 		}
-	}, [initialToken]);
+	}, [initialPosition]);
 
 	return (
 		<SupplyWithdrawFormStoreContext.Provider value={storeRef.current}>

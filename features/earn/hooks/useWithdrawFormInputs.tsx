@@ -1,10 +1,10 @@
 import { useCallback, useMemo } from 'react';
 import { useSupplyWithdrawFormStore } from '../store/supply-withdraw-form.store';
 import { useTokenStore } from '@/store/useTokenStore';
-import { SuppliedToken } from '@/types/web3/token.types';
 import { useBalance } from 'wagmi';
 import { Web3Address } from '@/types/web3';
 import { formatUnits } from 'viem';
+import { SupplyPosition } from '@/types/web3/supply-market.types';
 
 /**
  * Hook to manage withdraw form input logic
@@ -12,12 +12,16 @@ import { formatUnits } from 'viem';
  */
 export function useWithdrawFormInputs() {
 	const amount = useSupplyWithdrawFormStore((state) => state.amount);
-	const token = useSupplyWithdrawFormStore((state) => state.token);
+	const position = useSupplyWithdrawFormStore(
+		(state) => state.supplyPosition
+	);
 	const setAmount = useSupplyWithdrawFormStore((state) => state.setAmount);
-	const setToken = useSupplyWithdrawFormStore((state) => state.setToken);
+	const setPosition = useSupplyWithdrawFormStore(
+		(state) => state.setSupplyPosition
+	);
 
 	// Get tokens from token store
-	const suppliedTokens = useTokenStore((state) => state.suppliedTokens);
+	const supplyPositions = useTokenStore((state) => state.userSupplyPositions);
 
 	const {
 		data: walletBalance,
@@ -25,14 +29,14 @@ export function useWithdrawFormInputs() {
 		isError: walletBalanceError,
 		refetch: refetchWalletBalance,
 	} = useBalance({
-		address: token?.address as Web3Address,
+		address: position?.supplyAsset.address_ as Web3Address,
 	});
 
 	// Get formatted wallet balance
 	const formattedWalletBalance = useMemo(() => {
-		if (!walletBalance || !token) return '0';
-		return formatUnits(walletBalance.value, token.decimals);
-	}, [walletBalance, token]);
+		if (!walletBalance || !position) return '0';
+		return formatUnits(walletBalance.value, position.supplyAsset.decimals);
+	}, [walletBalance, position]);
 
 	// Maximum amount for the slider (from wallet balance)
 	const MAX_AMOUNT = useMemo(() => {
@@ -99,9 +103,15 @@ export function useWithdrawFormInputs() {
 
 			const percentage = value[0];
 			const newAmount = (percentage / 100) * MAX_AMOUNT;
-			setAmount(newAmount.toFixed(token?.decimals || 6));
+			setAmount(newAmount.toFixed(position?.supplyAsset.decimals || 6));
 		},
-		[setAmount, MAX_AMOUNT, walletBalanceLoading, walletBalanceError, token]
+		[
+			setAmount,
+			MAX_AMOUNT,
+			walletBalanceLoading,
+			walletBalanceError,
+			position,
+		]
 	);
 
 	/**
@@ -110,10 +120,10 @@ export function useWithdrawFormInputs() {
 	 * @param selectedToken Selected token object
 	 */
 	const handleTokenChange = useCallback(
-		(tokenAddress: string, selectedToken: SuppliedToken) => {
-			setToken(selectedToken);
+		(tokenAddress: string, selectedToken: SupplyPosition) => {
+			setPosition(selectedToken);
 		},
-		[setToken]
+		[setPosition]
 	);
 
 	/**
@@ -133,8 +143,8 @@ export function useWithdrawFormInputs() {
 		amountValue,
 		sliderPercentage,
 		MAX_AMOUNT,
-		token,
-		suppliedTokens,
+		position,
+		supplyPositions,
 		handleAmountChange,
 		handleMaxClick,
 		handleSliderChange,

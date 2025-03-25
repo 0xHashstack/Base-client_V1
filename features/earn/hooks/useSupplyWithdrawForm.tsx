@@ -11,9 +11,11 @@ export function useSupplyWithdrawForm() {
 	// Use selectors to get only what we need from the store
 	const amount = useSupplyWithdrawFormStore((state) => state.amount);
 	const isLoading = useSupplyWithdrawFormStore((state) => state.isLoading);
-	const token = useSupplyWithdrawFormStore((state) => state.token);
+	const token = useSupplyWithdrawFormStore((state) => state.supplyPosition);
 	const setAmount = useSupplyWithdrawFormStore((state) => state.setAmount);
-	const setToken = useSupplyWithdrawFormStore((state) => state.setToken);
+	const setToken = useSupplyWithdrawFormStore(
+		(state) => state.setSupplyPosition
+	);
 	const setIsLoading = useSupplyWithdrawFormStore(
 		(state) => state.setIsLoading
 	);

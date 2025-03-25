@@ -4,12 +4,12 @@ import { Slider } from '@/components/ui/slider';
 import { SingleSelect } from '@/components/ui/select/single-select';
 import { Text } from '@/components/ui/typography/Text';
 import { useWithdrawFormInputs } from '@/features/earn/hooks/useWithdrawFormInputs';
-import { SuppliedToken } from '@/types/web3/token.types';
 import Image from 'next/image';
 import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton/skeleton';
 import { ArrowsClockwise } from '@phosphor-icons/react';
 import { Btn } from '@/components/ui/button';
+import { SupplyPosition } from '@/types/web3/supply-market.types';
 
 /**
  * Component for the withdraw form inputs
@@ -18,8 +18,8 @@ function WithdrawFormInputs() {
 	const {
 		amount,
 		sliderPercentage,
-		token,
-		suppliedTokens,
+		position,
+		supplyPositions,
 		handleAmountChange,
 		handleMaxClick,
 		handleSliderChange,
@@ -32,33 +32,35 @@ function WithdrawFormInputs() {
 	} = useWithdrawFormInputs();
 
 	// Custom render function for token options
-	const renderTokenOption = (option: SuppliedToken, isSelected: boolean) => (
+	const renderTokenOption = (option: SupplyPosition, isSelected: boolean) => (
 		<div
 			className={`flex items-center gap-2 px-3 py-2 ${isSelected ? 'bg-primary/10' : 'hover:bg-muted'} rounded-lg`}>
 			<Image
-				src={option.iconUrl}
-				alt={option.symbol}
+				src={option.underlyingAsset.logoURI}
+				alt={option.supplyAsset.symbol}
 				className='rounded-full'
 				width={18}
 				height={18}
 			/>
-			<Text.Regular14>{option.symbol}</Text.Regular14>
+			<Text.Regular14>{option.supplyAsset.symbol}</Text.Regular14>
 		</div>
 	);
 
 	// Custom render function for selected token
-	const renderTokenValue = (selectedToken: SuppliedToken | null) => {
+	const renderTokenValue = (selectedToken: SupplyPosition | null) => {
 		if (!selectedToken) return null;
 		return (
 			<div className='flex items-center gap-2'>
 				<Image
-					src={selectedToken.iconUrl}
-					alt={selectedToken.symbol}
+					src={selectedToken.underlyingAsset.logoURI}
+					alt={selectedToken.supplyAsset.symbol}
 					className='rounded-full'
 					width={18}
 					height={18}
 				/>
-				<Text.Medium14>{selectedToken.symbol}</Text.Medium14>
+				<Text.Medium14>
+					{selectedToken.supplyAsset.symbol}
+				</Text.Medium14>
 			</div>
 		);
 	};
@@ -86,7 +88,8 @@ function WithdrawFormInputs() {
 
 		return (
 			<Text.Regular12 textColor={600}>
-				Wallet Balance: {formattedWalletBalance} {token?.symbol || ''}
+				Wallet Balance: {formattedWalletBalance}{' '}
+				{position?.supplyAsset.symbol || ''}
 			</Text.Regular12>
 		);
 	};
@@ -96,10 +99,9 @@ function WithdrawFormInputs() {
 			<Card className='flex flex-col gap-3 px-6 py-4'>
 				<SingleSelect
 					label='Select Market'
-					options={suppliedTokens}
-					value={token}
-					valueKey='address'
-					labelKey='symbol'
+					options={supplyPositions}
+					value={position}
+					valueKey='supplyAsset.address_'
 					placeholder='Select a token'
 					renderOption={renderTokenOption}
 					renderValue={renderTokenValue}
@@ -118,7 +120,7 @@ function WithdrawFormInputs() {
 									type='number'
 									value={amount}
 									onChange={handleAmountChange}
-									placeholder={`00.00 ${token?.symbol || ''}`}
+									placeholder={`00.00 ${position?.supplyAsset.symbol || ''}`}
 									disabled={isFormDisabled}
 								/>
 							</div>
@@ -139,7 +141,8 @@ function WithdrawFormInputs() {
 						Available supply:
 					</Text.Regular12>
 					<Text.Regular12>
-						{token?.availableSupply || 0} {token?.symbol || ''}
+						Todo: need to add
+						{position?.supplyAsset.symbol || ''}
 					</Text.Regular12>
 				</div>
 				<div className='flex flex-col gap-2.5'>

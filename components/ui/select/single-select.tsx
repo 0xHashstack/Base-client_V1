@@ -5,6 +5,26 @@ import { Text } from '../typography/Text';
 import { useOnClickOutside } from '@/hooks/useOnClickOutside';
 import { CaretDown } from '@phosphor-icons/react';
 
+/**
+ * Get a value from an object using a path string with dot notation
+ * @param obj The object to get the value from
+ * @param path The path to the value, using dot notation (e.g. 'user.address.city')
+ * @returns The value at the path, or undefined if not found
+ */
+function getNestedValue(obj: any, path: string): any {
+	if (!obj || !path) return undefined;
+
+	const keys = path.split('.');
+	let value = obj;
+
+	for (const key of keys) {
+		if (value === undefined || value === null) return undefined;
+		value = value[key];
+	}
+
+	return value;
+}
+
 export type SingleSelectOption = {
 	[key: string]: unknown;
 };
@@ -17,10 +37,10 @@ export interface SingleSelectProps<T extends SingleSelectOption>
 	value?: any;
 	/** Handler for change events */
 	onChange?: (value: any, option: T) => void;
-	/** Key to use for option value */
-	valueKey?: Extract<keyof T, string | number>;
-	/** Key to use for option label */
-	labelKey?: Extract<keyof T, string | number>;
+	/** Key to use for option value, can be nested using dot notation (e.g. 'supplyAsset.address') */
+	valueKey?: string;
+	/** Key to use for option label, can be nested using dot notation (e.g. 'supplyAsset.symbol') */
+	labelKey?: string;
 	/** Placeholder text when no option is selected */
 	placeholder?: string;
 	/** Control if dropdown is open */
@@ -102,16 +122,17 @@ const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps<any>>(
 			return (
 				options.find((option) =>
 					typeof value === 'object' ?
-						option[valueKey] === value[valueKey]
-					:	option[valueKey] === value
+						getNestedValue(option, valueKey) ===
+						getNestedValue(value, valueKey)
+					:	getNestedValue(option, valueKey) === value
 				) || null
 			);
 		}, [options, value, valueKey]);
 
 		// Handle option selection
 		const handleSelectOption = (option: SingleSelectOption) => {
-			if (typeof valueKey === 'string' || typeof valueKey === 'number') {
-				onChange?.(option[valueKey], option);
+			if (valueKey) {
+				onChange?.(getNestedValue(option, valueKey), option);
 			}
 			handleOpenChange(false);
 		};
@@ -125,7 +146,7 @@ const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps<any>>(
 			if (selectedOption) {
 				return (
 					<Text.Regular14 textColor={500}>
-						{String(selectedOption[labelKey] || '')}
+						{String(getNestedValue(selectedOption, labelKey) || '')}
 					</Text.Regular14>
 				);
 			}
@@ -181,8 +202,11 @@ const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps<any>>(
 							:	options.map((option, index) => {
 									const isSelected =
 										selectedOption ?
-											option[valueKey] ===
-											selectedOption[valueKey]
+											getNestedValue(option, valueKey) ===
+											getNestedValue(
+												selectedOption,
+												valueKey
+											)
 										:	false;
 
 									if (renderOption) {
@@ -203,7 +227,7 @@ const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps<any>>(
 
 									return (
 										<div
-											key={`${String(option[valueKey])}-${index}`}
+											key={`${String(getNestedValue(option, valueKey))}-${index}`}
 											className={cn(
 												'py-2 px-3 cursor-pointer hover:bg-accent rounded-md',
 												isSelected && 'bg-background'
@@ -211,7 +235,12 @@ const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps<any>>(
 											onClick={() =>
 												handleSelectOption(option)
 											}>
-											{String(option[labelKey] || '')}
+											{String(
+												getNestedValue(
+													option,
+													labelKey
+												) || ''
+											)}
 										</div>
 									);
 								})

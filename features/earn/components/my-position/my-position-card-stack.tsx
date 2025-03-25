@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import React, { useCallback } from 'react';
 import MyPositionQuickStat from '../common/my-position-quick-stat';
@@ -10,6 +11,7 @@ import '@prototype/bigint.prototype';
 import If from '@/components/common/If';
 import { Text } from '@/components/ui/typography/Text';
 import { Skeleton } from '@/components/ui/skeleton/skeleton';
+import SupplyWithdrawForm from '../form/supply-withdraw-form';
 
 function MyPositionCardStack() {
 	const { openDrawer, setDrawerContent } = useEarnDrawer();
@@ -32,7 +34,7 @@ function MyPositionCardStack() {
 				openDrawer();
 			}
 		},
-		[setDrawerContent, openDrawer, supplyMarketData]
+		[openDrawer, supplyMarketData]
 	);
 
 	/**
@@ -48,7 +50,7 @@ function MyPositionCardStack() {
 			if (market) {
 				// For now, we'll just pass the market to the withdraw form
 				// You might need to adjust this based on what the SupplyWithdrawForm expects
-				// setDrawerContent(<SupplyWithdrawForm market={market} position={position} />);
+				setDrawerContent(<SupplyWithdrawForm position={position} />);
 				openDrawer();
 			}
 		},
