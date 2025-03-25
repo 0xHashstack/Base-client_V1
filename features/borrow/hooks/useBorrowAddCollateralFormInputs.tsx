@@ -19,7 +19,9 @@ export function useBorrowAddCollateralFormInputs() {
 	);
 	const setToken = useBorrowAddCollateralFormStore((state) => state.setToken);
 
-	const availableCollateralTokens = useTokenStore((state) => state.tokens);
+	const availableCollateralTokens = useTokenStore(
+		(state) => state.collateralTokens
+	);
 
 	const {
 		data: walletBalance,

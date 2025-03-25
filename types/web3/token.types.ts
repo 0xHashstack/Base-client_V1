@@ -8,10 +8,6 @@ export type HstkToken = {
 	isNew?: boolean;
 };
 
-export type SuppliedToken = HstkToken & {
-	availableSupply?: number;
-};
-
 export type CollateralToken = HstkToken & {
 	availableCollateral?: number;
 };
