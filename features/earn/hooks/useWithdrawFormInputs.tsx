@@ -1,10 +1,9 @@
 import { useCallback, useMemo } from 'react';
 import { useSupplyWithdrawFormStore } from '../store/supply-withdraw-form.store';
 import { useTokenStore } from '@/store/useTokenStore';
-import { useBalance } from 'wagmi';
-import { Web3Address } from '@/types/web3';
-import { formatUnits } from 'viem';
 import { SupplyPosition } from '@/types/web3/supply-market.types';
+// Import the BigInt prototype extension to ensure it's loaded
+import '@prototype/bigint.prototype';
 
 /**
  * Hook to manage withdraw form input logic
@@ -23,31 +22,32 @@ export function useWithdrawFormInputs() {
 	// Get tokens from token store
 	const supplyPositions = useTokenStore((state) => state.userSupplyPositions);
 
-	const {
-		data: walletBalance,
-		isFetching: walletBalanceLoading,
-		isError: walletBalanceError,
-		refetch: refetchWalletBalance,
-	} = useBalance({
-		address: position?.supplyAsset.address_ as Web3Address,
-	});
+	// Determine if we're loading or have an error
+	const availableBalanceLoading = useMemo(() => !position, [position]);
+	const availableBalanceError = useMemo(() => false, []);
 
-	// Get formatted wallet balance
-	const formattedWalletBalance = useMemo(() => {
-		if (!walletBalance || !position) return '0';
-		return formatUnits(walletBalance.value, position.supplyAsset.decimals);
-	}, [walletBalance, position]);
+	// Get formatted available balance (supplied amount)
+	const formattedAvailableBalance = useMemo(() => {
+		if (!position) return '0';
+		return position.receiptTokens.formatBalance(
+			position.underlyingAsset.decimals
+		);
+	}, [position]);
 
-	// Maximum amount for the slider (from wallet balance)
+	// Maximum amount for the slider (from supplied amount)
 	const MAX_AMOUNT = useMemo(() => {
 		if (
-			walletBalanceLoading ||
-			walletBalanceError ||
-			!formattedWalletBalance
+			availableBalanceLoading ||
+			availableBalanceError ||
+			!formattedAvailableBalance
 		)
 			return 0;
-		return parseFloat(formattedWalletBalance);
-	}, [formattedWalletBalance, walletBalanceLoading, walletBalanceError]);
+		return parseFloat(formattedAvailableBalance);
+	}, [
+		formattedAvailableBalance,
+		availableBalanceLoading,
+		availableBalanceError,
+	]);
 
 	// Convert amount string to number for slider
 	const amountValue = useMemo(() => {
@@ -81,14 +81,14 @@ export function useWithdrawFormInputs() {
 	 * Handle max button click
 	 */
 	const handleMaxClick = useCallback(() => {
-		if (walletBalanceLoading || walletBalanceError || MAX_AMOUNT <= 0)
+		if (availableBalanceLoading || availableBalanceError || MAX_AMOUNT <= 0)
 			return;
-		setAmount(formattedWalletBalance);
+		setAmount(parseFloat(formattedAvailableBalance).toFixed(3));
 	}, [
 		setAmount,
-		formattedWalletBalance,
-		walletBalanceLoading,
-		walletBalanceError,
+		formattedAvailableBalance,
+		availableBalanceLoading,
+		availableBalanceError,
 		MAX_AMOUNT,
 	]);
 
@@ -98,20 +98,18 @@ export function useWithdrawFormInputs() {
 	 */
 	const handleSliderChange = useCallback(
 		(value: number[]) => {
-			if (walletBalanceLoading || walletBalanceError || MAX_AMOUNT <= 0)
+			if (
+				availableBalanceLoading ||
+				availableBalanceError ||
+				MAX_AMOUNT <= 0
+			)
 				return;
 
 			const percentage = value[0];
 			const newAmount = (percentage / 100) * MAX_AMOUNT;
-			setAmount(newAmount.toFixed(position?.supplyAsset.decimals || 6));
+			setAmount(newAmount.toFixed(3));
 		},
-		[
-			setAmount,
-			MAX_AMOUNT,
-			walletBalanceLoading,
-			walletBalanceError,
-			position,
-		]
+		[setAmount, MAX_AMOUNT, availableBalanceLoading, availableBalanceError]
 	);
 
 	/**
@@ -127,16 +125,18 @@ export function useWithdrawFormInputs() {
 	);
 
 	/**
-	 * Handle wallet balance refresh
+	 * Handle balance refresh
+	 * Note: This would need to be connected to a refetch mechanism for position data
 	 */
 	const handleRefreshBalance = useCallback(() => {
-		refetchWalletBalance();
-	}, [refetchWalletBalance]);
+		// This would need to be implemented with a refetch mechanism for position data
+		console.log('Refresh balance requested');
+	}, []);
 
 	// Check if form inputs should be disabled
 	const isFormDisabled = useMemo(() => {
-		return walletBalanceError || MAX_AMOUNT <= 0;
-	}, [walletBalanceError, MAX_AMOUNT]);
+		return availableBalanceError || MAX_AMOUNT <= 0;
+	}, [availableBalanceError, MAX_AMOUNT]);
 
 	return {
 		amount,
@@ -150,10 +150,10 @@ export function useWithdrawFormInputs() {
 		handleSliderChange,
 		handleTokenChange,
 		handleRefreshBalance,
-		walletBalance,
-		formattedWalletBalance,
-		walletBalanceLoading,
-		walletBalanceError,
+		availableBalance: position?.suppliedAmount,
+		formattedAvailableBalance,
+		availableBalanceLoading,
+		availableBalanceError,
 		isFormDisabled,
 	};
 }

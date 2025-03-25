@@ -12,6 +12,12 @@ import { create } from 'zustand';
  * State shape
  */
 interface TokenState {
+	// Supply market data
+	supplyMarketData: SupplyMarketData[];
+	userSupplyPositions: SupplyPosition[];
+	userSupplyQuickOverview: UserSupplyQuickOverview;
+	supplyMarketQuickOverview: SupplyMarketQuickOverview;
+
 	// Token data
 	collateralTokens: CollateralToken[];
 	collateralTokensMap: Record<string, CollateralToken>;
@@ -19,12 +25,6 @@ interface TokenState {
 	borrowMarketTokensMap: Record<string, HstkToken>;
 	borrowTokens: HstkToken[];
 	borrowTokensMap: Record<string, HstkToken>;
-
-	// Supply market data
-	supplyMarketData: SupplyMarketData[];
-	userSupplyPositions: SupplyPosition[];
-	userSupplyQuickOverview: UserSupplyQuickOverview;
-	supplyMarketQuickOverview: SupplyMarketQuickOverview;
 
 	// Loading states
 	isLoadingSupplyMarket: boolean;
@@ -49,14 +49,6 @@ interface TokenState {
  */
 const staticState: TokenState = (() => {
 	return {
-		// Token data
-		collateralTokens: [],
-		collateralTokensMap: {},
-		borrowMarketTokens: [],
-		borrowMarketTokensMap: {},
-		borrowTokens: [],
-		borrowTokensMap: {},
-
 		// Supply market data
 		supplyMarketData: [],
 		userSupplyPositions: [],
@@ -68,6 +60,14 @@ const staticState: TokenState = (() => {
 			marketApr: BigInt(0),
 			marketDeposit: BigInt(0),
 		},
+		// Token data
+		collateralTokens: [],
+		collateralTokensMap: {},
+		borrowMarketTokens: [],
+		borrowMarketTokensMap: {},
+		borrowTokens: [],
+		borrowTokensMap: {},
+
 		// Loading states
 		isLoadingSupplyMarket: true,
 		isLoadingBorrowMarket: true,

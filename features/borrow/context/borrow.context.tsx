@@ -22,7 +22,7 @@ interface BorrowContextType {
 const BorrowContext = createContext<BorrowContextType | undefined>(undefined);
 
 export function BorrowProvider({ children }: { children: React.ReactNode }) {
-	const { tokens } = useTokenStore();
+	const { collateralTokens: tokens } = useTokenStore();
 	const { myDebtPositions } = useMyDebtStore();
 	const { formatted, isLoading, isError, error } = useWalletTokenBalances(
 		tokens.map((token) => token.address)
@@ -40,14 +40,18 @@ export function BorrowProvider({ children }: { children: React.ReactNode }) {
 	};
 
 	return (
-		<BorrowContext.Provider value={value}>{children}</BorrowContext.Provider>
+		<BorrowContext.Provider value={value}>
+			{children}
+		</BorrowContext.Provider>
 	);
 }
 
 export const useBorrowContext = () => {
 	const context = useContext(BorrowContext);
 	if (context === undefined) {
-		throw new Error('useBorrowContext must be used within a BorrowProvider');
+		throw new Error(
+			'useBorrowContext must be used within a BorrowProvider'
+		);
 	}
 	return context;
 };

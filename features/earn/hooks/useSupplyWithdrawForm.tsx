@@ -32,7 +32,6 @@ export function useSupplyWithdrawForm() {
 		try {
 			setIsLoading(true);
 			// In a real implementation, this would call the contract to withdraw tokens
-			console.log(`Withdrawing ${amount} ${token.symbol}`);
 
 			// Simulate API call
 			await new Promise((resolve) => setTimeout(resolve, 1500));

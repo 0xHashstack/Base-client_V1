@@ -25,9 +25,9 @@ function WithdrawFormInputs() {
 		handleSliderChange,
 		handleTokenChange,
 		handleRefreshBalance,
-		formattedWalletBalance,
-		walletBalanceLoading,
-		walletBalanceError,
+		formattedAvailableBalance,
+		availableBalanceLoading,
+		availableBalanceError,
 		isFormDisabled,
 	} = useWithdrawFormInputs();
 
@@ -65,17 +65,17 @@ function WithdrawFormInputs() {
 		);
 	};
 
-	// Render wallet balance based on loading/error state
-	const renderWalletBalance = () => {
-		if (walletBalanceLoading) {
+	// Render available balance based on loading/error state
+	const renderAvailableBalance = () => {
+		if (availableBalanceLoading) {
 			return <Skeleton className='h-4 w-24' />;
 		}
 
-		if (walletBalanceError) {
+		if (availableBalanceError) {
 			return (
 				<div className='flex items-center gap-1 text-destructive'>
 					<Text.Regular12>
-						Failed to load Wallet Balance
+						Failed to load Available Balance
 					</Text.Regular12>
 					<button
 						onClick={handleRefreshBalance}
@@ -88,8 +88,8 @@ function WithdrawFormInputs() {
 
 		return (
 			<Text.Regular12 textColor={600}>
-				Wallet Balance: {formattedWalletBalance}{' '}
-				{position?.supplyAsset.symbol || ''}
+				Available Balance: {formattedAvailableBalance}{' '}
+				{position?.supplyAsset.symbol}
 			</Text.Regular12>
 		);
 	};
@@ -132,19 +132,11 @@ function WithdrawFormInputs() {
 							</Btn.Self>
 						</div>
 						<div className='flex items-center gap-1'>
-							{renderWalletBalance()}
+							{renderAvailableBalance()}
 						</div>
 					</div>
 				</div>
-				<div className='flex gap-1 items-center'>
-					<Text.Regular12 textColor={600}>
-						Available supply:
-					</Text.Regular12>
-					<Text.Regular12>
-						Todo: need to add
-						{position?.supplyAsset.symbol || ''}
-					</Text.Regular12>
-				</div>
+
 				<div className='flex flex-col gap-2.5'>
 					<Slider
 						value={[sliderPercentage]}

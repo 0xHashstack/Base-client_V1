@@ -101,4 +101,34 @@ export class SupplyTokenModel {
 			args: [spender, amountInWei],
 		};
 	}
+
+	/**
+	 * Get the parameters for a withdrawDeposits transaction
+	 * @param diamondAddress The address of the diamond contract
+	 * @param rTokenShares The amount of rTokenShares to withdraw in human-readable format
+	 * @param receiver The address that will receive the withdrawn tokens
+	 * @param owner The address of the owner of the deposit
+	 * @returns Parameters for useWriteContract
+	 */
+	getWithdrawDepositParams({
+		diamondAddress,
+		rTokenShares,
+		receiver,
+		owner,
+	}: {
+		diamondAddress: Web3Address;
+		rTokenShares: string;
+		receiver: Web3Address;
+		owner: Web3Address;
+	}) {
+		// Convert the rTokenShares from human-readable format to wei
+		const rTokenSharesInWei = this.convertToWei(rTokenShares);
+
+		return {
+			address: diamondAddress,
+			abi: this.getDiamondAbi(),
+			functionName: 'withdrawDeposit',
+			args: [this.address, rTokenSharesInWei, receiver, owner],
+		};
+	}
 }
