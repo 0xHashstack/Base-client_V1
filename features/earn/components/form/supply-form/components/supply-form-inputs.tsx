@@ -145,14 +145,9 @@ function SupplyFormInputs() {
 						onValueChange={handleSliderChange}
 						className='mt-1'
 						disabled={isFormDisabled}
+						fixedStepsPercentage={[0, 25, 50, 75, 100]}
+						onStepClick={(value) => handleSliderChange([value])}
 					/>
-					<div className='flex items-center justify-between'>
-						<Text.Regular10>0%</Text.Regular10>
-						<Text.Regular10>25%</Text.Regular10>
-						<Text.Regular10>50%</Text.Regular10>
-						<Text.Regular10>75%</Text.Regular10>
-						<Text.Regular10>100%</Text.Regular10>
-					</div>
 				</div>
 			</Card>
 		</div>
