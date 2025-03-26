@@ -64,6 +64,17 @@ export function useSupplyWithdrawForm() {
 	}, [position]);
 
 	/**
+	 * Create a token model instance when the token changes
+	 */
+	const supplyTokenModel = useMemo(() => {
+		if (!position) return null;
+		return new SupplyTokenModel(
+			position.supplyAsset.address_ as Web3Address,
+			position.supplyAsset.decimals
+		);
+	}, [position]);
+
+	/**
 	 * Validate if the amount is valid for withdrawal
 	 */
 	const validateAmount = useCallback(() => {
