@@ -13,19 +13,13 @@ interface EarnWrapperProps {
  * and renders the SideDrawer
  */
 function EarnWrapper({ children }: EarnWrapperProps) {
-	return (
-		<EarnProvider>
-			<EarnDrawerProvider>
-				<EarnDrawerConsumer>{children}</EarnDrawerConsumer>
-			</EarnDrawerProvider>
-		</EarnProvider>
-	);
+	return <EarnProvider>{children}</EarnProvider>;
 }
 
 /**
  * Consumer component that renders the SideDrawer based on the EarnDrawerContext
  */
-function EarnDrawerConsumer({ children }: { children: ReactNode }) {
+export function EarnDrawerConsumer({ children }: { children: ReactNode }) {
 	return (
 		<>
 			{children}

@@ -49,7 +49,7 @@ export const ThemeAndLanguageProvider = ({
 				<Toaster
 					theme={theme}
 					closeButton
-					duration={4000}
+					duration={5000}
 					position='bottom-center'
 				/>
 			</body>
