@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import { useCallback, useMemo } from 'react';
 import {
@@ -39,6 +40,7 @@ export function useSupplyForm() {
 	const { closeDrawer } = useEarnDrawer();
 	const { supplyMarketDataQueryKey, supplyMarketOverviewQueryKey } =
 		useQueryKeyStore();
+	const resetStore = useSupplyFormStore((state) => state.resetStore);
 
 	// Get the current wallet address
 	const { address: walletAddress } = useDappUser();
@@ -184,6 +186,12 @@ export function useSupplyForm() {
 
 		// If already in approving state, don't do anything
 		if (transactionStatus === TransactionStatus.APPROVING) {
+			return;
+		}
+
+		// Reset the form if transaction failed
+		if (transactionStatus === TransactionStatus.TRANSACTION_FAILED) {
+			resetStore(market);
 			return;
 		}
 

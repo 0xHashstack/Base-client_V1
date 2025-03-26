@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import { useCallback, useMemo } from 'react';
 import {
@@ -39,6 +40,7 @@ export function useSupplyWithdrawForm() {
 		(state) => state.setTransactionStatus
 	);
 	const reset = useSupplyWithdrawFormStore((state) => state.reset);
+	const resetStore = useSupplyWithdrawFormStore((state) => state.resetStore);
 
 	const { closeDrawer } = useEarnDrawer();
 	const { supplyMarketDataQueryKey, supplyMarketOverviewQueryKey } =
@@ -60,17 +62,6 @@ export function useSupplyWithdrawForm() {
 		return new SupplyTokenModel(
 			position.underlyingAsset.address_ as Web3Address,
 			position.underlyingAsset.decimals
-		);
-	}, [position]);
-
-	/**
-	 * Create a token model instance when the token changes
-	 */
-	const supplyTokenModel = useMemo(() => {
-		if (!position) return null;
-		return new SupplyTokenModel(
-			position.supplyAsset.address_ as Web3Address,
-			position.supplyAsset.decimals
 		);
 	}, [position]);
 
@@ -131,6 +122,11 @@ export function useSupplyWithdrawForm() {
 	 */
 	const handleWithdraw = useCallback(async () => {
 		if (!position || !tokenModel || !walletAddress) return;
+
+		if (transactionStatus === TransactionStatus.TRANSACTION_FAILED) {
+			resetStore(position);
+			return;
+		}
 
 		// Validate amount before proceeding
 		const validation = validateAmount();
@@ -220,6 +216,7 @@ export function useSupplyWithdrawForm() {
 		supplyMarketOverviewQueryKey,
 		closeDrawer,
 		reset,
+		transactionStatus,
 	]);
 
 	/**
