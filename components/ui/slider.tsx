@@ -62,7 +62,7 @@ const Slider = React.forwardRef<
 						<SliderPrimitive.Range className='absolute h-full bg-slider-bg data-[disabled]:bg-slider-bg/70' />
 					</SliderPrimitive.Track>
 					{showTooltip ?
-						<TooltipProvider>
+						<TooltipProvider delayDuration={300}>
 							<Tooltip>
 								<TooltipTrigger asChild>
 									<SliderPrimitive.Thumb className='block h-4 w-4 rounded-full border-4 border-slider-thumb bg-background shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring cursor-pointer data-[disabled]:pointer-events-none data-[disabled]:border-slider-thumb/70' />

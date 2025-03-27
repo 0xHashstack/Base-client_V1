@@ -155,6 +155,7 @@ function BorrowFormInputs() {
 					renderValue={renderBorrowMarketValue}
 					onChange={(_, value) => handleBorrowMarketChange(value)}
 					className='border-none p-0 shadow-none ring-0'
+					dropdownClassName='select-primary-displacement'
 				/>
 			</Card>
 
@@ -219,6 +220,7 @@ function BorrowFormInputs() {
 					renderValue={renderTokenValue}
 					onChange={(_, value) => handleTokenChange(value)}
 					className='border-none p-0 shadow-none ring-0'
+					dropdownClassName='select-primary-displacement'
 				/>
 			</Card>
 

@@ -1,0 +1,6 @@
+.select-primary-displacement {
+	--offset: 24px;
+	margin-top: var(--offset) !important;
+	width: calc(100% + (var(--offset) * 2)) !important;
+	left: calc(-1 * var(--offset)) !important;
+}

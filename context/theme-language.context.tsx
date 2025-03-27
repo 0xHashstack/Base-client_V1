@@ -51,6 +51,12 @@ export const ThemeAndLanguageProvider = ({
 					closeButton
 					duration={5000}
 					position='bottom-center'
+					toastOptions={{
+						classNames: {
+							closeButton:
+								'!left-[unset] !right-0 !translate-x-[35%] !translate-y-[-35%]',
+						},
+					}}
 				/>
 			</body>
 		</ThemeAndLanguageContext.Provider>

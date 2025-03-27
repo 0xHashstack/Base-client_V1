@@ -61,6 +61,8 @@ export interface SingleSelectProps<T extends SingleSelectOption>
 	renderOption?: (option: T, isSelected: boolean) => React.ReactNode;
 	/** Custom render function for selected value */
 	renderValue?: (selectedOption: T | null) => React.ReactNode;
+	/** Custom class for dropdown */
+	dropdownClassName?: string;
 }
 
 const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps<any>>(
@@ -82,6 +84,7 @@ const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps<any>>(
 			suffix,
 			renderOption,
 			renderValue,
+			dropdownClassName,
 			...props
 		},
 		ref
@@ -194,7 +197,11 @@ const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps<any>>(
 
 					{/* Dropdown */}
 					{isOpen && (
-						<div className='absolute z-50 w-full mt-1 rounded-xl border border-input bg-popover shadow-md max-h-60 overflow-auto select-none p-1 flex flex-col gap-1'>
+						<div
+							className={cn(
+								'absolute z-50 w-full mt-1 rounded-xl border border-input bg-popover shadow-md max-h-60 overflow-auto select-none p-1 flex flex-col gap-1',
+								dropdownClassName
+							)}>
 							{options.length === 0 ?
 								<div className='py-2 px-3 text-muted-foreground text-sm'>
 									No options available

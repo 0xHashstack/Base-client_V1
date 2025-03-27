@@ -106,6 +106,7 @@ function SupplyFormInputs() {
 					renderValue={renderTokenValue}
 					onChange={handleTokenChange}
 					className='border-none p-0 shadow-none ring-0'
+					dropdownClassName='select-primary-displacement'
 				/>
 			</Card>
 			<Card className='flex flex-col gap-6 p-6'>

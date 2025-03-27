@@ -83,23 +83,22 @@ function MyPositionsTable() {
 			<Table isPrimary>
 				<TableHeader>
 					<TableRow>
-						<TableHead>Market</TableHead>
-
-						<TableHead>Value</TableHead>
-						<TableHead>APR</TableHead>
-						<TableHead></TableHead>
+						<TableHead className='w-1/3'>Market</TableHead>
+						<TableHead className='w-1/3'>Value</TableHead>
+						<TableHead className='w-1/3'>APR</TableHead>
+						<TableHead className='w-[200px]'></TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
 					<If isTrue={isLoadingSupplyMarket}>
 						<TableLoader
 							rowCount={3}
-							colCount={5}
+							colCount={4}
 						/>
 						<If isTrue={userSupplyPositions.length === 0}>
 							<TableNoData
 								message='No positions found'
-								colSpan={5}
+								colSpan={4}
 							/>
 							<>
 								{userSupplyPositions.map((position) => (
@@ -163,7 +162,7 @@ function MyPositionsTable() {
 											)}
 											%
 										</TableCell>
-										<TableCell className='w-[200px]'>
+										<TableCell>
 											<div className='flex items-center gap-4'>
 												<Btn.Outline
 													onClick={() =>
