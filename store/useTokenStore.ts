@@ -6,6 +6,7 @@ import {
 	UserSupplyData,
 	UserSupplyQuickOverview,
 } from '@/types/web3/supply-market.types';
+import { CurrentDebt } from '@/types/web3/borrow.types';
 import { create } from 'zustand';
 
 /**
@@ -17,6 +18,18 @@ interface TokenState {
 	userSupplyPositions: SupplyPosition[];
 	userSupplyQuickOverview: UserSupplyQuickOverview;
 	supplyMarketQuickOverview: SupplyMarketQuickOverview;
+
+	// Borrow market data
+	borrowMarketData: HstkToken[];
+	userBorrowPositions: CurrentDebt[];
+	userBorrowQuickOverview: {
+		totalBorrowedValueUsd: bigint;
+		weightedBorrowApr: bigint;
+	};
+	borrowMarketQuickOverview: {
+		marketBorrowApr: bigint;
+		marketBorrowedAmount: bigint;
+	};
 
 	// Token data
 	collateralTokens: CollateralToken[];
@@ -30,6 +43,7 @@ interface TokenState {
 	isLoadingSupplyMarket: boolean;
 	isLoadingBorrowMarket: boolean;
 	isLoadingSupplyMarketOverview: boolean;
+	isLoadingBorrowMarketOverview: boolean;
 
 	// Actions
 	setCollateralTokens: (tokens: CollateralToken[]) => void;
@@ -40,6 +54,9 @@ interface TokenState {
 	setBorrowMarketLoading: (isLoading: boolean) => void;
 	setSupplyMarketOverview: (data: SupplyMarketQuickOverview) => void;
 	setSupplyMarketOverviewLoading: (isLoading: boolean) => void;
+	setBorrowMarketData: (data: { markets: HstkToken[], borrowPositions: CurrentDebt[], totalBorrowedValueUsd: bigint, weightedBorrowApr: bigint }) => void;
+	setBorrowMarketOverview: (data: { marketBorrowApr: bigint, marketBorrowedAmount: bigint }) => void;
+	setBorrowMarketOverviewLoading: (isLoading: boolean) => void;
 	resetMarketData: () => void;
 }
 
@@ -60,6 +77,17 @@ const staticState: TokenState = (() => {
 			marketApr: BigInt(0),
 			marketDeposit: BigInt(0),
 		},
+		// Borrow market data
+		borrowMarketData: [],
+		userBorrowPositions: [],
+		userBorrowQuickOverview: {
+			totalBorrowedValueUsd: BigInt(0),
+			weightedBorrowApr: BigInt(0),
+		},
+		borrowMarketQuickOverview: {
+			marketBorrowApr: BigInt(0),
+			marketBorrowedAmount: BigInt(0),
+		},
 		// Token data
 		collateralTokens: [],
 		collateralTokensMap: {},
@@ -72,6 +100,7 @@ const staticState: TokenState = (() => {
 		isLoadingSupplyMarket: true,
 		isLoadingBorrowMarket: true,
 		isLoadingSupplyMarketOverview: true,
+		isLoadingBorrowMarketOverview: true,
 
 		// Actions
 		setCollateralTokens: () => {},
@@ -82,6 +111,9 @@ const staticState: TokenState = (() => {
 		setBorrowMarketLoading: () => {},
 		setSupplyMarketOverview: () => {},
 		setSupplyMarketOverviewLoading: () => {},
+		setBorrowMarketData: () => {},
+		setBorrowMarketOverview: () => {},
+		setBorrowMarketOverviewLoading: () => {},
 		resetMarketData: () => {},
 	};
 })();
@@ -152,6 +184,32 @@ export const useTokenStore = create<TokenState>((set) => ({
 		set({ isLoadingBorrowMarket: isLoading });
 	},
 
+	// Set borrow market data and update related fields
+	setBorrowMarketData: (data) => {
+		set({
+			borrowMarketData: data.markets,
+			userBorrowPositions: data.borrowPositions,
+			userBorrowQuickOverview: {
+				totalBorrowedValueUsd: data.totalBorrowedValueUsd,
+				weightedBorrowApr: data.weightedBorrowApr,
+			},
+			isLoadingBorrowMarket: false,
+		});
+	},
+
+	// Set borrow market overview data
+	setBorrowMarketOverview: (data) => {
+		set({
+			borrowMarketQuickOverview: data,
+			isLoadingBorrowMarketOverview: false,
+		});
+	},
+
+	// Set borrow market overview loading state
+	setBorrowMarketOverviewLoading: (isLoading) => {
+		set({ isLoadingBorrowMarketOverview: isLoading });
+	},
+
 	// Set market overview data
 	setSupplyMarketOverview: (data: SupplyMarketQuickOverview) => {
 		set({
@@ -178,9 +236,20 @@ export const useTokenStore = create<TokenState>((set) => ({
 				marketApr: BigInt(0),
 				marketDeposit: BigInt(0),
 			},
+			borrowMarketData: [],
+			userBorrowPositions: [],
+			userBorrowQuickOverview: {
+				totalBorrowedValueUsd: BigInt(0),
+				weightedBorrowApr: BigInt(0),
+			},
+			borrowMarketQuickOverview: {
+				marketBorrowApr: BigInt(0),
+				marketBorrowedAmount: BigInt(0),
+			},
 			isLoadingSupplyMarket: false,
 			isLoadingBorrowMarket: false,
 			isLoadingSupplyMarketOverview: false,
+			isLoadingBorrowMarketOverview: false,
 		});
 	},
 }));

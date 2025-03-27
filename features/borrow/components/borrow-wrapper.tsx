@@ -13,19 +13,13 @@ interface BorrowWrapperProps {
  * and renders the SideDrawer
  */
 function BorrowWrapper({ children }: BorrowWrapperProps) {
-	return (
-		<BorrowProvider>
-			<BorrowDrawerProvider>
-				<BorrowDrawerConsumer>{children}</BorrowDrawerConsumer>
-			</BorrowDrawerProvider>
-		</BorrowProvider>
-	);
+	return <BorrowProvider>{children}</BorrowProvider>;
 }
 
 /**
  * Consumer component that renders the SideDrawer based on the BorrowDrawerContext
  */
-function BorrowDrawerConsumer({ children }: { children: ReactNode }) {
+export function BorrowDrawerConsumer({ children }: { children: ReactNode }) {
 	return (
 		<>
 			{children}

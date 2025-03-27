@@ -9,15 +9,23 @@ interface QueryKeyState {
 	supplyMarketDataQueryKey: readonly unknown[];
 	supplyMarketOverviewQueryKey: readonly unknown[];
 
+	// Borrow market data query keys
+	borrowMarketDataQueryKey: readonly unknown[];
+	borrowMarketOverviewQueryKey: readonly unknown[];
+
 	// Actions
 	setSupplyMarketDataQueryKey: (queryKey: readonly unknown[]) => void;
 	setSupplyMarketOverviewQueryKey: (queryKey: readonly unknown[]) => void;
+	setBorrowMarketDataQueryKey: (queryKey: readonly unknown[]) => void;
+	setBorrowMarketOverviewQueryKey: (queryKey: readonly unknown[]) => void;
 }
 
 export const useQueryKeyStore = create<QueryKeyState>((set) => ({
 	// Initial state
 	supplyMarketDataQueryKey: [],
 	supplyMarketOverviewQueryKey: [],
+	borrowMarketDataQueryKey: [],
+	borrowMarketOverviewQueryKey: [],
 
 	// Actions
 	setSupplyMarketDataQueryKey: (queryKey) =>
@@ -25,4 +33,10 @@ export const useQueryKeyStore = create<QueryKeyState>((set) => ({
 
 	setSupplyMarketOverviewQueryKey: (queryKey) =>
 		set({ supplyMarketOverviewQueryKey: queryKey }),
+
+	setBorrowMarketDataQueryKey: (queryKey) =>
+		set({ borrowMarketDataQueryKey: queryKey }),
+
+	setBorrowMarketOverviewQueryKey: (queryKey) =>
+		set({ borrowMarketOverviewQueryKey: queryKey }),
 }));
