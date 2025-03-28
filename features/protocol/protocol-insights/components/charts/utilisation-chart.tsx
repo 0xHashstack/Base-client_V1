@@ -40,8 +40,6 @@ const UtilisationChart: React.FC<UtilisationChartProps> = ({
 				<LineChart
 					data={data[selectedPeriod]}
 					height={200}
-					areaColor='#3B82F6'
-					strokeColor='#2563EB'
 					yAxisFormatter={(value) => `${value}%`}
 				/>
 			</div>

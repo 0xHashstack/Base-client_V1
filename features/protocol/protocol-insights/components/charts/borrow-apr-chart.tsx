@@ -41,8 +41,6 @@ const BorrowAprChart: React.FC<BorrowAprChartProps> = ({
 				<LineChart
 					data={data[selectedPeriod]}
 					height={200}
-					areaColor='#F97316'
-					strokeColor='#EA580C'
 					yAxisFormatter={(value) => `${value}%`}
 				/>
 			</div>

@@ -42,8 +42,6 @@ const TotalValueLockedChart: React.FC<TotalValueLockedChartProps> = ({
 				<LineChart
 					data={data[selectedPeriod]}
 					height={250}
-					areaColor='#3B82F6'
-					strokeColor='#2563EB'
 					yAxisFormatter={(value) => `$${value.toLocaleString()}`}
 				/>
 			</div>

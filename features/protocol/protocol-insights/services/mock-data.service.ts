@@ -162,7 +162,7 @@ export const getProtocolInsightsData = () => {
 
 	// Borrow data
 	const borrowTokens = ['USDC', 'USDT', 'wBTC', 'wETH'];
-	const borrowColors = ['#4F46E5', '#10B981', '#F59E0B', '#3B82F6'];
+	const borrowColors = ['#1A62F6', '#4582FF', '#81AAFF', '#C8DAFF'];
 	const borrowTokenData = borrowTokens.map((symbol, index) => ({
 		symbol,
 		color: borrowColors[index],

@@ -42,8 +42,6 @@ const SupplyAprChart: React.FC<SupplyAprChartProps> = ({
 				<LineChart
 					data={data[selectedPeriod]}
 					height={200}
-					areaColor='#10B981'
-					strokeColor='#059669'
 					yAxisFormatter={(value) => `${value}%`}
 				/>
 			</div>

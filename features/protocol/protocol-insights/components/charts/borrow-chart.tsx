@@ -12,6 +12,7 @@ import TimePeriodSelector, {
 	TimePeriod,
 } from '../../../../../components/ui/chart/time-period-selector';
 import { formatCurrency } from '@/lib/utils';
+
 import ChartHeading from '@/components/ui/chart/chart-heading';
 
 interface TokenData {
@@ -105,27 +106,7 @@ const BorrowChart: React.FC<BorrowChartProps> = ({
 							}}
 						/>
 
-						{tokens.map((token) => (
-							<defs key={`gradient-${token.symbol}`}>
-								<linearGradient
-									id={`color${token.symbol}`}
-									x1='0'
-									y1='0'
-									x2='0'
-									y2='1'>
-									<stop
-										offset='5%'
-										stopColor={token.color}
-										stopOpacity={0.8}
-									/>
-									<stop
-										offset='95%'
-										stopColor={token.color}
-										stopOpacity={0.1}
-									/>
-								</linearGradient>
-							</defs>
-						))}
+						{/* No gradient definitions needed for solid colors */}
 
 						{tokens.map((token) => (
 							<Area
@@ -134,7 +115,8 @@ const BorrowChart: React.FC<BorrowChartProps> = ({
 								dataKey={token.symbol}
 								stackId='1'
 								stroke={token.color}
-								fill={`url(#color${token.symbol})`}
+								fill={token.color}
+								fillOpacity={1}
 							/>
 						))}
 					</AreaChart>
