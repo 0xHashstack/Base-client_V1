@@ -12,6 +12,12 @@ export const LOCAL_ROUTE = {
 		HOME: '/migrate',
 	},
 	FAUCET: '/faucet',
+	PROTOCOL: {
+		INSIGHTS: '/protocol/insights',
+	},
+	USER: {
+		INSIGHTS: '/user/insights',
+	},
 };
 
 export const EXTERNAL_ROUTE = {

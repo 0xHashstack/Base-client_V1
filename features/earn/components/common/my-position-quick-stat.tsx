@@ -17,7 +17,6 @@ function MyPositionQuickStat() {
 					)
 				}
 				isLoading={isLoadingSupplyMarket}
-				className='min-w-[200px]'
 			/>
 
 			<StatCard

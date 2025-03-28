@@ -2,9 +2,15 @@ import { StatCard } from '@/components/ui/card/stat-card';
 import { useTokenStore } from '@/store/useTokenStore';
 import React from 'react';
 import '@prototype/bigint.prototype';
+import useCustomRouter from '@/hooks/useCustomRouter';
+import { LOCAL_ROUTE } from '@/constant/routes/routes.constant';
 function EarnQuickStat() {
 	const { supplyMarketQuickOverview, isLoadingSupplyMarketOverview } =
 		useTokenStore();
+	const { dashboardRouter } = useCustomRouter();
+	const pushToProtocolInsights = () => {
+		dashboardRouter.push(LOCAL_ROUTE.PROTOCOL.INSIGHTS);
+	};
 	return (
 		<div className='flex gap-2 tablet:gap-4 items-center flex-wrap'>
 			<StatCard
@@ -14,7 +20,8 @@ function EarnQuickStat() {
 					supplyMarketQuickOverview.marketDeposit.formatBalance(18)
 				}
 				isLoading={isLoadingSupplyMarketOverview}
-				className='min-w-[200px]'
+				onClick={pushToProtocolInsights}
+				className='cursor-pointer'
 			/>
 
 			<StatCard
@@ -24,6 +31,8 @@ function EarnQuickStat() {
 				}
 				isLoading={isLoadingSupplyMarketOverview}
 				valueClassName='text-success'
+				onClick={pushToProtocolInsights}
+				className='cursor-pointer'
 			/>
 		</div>
 	);
