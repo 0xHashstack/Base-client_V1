@@ -81,12 +81,16 @@ const LineChart: React.FC<LineChartProps> = ({
 					]}
 					labelFormatter={(label) => `Date: ${label}`}
 					contentStyle={{
-						backgroundColor: '#1e293b',
+						backgroundColor: 'hsl(var(--card))',
 						borderRadius: '6px',
 						border: 'none',
+						boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
 					}}
-					itemStyle={{ color: '#e2e8f0' }}
-					labelStyle={{ color: '#94a3b8', marginBottom: '4px' }}
+					itemStyle={{ color: 'hsl(var(--text-primary-900))' }}
+					labelStyle={{
+						color: 'hsl(var(--text-primary-900))',
+						marginBottom: '4px',
+					}}
 				/>
 				<Area
 					type='monotone'

@@ -2,9 +2,14 @@ import { StatCard } from '@/components/ui/card/stat-card';
 import { useTokenStore } from '@/store/useTokenStore';
 import React from 'react';
 import '@prototype/bigint.prototype';
+import { LOCAL_ROUTE } from '@/constant/routes/routes.constant';
+import useCustomRouter from '@/hooks/useCustomRouter';
 
 function MyPositionQuickStat() {
 	const { userSupplyQuickOverview, isLoadingSupplyMarket } = useTokenStore();
+	const { dashboardRouter } = useCustomRouter();
+	const pushToUserInsights = () =>
+		dashboardRouter.push(LOCAL_ROUTE.USER.INSIGHTS);
 
 	return (
 		<div className='flex gap-2 tablet:gap-4 items-center flex-wrap'>
@@ -17,6 +22,8 @@ function MyPositionQuickStat() {
 					)
 				}
 				isLoading={isLoadingSupplyMarket}
+				onClick={pushToUserInsights}
+				className='cursor-pointer'
 			/>
 
 			<StatCard
@@ -27,6 +34,8 @@ function MyPositionQuickStat() {
 				}
 				isLoading={isLoadingSupplyMarket}
 				valueClassName='text-success'
+				onClick={pushToUserInsights}
+				className='cursor-pointer'
 			/>
 		</div>
 	);

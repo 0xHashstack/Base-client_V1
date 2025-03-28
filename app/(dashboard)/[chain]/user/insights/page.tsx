@@ -1,7 +1,8 @@
 import React from 'react';
+import UserInsightsView from '@/features/user/user-insights/view/user-insights.view';
 
-function page() {
-	return <div></div>;
+function UserInsightsPage() {
+	return <UserInsightsView />;
 }
 
-export default page;
+export default UserInsightsPage;

@@ -62,7 +62,11 @@ const TimePeriodSelector: React.FC<TimePeriodSelectorProps> = ({
 	}, [selectedPeriod, periods]);
 
 	return (
-		<div className={cn('relative flex rounded-lg bg-tab p-1', className)}>
+		<div
+			className={cn(
+				'relative flex rounded-lg bg-tab p-1 z-[1]',
+				className
+			)}>
 			{/* Sliding indicator */}
 			<motion.div
 				className='absolute top-1 bottom-1 rounded-md z-0 bg-tab-active'
