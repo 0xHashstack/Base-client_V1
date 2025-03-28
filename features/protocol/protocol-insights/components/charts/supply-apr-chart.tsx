@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import LineChart, { ChartDataPoint } from './line-chart';
+import LineChart, {
+	ChartDataPoint,
+} from '../../../../../components/ui/chart/line-chart';
 
-import TimePeriodSelector, { TimePeriod } from '../time-period-selector';
-import { StatCard } from '@/components/ui/card/stat-card';
+import TimePeriodSelector, {
+	TimePeriod,
+} from '../../../../../components/ui/chart/time-period-selector';
+import ChartHeading from '@/components/ui/chart/chart-heading';
 
 interface SupplyAprChartProps {
 	data: {
@@ -22,13 +26,12 @@ const SupplyAprChart: React.FC<SupplyAprChartProps> = ({
 	return (
 		<div className='bg-card rounded-lg p-6 w-full'>
 			<div className='flex justify-between items-start mb-6'>
-				<div>
-					<StatCard
-						title='Supply APR'
-						value={`${supplyApr.toFixed(3)}%`}
-						isLoading={isLoading}
-					/>
-				</div>
+				<ChartHeading
+					title='Supply APR'
+					value={`${supplyApr.toFixed(3)}%`}
+					isLoading={isLoading}
+				/>
+
 				<TimePeriodSelector
 					selectedPeriod={selectedPeriod}
 					onChange={setSelectedPeriod}

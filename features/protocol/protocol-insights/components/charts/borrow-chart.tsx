@@ -8,9 +8,11 @@ import {
 	XAxis,
 	YAxis,
 } from 'recharts';
-import TimePeriodSelector, { TimePeriod } from '../time-period-selector';
+import TimePeriodSelector, {
+	TimePeriod,
+} from '../../../../../components/ui/chart/time-period-selector';
 import { formatCurrency } from '@/lib/utils';
-import { StatCard } from '@/components/ui/card/stat-card';
+import ChartHeading from '@/components/ui/chart/chart-heading';
 
 interface TokenData {
 	symbol: string;
@@ -43,7 +45,7 @@ const BorrowChart: React.FC<BorrowChartProps> = ({
 		<div className='bg-card rounded-lg p-6 w-full'>
 			<div className='flex justify-between items-start mb-6'>
 				<div>
-					<StatCard
+					<ChartHeading
 						title='Borrow'
 						value={formatCurrency(totalBorrowed)}
 						isLoading={isLoading}

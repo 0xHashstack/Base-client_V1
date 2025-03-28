@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
-import LineChart, { ChartDataPoint } from './line-chart';
-import TimePeriodSelector, { TimePeriod } from '../time-period-selector';
-import { StatCard } from '@/components/ui/card/stat-card';
+import LineChart, {
+	ChartDataPoint,
+} from '../../../../../components/ui/chart/line-chart';
+import TimePeriodSelector, {
+	TimePeriod,
+} from '../../../../../components/ui/chart/time-period-selector';
+import ChartHeading from '@/components/ui/chart/chart-heading';
 
 interface BorrowAprChartProps {
 	data: {
@@ -21,13 +25,12 @@ const BorrowAprChart: React.FC<BorrowAprChartProps> = ({
 	return (
 		<div className='bg-card rounded-lg p-6 w-full'>
 			<div className='flex justify-between items-start mb-6'>
-				<div>
-					<StatCard
-						title='Borrow APR'
-						value={`${borrowApr.toFixed(2)}%`}
-						isLoading={isLoading}
-					/>
-				</div>
+				<ChartHeading
+					title='Borrow APR'
+					value={`${borrowApr.toFixed(2)}%`}
+					isLoading={isLoading}
+				/>
+
 				<TimePeriodSelector
 					selectedPeriod={selectedPeriod}
 					onChange={setSelectedPeriod}

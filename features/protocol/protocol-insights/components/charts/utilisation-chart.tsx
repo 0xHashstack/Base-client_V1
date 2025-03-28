@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
-import LineChart, { ChartDataPoint } from './line-chart';
-import { StatCard } from '@/components/ui/card/stat-card';
-import TimePeriodSelector, { TimePeriod } from '../time-period-selector';
+import LineChart, {
+	ChartDataPoint,
+} from '../../../../../components/ui/chart/line-chart';
+import TimePeriodSelector, {
+	TimePeriod,
+} from '../../../../../components/ui/chart/time-period-selector';
+import ChartHeading from '@/components/ui/chart/chart-heading';
 
 interface UtilisationChartProps {
 	data: {
@@ -21,13 +25,11 @@ const UtilisationChart: React.FC<UtilisationChartProps> = ({
 	return (
 		<div className='bg-card rounded-lg p-6 w-full'>
 			<div className='flex justify-between items-start mb-6'>
-				<div>
-					<StatCard
-						title='Utilisation'
-						value={`${utilisationRate.toFixed(1)}%`}
-						isLoading={isLoading}
-					/>
-				</div>
+				<ChartHeading
+					title='Utilisation'
+					value={`${utilisationRate.toFixed(1)}%`}
+					isLoading={isLoading}
+				/>
 				<TimePeriodSelector
 					selectedPeriod={selectedPeriod}
 					onChange={setSelectedPeriod}

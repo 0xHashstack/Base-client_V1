@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import LineChart, { ChartDataPoint } from './line-chart';
-import TimePeriodSelector, { TimePeriod } from '../time-period-selector';
+import LineChart, {
+	ChartDataPoint,
+} from '../../../../../components/ui/chart/line-chart';
+import TimePeriodSelector, {
+	TimePeriod,
+} from '../../../../../components/ui/chart/time-period-selector';
 import { formatCurrency } from '@/lib/utils';
-import { StatCard } from '@/components/ui/card/stat-card';
+import ChartHeading from '@/components/ui/chart/chart-heading';
 
 interface TotalValueLockedChartProps {
 	data: {
@@ -22,13 +26,12 @@ const TotalValueLockedChart: React.FC<TotalValueLockedChartProps> = ({
 	return (
 		<div className='bg-card rounded-lg p-6 w-full'>
 			<div className='flex justify-between items-start mb-6'>
-				<div>
-					<StatCard
-						title='Total Value Locked'
-						value={formatCurrency(totalValueLocked)}
-						isLoading={isLoading}
-					/>
-				</div>
+				<ChartHeading
+					title='Total Value Locked'
+					value={formatCurrency(totalValueLocked)}
+					isLoading={isLoading}
+				/>
+
 				<TimePeriodSelector
 					selectedPeriod={selectedPeriod}
 					onChange={setSelectedPeriod}
