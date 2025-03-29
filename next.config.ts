@@ -2,10 +2,16 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
 	images: {
-		domains: [
-			's2.coinmarketcap.com',
-			'cloudflare-ipfs.com',
-			'tokens.example.com',
+		remotePatterns: [
+			{
+				hostname: 's2.coinmarketcap.com',
+			},
+			{
+				hostname: 'cloudflare-ipfs.com',
+			},
+			{
+				hostname: 'tokens.example.com',
+			},
 		],
 	},
 };

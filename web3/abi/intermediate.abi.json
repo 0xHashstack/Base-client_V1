@@ -1,645 +1,1970 @@
 [
 	{
+		"type": "constructor",
 		"inputs": [
 			{
-				"internalType": "address",
 				"name": "_diamond",
-				"type": "address"
+				"type": "address",
+				"internalType": "address"
 			},
-			{ "internalType": "address", "name": "_pricer", "type": "address" },
 			{
-				"internalType": "address",
+				"name": "_pricer",
+				"type": "address",
+				"internalType": "address"
+			},
+			{
 				"name": "_interestRate",
-				"type": "address"
+				"type": "address",
+				"internalType": "address"
 			}
 		],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
+		"stateMutability": "nonpayable"
 	},
 	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "requester",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "dataType",
-				"type": "string"
-			}
-		],
-		"name": "DataRequested",
-		"type": "event"
-	},
-	{
-		"inputs": [],
+		"type": "function",
 		"name": "diamond",
-		"outputs": [
-			{ "internalType": "address", "name": "", "type": "address" }
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "tokenAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "walletAddress",
-				"type": "address"
-			}
-		],
-		"name": "getFreeRTokens",
-		"outputs": [
-			{ "internalType": "uint256", "name": "", "type": "uint256" }
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"inputs": [],
-		"name": "getSupplyMarketOverview",
 		"outputs": [
 			{
-				"components": [
-					{
-						"internalType": "uint256",
-						"name": "marketDeposit",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "marketApr",
-						"type": "uint256"
-					}
-				],
-				"internalType": "struct SupplyDataAggregator.MarketOverview",
 				"name": "",
-				"type": "tuple"
+				"type": "address",
+				"internalType": "address"
 			}
 		],
-		"stateMutability": "view",
-		"type": "function"
+		"stateMutability": "view"
 	},
 	{
-		"inputs": [
+		"type": "function",
+		"name": "getAllBorrowMarkets",
+		"inputs": [],
+		"outputs": [
 			{
-				"internalType": "address",
-				"name": "tokenAddress",
-				"type": "address"
+				"name": "",
+				"type": "tuple[]",
+				"internalType": "struct BaseDataAggregator.BorrowMarketData[]",
+				"components": [
+					{
+						"name": "address_",
+						"type": "address",
+						"internalType": "address"
+					},
+					{
+						"name": "asset",
+						"type": "tuple",
+						"internalType": "struct BaseDataAggregator.AssetInfo",
+						"components": [
+							{
+								"name": "address_",
+								"type": "address",
+								"internalType": "address"
+							},
+							{
+								"name": "name",
+								"type": "string",
+								"internalType": "string"
+							},
+							{
+								"name": "logoURI",
+								"type": "string",
+								"internalType": "string"
+							},
+							{
+								"name": "decimals",
+								"type": "uint8",
+								"internalType": "uint8"
+							},
+							{
+								"name": "priceUSD",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "symbol",
+								"type": "string",
+								"internalType": "string"
+							}
+						]
+					},
+					{
+						"name": "totalBorrowed",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "totalDebt",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "utilizationRate",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "borrowApr",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "availableToBorrow",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "userLoan",
+						"type": "tuple",
+						"internalType": "struct Loan",
+						"components": [
+							{
+								"name": "loanId",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "borrower",
+								"type": "address",
+								"internalType": "address"
+							},
+							{
+								"name": "borrowMarket",
+								"type": "address",
+								"internalType": "address"
+							},
+							{
+								"name": "amount",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "currentMarket",
+								"type": "address",
+								"internalType": "address"
+							},
+							{
+								"name": "currentAmount",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "state",
+								"type": "uint8",
+								"internalType": "enum LoanStateConstants"
+							},
+							{
+								"name": "l3Integration",
+								"type": "address",
+								"internalType": "address"
+							},
+							{
+								"name": "l3Category",
+								"type": "uint8",
+								"internalType": "enum CategoryConstants"
+							},
+							{
+								"name": "createdAt",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "feeAmount",
+								"type": "uint256",
+								"internalType": "uint256"
+							}
+						]
+					}
+				]
 			}
 		],
+		"stateMutability": "view"
+	},
+	{
+		"type": "function",
+		"name": "getAssetInfo",
+		"inputs": [
+			{
+				"name": "tokenAddress",
+				"type": "address",
+				"internalType": "address"
+			}
+		],
+		"outputs": [
+			{
+				"name": "",
+				"type": "tuple",
+				"internalType": "struct BaseDataAggregator.AssetInfo",
+				"components": [
+					{
+						"name": "address_",
+						"type": "address",
+						"internalType": "address"
+					},
+					{
+						"name": "name",
+						"type": "string",
+						"internalType": "string"
+					},
+					{
+						"name": "logoURI",
+						"type": "string",
+						"internalType": "string"
+					},
+					{
+						"name": "decimals",
+						"type": "uint8",
+						"internalType": "uint8"
+					},
+					{
+						"name": "priceUSD",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "symbol",
+						"type": "string",
+						"internalType": "string"
+					}
+				]
+			}
+		],
+		"stateMutability": "view"
+	},
+	{
+		"type": "function",
+		"name": "getAssetValueInUsd",
+		"inputs": [
+			{
+				"name": "asset",
+				"type": "address",
+				"internalType": "address"
+			},
+			{
+				"name": "amount",
+				"type": "uint256",
+				"internalType": "uint256"
+			},
+			{
+				"name": "decimals",
+				"type": "uint8",
+				"internalType": "uint8"
+			}
+		],
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256",
+				"internalType": "uint256"
+			}
+		],
+		"stateMutability": "view"
+	},
+	{
+		"type": "function",
+		"name": "getBorrowMarketData",
+		"inputs": [
+			{
+				"name": "asset",
+				"type": "address",
+				"internalType": "address"
+			},
+			{
+				"name": "dToken",
+				"type": "address",
+				"internalType": "address"
+			},
+			{
+				"name": "user",
+				"type": "address",
+				"internalType": "address"
+			}
+		],
+		"outputs": [
+			{
+				"name": "",
+				"type": "tuple",
+				"internalType": "struct BaseDataAggregator.BorrowMarketData",
+				"components": [
+					{
+						"name": "address_",
+						"type": "address",
+						"internalType": "address"
+					},
+					{
+						"name": "asset",
+						"type": "tuple",
+						"internalType": "struct BaseDataAggregator.AssetInfo",
+						"components": [
+							{
+								"name": "address_",
+								"type": "address",
+								"internalType": "address"
+							},
+							{
+								"name": "name",
+								"type": "string",
+								"internalType": "string"
+							},
+							{
+								"name": "logoURI",
+								"type": "string",
+								"internalType": "string"
+							},
+							{
+								"name": "decimals",
+								"type": "uint8",
+								"internalType": "uint8"
+							},
+							{
+								"name": "priceUSD",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "symbol",
+								"type": "string",
+								"internalType": "string"
+							}
+						]
+					},
+					{
+						"name": "totalBorrowed",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "totalDebt",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "utilizationRate",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "borrowApr",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "availableToBorrow",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "userLoan",
+						"type": "tuple",
+						"internalType": "struct Loan",
+						"components": [
+							{
+								"name": "loanId",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "borrower",
+								"type": "address",
+								"internalType": "address"
+							},
+							{
+								"name": "borrowMarket",
+								"type": "address",
+								"internalType": "address"
+							},
+							{
+								"name": "amount",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "currentMarket",
+								"type": "address",
+								"internalType": "address"
+							},
+							{
+								"name": "currentAmount",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "state",
+								"type": "uint8",
+								"internalType": "enum LoanStateConstants"
+							},
+							{
+								"name": "l3Integration",
+								"type": "address",
+								"internalType": "address"
+							},
+							{
+								"name": "l3Category",
+								"type": "uint8",
+								"internalType": "enum CategoryConstants"
+							},
+							{
+								"name": "createdAt",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "feeAmount",
+								"type": "uint256",
+								"internalType": "uint256"
+							}
+						]
+					}
+				]
+			}
+		],
+		"stateMutability": "view"
+	},
+	{
+		"type": "function",
+		"name": "getBorrowMarketOverview",
+		"inputs": [],
+		"outputs": [
+			{
+				"name": "",
+				"type": "tuple",
+				"internalType": "struct BaseDataAggregator.MarketOverview",
+				"components": [
+					{
+						"name": "totalDebt",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "avgUtilization",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "avgBorrowApr",
+						"type": "uint256",
+						"internalType": "uint256"
+					}
+				]
+			}
+		],
+		"stateMutability": "view"
+	},
+	{
+		"type": "function",
+		"name": "getBorrowMarkets",
+		"inputs": [],
+		"outputs": [
+			{
+				"name": "",
+				"type": "address[]",
+				"internalType": "address[]"
+			}
+		],
+		"stateMutability": "view"
+	},
+	{
+		"type": "function",
+		"name": "getCollateralForLoan",
+		"inputs": [
+			{
+				"name": "dToken",
+				"type": "address",
+				"internalType": "address"
+			},
+			{
+				"name": "loanId",
+				"type": "uint256",
+				"internalType": "uint256"
+			}
+		],
+		"outputs": [
+			{
+				"name": "",
+				"type": "tuple",
+				"internalType": "struct Collateral",
+				"components": [
+					{
+						"name": "loanId",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "rToken",
+						"type": "address",
+						"internalType": "address"
+					},
+					{
+						"name": "rTokenAmount",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "createdAt",
+						"type": "uint256",
+						"internalType": "uint256"
+					}
+				]
+			}
+		],
+		"stateMutability": "view"
+	},
+	{
+		"type": "function",
+		"name": "getFreeRTokens",
+		"inputs": [
+			{
+				"name": "tokenAddress",
+				"type": "address",
+				"internalType": "address"
+			},
+			{
+				"name": "walletAddress",
+				"type": "address",
+				"internalType": "address"
+			}
+		],
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256",
+				"internalType": "uint256"
+			}
+		],
+		"stateMutability": "view"
+	},
+	{
+		"type": "function",
+		"name": "getMarketsData",
+		"inputs": [
+			{
+				"name": "assetAddresses",
+				"type": "address[]",
+				"internalType": "address[]"
+			},
+			{
+				"name": "user",
+				"type": "address",
+				"internalType": "address"
+			}
+		],
+		"outputs": [
+			{
+				"name": "",
+				"type": "tuple[]",
+				"internalType": "struct BaseDataAggregator.BorrowMarketData[]",
+				"components": [
+					{
+						"name": "address_",
+						"type": "address",
+						"internalType": "address"
+					},
+					{
+						"name": "asset",
+						"type": "tuple",
+						"internalType": "struct BaseDataAggregator.AssetInfo",
+						"components": [
+							{
+								"name": "address_",
+								"type": "address",
+								"internalType": "address"
+							},
+							{
+								"name": "name",
+								"type": "string",
+								"internalType": "string"
+							},
+							{
+								"name": "logoURI",
+								"type": "string",
+								"internalType": "string"
+							},
+							{
+								"name": "decimals",
+								"type": "uint8",
+								"internalType": "uint8"
+							},
+							{
+								"name": "priceUSD",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "symbol",
+								"type": "string",
+								"internalType": "string"
+							}
+						]
+					},
+					{
+						"name": "totalBorrowed",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "totalDebt",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "utilizationRate",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "borrowApr",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "availableToBorrow",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "userLoan",
+						"type": "tuple",
+						"internalType": "struct Loan",
+						"components": [
+							{
+								"name": "loanId",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "borrower",
+								"type": "address",
+								"internalType": "address"
+							},
+							{
+								"name": "borrowMarket",
+								"type": "address",
+								"internalType": "address"
+							},
+							{
+								"name": "amount",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "currentMarket",
+								"type": "address",
+								"internalType": "address"
+							},
+							{
+								"name": "currentAmount",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "state",
+								"type": "uint8",
+								"internalType": "enum LoanStateConstants"
+							},
+							{
+								"name": "l3Integration",
+								"type": "address",
+								"internalType": "address"
+							},
+							{
+								"name": "l3Category",
+								"type": "uint8",
+								"internalType": "enum CategoryConstants"
+							},
+							{
+								"name": "createdAt",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "feeAmount",
+								"type": "uint256",
+								"internalType": "uint256"
+							}
+						]
+					}
+				]
+			}
+		],
+		"stateMutability": "view"
+	},
+	{
+		"type": "function",
+		"name": "getSupplyMarketOverview",
+		"inputs": [],
+		"outputs": [
+			{
+				"name": "",
+				"type": "tuple",
+				"internalType": "struct BaseDataAggregator.SupplyMarketOverview",
+				"components": [
+					{
+						"name": "marketDeposit",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "marketApr",
+						"type": "uint256",
+						"internalType": "uint256"
+					}
+				]
+			}
+		],
+		"stateMutability": "view"
+	},
+	{
+		"type": "function",
 		"name": "getSupplyVaultDetails",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "totalSupply",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "totalAssets",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "totalUniqueSuppliers",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "incentiveAccruedInterest",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "supplyInterestRate",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "exchangeRate",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "walletAddress",
-				"type": "address"
-			}
-		],
-		"name": "getUserSupply",
-		"outputs": [
-			{
-				"components": [
-					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "address_",
-								"type": "address"
-							},
-							{
-								"components": [
-									{
-										"internalType": "address",
-										"name": "address_",
-										"type": "address"
-									},
-									{
-										"internalType": "string",
-										"name": "name",
-										"type": "string"
-									},
-									{
-										"internalType": "string",
-										"name": "logoURI",
-										"type": "string"
-									},
-									{
-										"internalType": "uint8",
-										"name": "decimals",
-										"type": "uint8"
-									},
-									{
-										"internalType": "uint256",
-										"name": "priceUSD",
-										"type": "uint256"
-									},
-									{
-										"internalType": "string",
-										"name": "symbol",
-										"type": "string"
-									}
-								],
-								"internalType": "struct SupplyDataAggregator.AssetInfo",
-								"name": "asset",
-								"type": "tuple"
-							},
-							{
-								"components": [
-									{
-										"internalType": "uint256",
-										"name": "totalSupply",
-										"type": "uint256"
-									},
-									{
-										"internalType": "uint256",
-										"name": "totalAssets",
-										"type": "uint256"
-									},
-									{
-										"internalType": "uint256",
-										"name": "totalAssetsUsd",
-										"type": "uint256"
-									},
-									{
-										"internalType": "uint256",
-										"name": "annualApy",
-										"type": "uint256"
-									}
-								],
-								"internalType": "struct SupplyDataAggregator.SupplyStateData",
-								"name": "state",
-								"type": "tuple"
-							},
-							{
-								"internalType": "uint256",
-								"name": "walletBalance",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "userAssetValue",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct SupplyDataAggregator.SupplyMarketData[]",
-						"name": "markets",
-						"type": "tuple[]"
-					},
-					{
-						"internalType": "uint256",
-						"name": "totalSuppliedValueUsd",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "weightedNetApy",
-						"type": "uint256"
-					},
-					{
-						"components": [
-							{
-								"components": [
-									{
-										"internalType": "address",
-										"name": "address_",
-										"type": "address"
-									},
-									{
-										"internalType": "string",
-										"name": "name",
-										"type": "string"
-									},
-									{
-										"internalType": "string",
-										"name": "logoURI",
-										"type": "string"
-									},
-									{
-										"internalType": "uint8",
-										"name": "decimals",
-										"type": "uint8"
-									},
-									{
-										"internalType": "uint256",
-										"name": "priceUSD",
-										"type": "uint256"
-									},
-									{
-										"internalType": "string",
-										"name": "symbol",
-										"type": "string"
-									}
-								],
-								"internalType": "struct SupplyDataAggregator.AssetInfo",
-								"name": "supplyAsset",
-								"type": "tuple"
-							},
-							{
-								"components": [
-									{
-										"internalType": "address",
-										"name": "address_",
-										"type": "address"
-									},
-									{
-										"internalType": "string",
-										"name": "name",
-										"type": "string"
-									},
-									{
-										"internalType": "string",
-										"name": "logoURI",
-										"type": "string"
-									},
-									{
-										"internalType": "uint8",
-										"name": "decimals",
-										"type": "uint8"
-									},
-									{
-										"internalType": "uint256",
-										"name": "priceUSD",
-										"type": "uint256"
-									},
-									{
-										"internalType": "string",
-										"name": "symbol",
-										"type": "string"
-									}
-								],
-								"internalType": "struct SupplyDataAggregator.AssetInfo",
-								"name": "underlyingAsset",
-								"type": "tuple"
-							},
-							{
-								"internalType": "uint256",
-								"name": "suppliedAmount",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "marketValue",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "receiptTokens",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "exchangeRate",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "yieldRate",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "effectiveYield",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct SupplyDataAggregator.SupplyPosition[]",
-						"name": "supplyPositions",
-						"type": "tuple[]"
-					}
-				],
-				"internalType": "struct SupplyDataAggregator.UserSupplyData",
-				"name": "userData",
-				"type": "tuple"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address[]",
-				"name": "tokenAddresses",
-				"type": "address[]"
-			},
-			{
-				"internalType": "address",
-				"name": "walletAddress",
-				"type": "address"
-			}
-		],
-		"name": "getUserSupplyMarketData",
-		"outputs": [
-			{
-				"components": [
-					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "address_",
-								"type": "address"
-							},
-							{
-								"components": [
-									{
-										"internalType": "address",
-										"name": "address_",
-										"type": "address"
-									},
-									{
-										"internalType": "string",
-										"name": "name",
-										"type": "string"
-									},
-									{
-										"internalType": "string",
-										"name": "logoURI",
-										"type": "string"
-									},
-									{
-										"internalType": "uint8",
-										"name": "decimals",
-										"type": "uint8"
-									},
-									{
-										"internalType": "uint256",
-										"name": "priceUSD",
-										"type": "uint256"
-									},
-									{
-										"internalType": "string",
-										"name": "symbol",
-										"type": "string"
-									}
-								],
-								"internalType": "struct SupplyDataAggregator.AssetInfo",
-								"name": "asset",
-								"type": "tuple"
-							},
-							{
-								"components": [
-									{
-										"internalType": "uint256",
-										"name": "totalSupply",
-										"type": "uint256"
-									},
-									{
-										"internalType": "uint256",
-										"name": "totalAssets",
-										"type": "uint256"
-									},
-									{
-										"internalType": "uint256",
-										"name": "totalAssetsUsd",
-										"type": "uint256"
-									},
-									{
-										"internalType": "uint256",
-										"name": "annualApy",
-										"type": "uint256"
-									}
-								],
-								"internalType": "struct SupplyDataAggregator.SupplyStateData",
-								"name": "state",
-								"type": "tuple"
-							},
-							{
-								"internalType": "uint256",
-								"name": "walletBalance",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "userAssetValue",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct SupplyDataAggregator.SupplyMarketData[]",
-						"name": "markets",
-						"type": "tuple[]"
-					},
-					{
-						"internalType": "uint256",
-						"name": "totalSuppliedValueUsd",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "weightedNetApy",
-						"type": "uint256"
-					},
-					{
-						"components": [
-							{
-								"components": [
-									{
-										"internalType": "address",
-										"name": "address_",
-										"type": "address"
-									},
-									{
-										"internalType": "string",
-										"name": "name",
-										"type": "string"
-									},
-									{
-										"internalType": "string",
-										"name": "logoURI",
-										"type": "string"
-									},
-									{
-										"internalType": "uint8",
-										"name": "decimals",
-										"type": "uint8"
-									},
-									{
-										"internalType": "uint256",
-										"name": "priceUSD",
-										"type": "uint256"
-									},
-									{
-										"internalType": "string",
-										"name": "symbol",
-										"type": "string"
-									}
-								],
-								"internalType": "struct SupplyDataAggregator.AssetInfo",
-								"name": "supplyAsset",
-								"type": "tuple"
-							},
-							{
-								"components": [
-									{
-										"internalType": "address",
-										"name": "address_",
-										"type": "address"
-									},
-									{
-										"internalType": "string",
-										"name": "name",
-										"type": "string"
-									},
-									{
-										"internalType": "string",
-										"name": "logoURI",
-										"type": "string"
-									},
-									{
-										"internalType": "uint8",
-										"name": "decimals",
-										"type": "uint8"
-									},
-									{
-										"internalType": "uint256",
-										"name": "priceUSD",
-										"type": "uint256"
-									},
-									{
-										"internalType": "string",
-										"name": "symbol",
-										"type": "string"
-									}
-								],
-								"internalType": "struct SupplyDataAggregator.AssetInfo",
-								"name": "underlyingAsset",
-								"type": "tuple"
-							},
-							{
-								"internalType": "uint256",
-								"name": "suppliedAmount",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "marketValue",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "receiptTokens",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "exchangeRate",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "yieldRate",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "effectiveYield",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct SupplyDataAggregator.SupplyPosition[]",
-						"name": "supplyPositions",
-						"type": "tuple[]"
-					}
-				],
-				"internalType": "struct SupplyDataAggregator.UserSupplyData",
-				"name": "userData",
-				"type": "tuple"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "interestRate",
-		"outputs": [
-			{ "internalType": "address", "name": "", "type": "address" }
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "pricer",
-		"outputs": [
-			{ "internalType": "address", "name": "", "type": "address" }
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address[]",
-				"name": "vaults",
-				"type": "address[]"
-			}
-		],
-		"name": "setKnownSupplyVaults",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
 				"name": "tokenAddress",
-				"type": "address"
-			},
-			{ "internalType": "string", "name": "name", "type": "string" },
-			{ "internalType": "string", "name": "symbol", "type": "string" },
-			{ "internalType": "uint8", "name": "decimals", "type": "uint8" },
-			{ "internalType": "string", "name": "logoURI", "type": "string" }
+				"type": "address",
+				"internalType": "address"
+			}
 		],
-		"name": "setTokenMetadata",
+		"outputs": [
+			{
+				"name": "totalSupply",
+				"type": "uint256",
+				"internalType": "uint256"
+			},
+			{
+				"name": "totalAssets",
+				"type": "uint256",
+				"internalType": "uint256"
+			},
+			{
+				"name": "totalUniqueSuppliers",
+				"type": "uint256",
+				"internalType": "uint256"
+			},
+			{
+				"name": "incentiveAccruedInterest",
+				"type": "uint256",
+				"internalType": "uint256"
+			},
+			{
+				"name": "supplyInterestRate",
+				"type": "uint256",
+				"internalType": "uint256"
+			},
+			{
+				"name": "exchangeRate",
+				"type": "uint256",
+				"internalType": "uint256"
+			}
+		],
+		"stateMutability": "view"
+	},
+	{
+		"type": "function",
+		"name": "getUserBorrowData",
+		"inputs": [
+			{
+				"name": "user",
+				"type": "address",
+				"internalType": "address"
+			}
+		],
+		"outputs": [
+			{
+				"name": "",
+				"type": "tuple",
+				"internalType": "struct BaseDataAggregator.UserLoanData",
+				"components": [
+					{
+						"name": "marketLoans",
+						"type": "tuple[]",
+						"internalType": "struct BaseDataAggregator.BorrowMarketData[]",
+						"components": [
+							{
+								"name": "address_",
+								"type": "address",
+								"internalType": "address"
+							},
+							{
+								"name": "asset",
+								"type": "tuple",
+								"internalType": "struct BaseDataAggregator.AssetInfo",
+								"components": [
+									{
+										"name": "address_",
+										"type": "address",
+										"internalType": "address"
+									},
+									{
+										"name": "name",
+										"type": "string",
+										"internalType": "string"
+									},
+									{
+										"name": "logoURI",
+										"type": "string",
+										"internalType": "string"
+									},
+									{
+										"name": "decimals",
+										"type": "uint8",
+										"internalType": "uint8"
+									},
+									{
+										"name": "priceUSD",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "symbol",
+										"type": "string",
+										"internalType": "string"
+									}
+								]
+							},
+							{
+								"name": "totalBorrowed",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "totalDebt",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "utilizationRate",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "borrowApr",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "availableToBorrow",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "userLoan",
+								"type": "tuple",
+								"internalType": "struct Loan",
+								"components": [
+									{
+										"name": "loanId",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "borrower",
+										"type": "address",
+										"internalType": "address"
+									},
+									{
+										"name": "borrowMarket",
+										"type": "address",
+										"internalType": "address"
+									},
+									{
+										"name": "amount",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "currentMarket",
+										"type": "address",
+										"internalType": "address"
+									},
+									{
+										"name": "currentAmount",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "state",
+										"type": "uint8",
+										"internalType": "enum LoanStateConstants"
+									},
+									{
+										"name": "l3Integration",
+										"type": "address",
+										"internalType": "address"
+									},
+									{
+										"name": "l3Category",
+										"type": "uint8",
+										"internalType": "enum CategoryConstants"
+									},
+									{
+										"name": "createdAt",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "feeAmount",
+										"type": "uint256",
+										"internalType": "uint256"
+									}
+								]
+							}
+						]
+					},
+					{
+						"name": "totalBorrowedValueUsd",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "totalCollateralValueUsd",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "weightedBorrowApr",
+						"type": "uint256",
+						"internalType": "uint256"
+					}
+				]
+			}
+		],
+		"stateMutability": "view"
+	},
+	{
+		"type": "function",
+		"name": "getUserData",
+		"inputs": [
+			{
+				"name": "user",
+				"type": "address",
+				"internalType": "address"
+			}
+		],
+		"outputs": [
+			{
+				"name": "",
+				"type": "tuple",
+				"internalType": "struct BaseDataAggregator.UserData",
+				"components": [
+					{
+						"name": "borrowData",
+						"type": "tuple",
+						"internalType": "struct BaseDataAggregator.UserLoanData",
+						"components": [
+							{
+								"name": "marketLoans",
+								"type": "tuple[]",
+								"internalType": "struct BaseDataAggregator.BorrowMarketData[]",
+								"components": [
+									{
+										"name": "address_",
+										"type": "address",
+										"internalType": "address"
+									},
+									{
+										"name": "asset",
+										"type": "tuple",
+										"internalType": "struct BaseDataAggregator.AssetInfo",
+										"components": [
+											{
+												"name": "address_",
+												"type": "address",
+												"internalType": "address"
+											},
+											{
+												"name": "name",
+												"type": "string",
+												"internalType": "string"
+											},
+											{
+												"name": "logoURI",
+												"type": "string",
+												"internalType": "string"
+											},
+											{
+												"name": "decimals",
+												"type": "uint8",
+												"internalType": "uint8"
+											},
+											{
+												"name": "priceUSD",
+												"type": "uint256",
+												"internalType": "uint256"
+											},
+											{
+												"name": "symbol",
+												"type": "string",
+												"internalType": "string"
+											}
+										]
+									},
+									{
+										"name": "totalBorrowed",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "totalDebt",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "utilizationRate",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "borrowApr",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "availableToBorrow",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "userLoan",
+										"type": "tuple",
+										"internalType": "struct Loan",
+										"components": [
+											{
+												"name": "loanId",
+												"type": "uint256",
+												"internalType": "uint256"
+											},
+											{
+												"name": "borrower",
+												"type": "address",
+												"internalType": "address"
+											},
+											{
+												"name": "borrowMarket",
+												"type": "address",
+												"internalType": "address"
+											},
+											{
+												"name": "amount",
+												"type": "uint256",
+												"internalType": "uint256"
+											},
+											{
+												"name": "currentMarket",
+												"type": "address",
+												"internalType": "address"
+											},
+											{
+												"name": "currentAmount",
+												"type": "uint256",
+												"internalType": "uint256"
+											},
+											{
+												"name": "state",
+												"type": "uint8",
+												"internalType": "enum LoanStateConstants"
+											},
+											{
+												"name": "l3Integration",
+												"type": "address",
+												"internalType": "address"
+											},
+											{
+												"name": "l3Category",
+												"type": "uint8",
+												"internalType": "enum CategoryConstants"
+											},
+											{
+												"name": "createdAt",
+												"type": "uint256",
+												"internalType": "uint256"
+											},
+											{
+												"name": "feeAmount",
+												"type": "uint256",
+												"internalType": "uint256"
+											}
+										]
+									}
+								]
+							},
+							{
+								"name": "totalBorrowedValueUsd",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "totalCollateralValueUsd",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "weightedBorrowApr",
+								"type": "uint256",
+								"internalType": "uint256"
+							}
+						]
+					},
+					{
+						"name": "supplyData",
+						"type": "tuple",
+						"internalType": "struct BaseDataAggregator.UserSupplyData",
+						"components": [
+							{
+								"name": "markets",
+								"type": "tuple[]",
+								"internalType": "struct BaseDataAggregator.SupplyMarketData[]",
+								"components": [
+									{
+										"name": "address_",
+										"type": "address",
+										"internalType": "address"
+									},
+									{
+										"name": "asset",
+										"type": "tuple",
+										"internalType": "struct BaseDataAggregator.AssetInfo",
+										"components": [
+											{
+												"name": "address_",
+												"type": "address",
+												"internalType": "address"
+											},
+											{
+												"name": "name",
+												"type": "string",
+												"internalType": "string"
+											},
+											{
+												"name": "logoURI",
+												"type": "string",
+												"internalType": "string"
+											},
+											{
+												"name": "decimals",
+												"type": "uint8",
+												"internalType": "uint8"
+											},
+											{
+												"name": "priceUSD",
+												"type": "uint256",
+												"internalType": "uint256"
+											},
+											{
+												"name": "symbol",
+												"type": "string",
+												"internalType": "string"
+											}
+										]
+									},
+									{
+										"name": "state",
+										"type": "tuple",
+										"internalType": "struct BaseDataAggregator.SupplyStateData",
+										"components": [
+											{
+												"name": "totalSupply",
+												"type": "uint256",
+												"internalType": "uint256"
+											},
+											{
+												"name": "totalAssets",
+												"type": "uint256",
+												"internalType": "uint256"
+											},
+											{
+												"name": "totalAssetsUsd",
+												"type": "uint256",
+												"internalType": "uint256"
+											},
+											{
+												"name": "annualApy",
+												"type": "uint256",
+												"internalType": "uint256"
+											}
+										]
+									},
+									{
+										"name": "walletBalance",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "userAssetValue",
+										"type": "uint256",
+										"internalType": "uint256"
+									}
+								]
+							},
+							{
+								"name": "totalSuppliedValueUsd",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "weightedNetApy",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "supplyPositions",
+								"type": "tuple[]",
+								"internalType": "struct BaseDataAggregator.SupplyPosition[]",
+								"components": [
+									{
+										"name": "supplyAsset",
+										"type": "tuple",
+										"internalType": "struct BaseDataAggregator.AssetInfo",
+										"components": [
+											{
+												"name": "address_",
+												"type": "address",
+												"internalType": "address"
+											},
+											{
+												"name": "name",
+												"type": "string",
+												"internalType": "string"
+											},
+											{
+												"name": "logoURI",
+												"type": "string",
+												"internalType": "string"
+											},
+											{
+												"name": "decimals",
+												"type": "uint8",
+												"internalType": "uint8"
+											},
+											{
+												"name": "priceUSD",
+												"type": "uint256",
+												"internalType": "uint256"
+											},
+											{
+												"name": "symbol",
+												"type": "string",
+												"internalType": "string"
+											}
+										]
+									},
+									{
+										"name": "underlyingAsset",
+										"type": "tuple",
+										"internalType": "struct BaseDataAggregator.AssetInfo",
+										"components": [
+											{
+												"name": "address_",
+												"type": "address",
+												"internalType": "address"
+											},
+											{
+												"name": "name",
+												"type": "string",
+												"internalType": "string"
+											},
+											{
+												"name": "logoURI",
+												"type": "string",
+												"internalType": "string"
+											},
+											{
+												"name": "decimals",
+												"type": "uint8",
+												"internalType": "uint8"
+											},
+											{
+												"name": "priceUSD",
+												"type": "uint256",
+												"internalType": "uint256"
+											},
+											{
+												"name": "symbol",
+												"type": "string",
+												"internalType": "string"
+											}
+										]
+									},
+									{
+										"name": "suppliedAmount",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "marketValue",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "receiptTokens",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "exchangeRate",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "yieldRate",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "effectiveYield",
+										"type": "uint256",
+										"internalType": "uint256"
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		],
+		"stateMutability": "view"
+	},
+	{
+		"type": "function",
+		"name": "getUserLoanForMarket",
+		"inputs": [
+			{
+				"name": "dToken",
+				"type": "address",
+				"internalType": "address"
+			},
+			{
+				"name": "user",
+				"type": "address",
+				"internalType": "address"
+			}
+		],
+		"outputs": [
+			{
+				"name": "",
+				"type": "tuple[]",
+				"internalType": "struct Loan[]",
+				"components": [
+					{
+						"name": "loanId",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "borrower",
+						"type": "address",
+						"internalType": "address"
+					},
+					{
+						"name": "borrowMarket",
+						"type": "address",
+						"internalType": "address"
+					},
+					{
+						"name": "amount",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "currentMarket",
+						"type": "address",
+						"internalType": "address"
+					},
+					{
+						"name": "currentAmount",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "state",
+						"type": "uint8",
+						"internalType": "enum LoanStateConstants"
+					},
+					{
+						"name": "l3Integration",
+						"type": "address",
+						"internalType": "address"
+					},
+					{
+						"name": "l3Category",
+						"type": "uint8",
+						"internalType": "enum CategoryConstants"
+					},
+					{
+						"name": "createdAt",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "feeAmount",
+						"type": "uint256",
+						"internalType": "uint256"
+					}
+				]
+			}
+		],
+		"stateMutability": "view"
+	},
+	{
+		"type": "function",
+		"name": "getUserSupply",
+		"inputs": [
+			{
+				"name": "walletAddress",
+				"type": "address",
+				"internalType": "address"
+			}
+		],
+		"outputs": [
+			{
+				"name": "userData",
+				"type": "tuple",
+				"internalType": "struct BaseDataAggregator.UserSupplyData",
+				"components": [
+					{
+						"name": "markets",
+						"type": "tuple[]",
+						"internalType": "struct BaseDataAggregator.SupplyMarketData[]",
+						"components": [
+							{
+								"name": "address_",
+								"type": "address",
+								"internalType": "address"
+							},
+							{
+								"name": "asset",
+								"type": "tuple",
+								"internalType": "struct BaseDataAggregator.AssetInfo",
+								"components": [
+									{
+										"name": "address_",
+										"type": "address",
+										"internalType": "address"
+									},
+									{
+										"name": "name",
+										"type": "string",
+										"internalType": "string"
+									},
+									{
+										"name": "logoURI",
+										"type": "string",
+										"internalType": "string"
+									},
+									{
+										"name": "decimals",
+										"type": "uint8",
+										"internalType": "uint8"
+									},
+									{
+										"name": "priceUSD",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "symbol",
+										"type": "string",
+										"internalType": "string"
+									}
+								]
+							},
+							{
+								"name": "state",
+								"type": "tuple",
+								"internalType": "struct BaseDataAggregator.SupplyStateData",
+								"components": [
+									{
+										"name": "totalSupply",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "totalAssets",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "totalAssetsUsd",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "annualApy",
+										"type": "uint256",
+										"internalType": "uint256"
+									}
+								]
+							},
+							{
+								"name": "walletBalance",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "userAssetValue",
+								"type": "uint256",
+								"internalType": "uint256"
+							}
+						]
+					},
+					{
+						"name": "totalSuppliedValueUsd",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "weightedNetApy",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "supplyPositions",
+						"type": "tuple[]",
+						"internalType": "struct BaseDataAggregator.SupplyPosition[]",
+						"components": [
+							{
+								"name": "supplyAsset",
+								"type": "tuple",
+								"internalType": "struct BaseDataAggregator.AssetInfo",
+								"components": [
+									{
+										"name": "address_",
+										"type": "address",
+										"internalType": "address"
+									},
+									{
+										"name": "name",
+										"type": "string",
+										"internalType": "string"
+									},
+									{
+										"name": "logoURI",
+										"type": "string",
+										"internalType": "string"
+									},
+									{
+										"name": "decimals",
+										"type": "uint8",
+										"internalType": "uint8"
+									},
+									{
+										"name": "priceUSD",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "symbol",
+										"type": "string",
+										"internalType": "string"
+									}
+								]
+							},
+							{
+								"name": "underlyingAsset",
+								"type": "tuple",
+								"internalType": "struct BaseDataAggregator.AssetInfo",
+								"components": [
+									{
+										"name": "address_",
+										"type": "address",
+										"internalType": "address"
+									},
+									{
+										"name": "name",
+										"type": "string",
+										"internalType": "string"
+									},
+									{
+										"name": "logoURI",
+										"type": "string",
+										"internalType": "string"
+									},
+									{
+										"name": "decimals",
+										"type": "uint8",
+										"internalType": "uint8"
+									},
+									{
+										"name": "priceUSD",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "symbol",
+										"type": "string",
+										"internalType": "string"
+									}
+								]
+							},
+							{
+								"name": "suppliedAmount",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "marketValue",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "receiptTokens",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "exchangeRate",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "yieldRate",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "effectiveYield",
+								"type": "uint256",
+								"internalType": "uint256"
+							}
+						]
+					}
+				]
+			}
+		],
+		"stateMutability": "view"
+	},
+	{
+		"type": "function",
+		"name": "getUserSupplyMarketData",
+		"inputs": [
+			{
+				"name": "tokenAddresses",
+				"type": "address[]",
+				"internalType": "address[]"
+			},
+			{
+				"name": "walletAddress",
+				"type": "address",
+				"internalType": "address"
+			}
+		],
+		"outputs": [
+			{
+				"name": "userData",
+				"type": "tuple",
+				"internalType": "struct BaseDataAggregator.UserSupplyData",
+				"components": [
+					{
+						"name": "markets",
+						"type": "tuple[]",
+						"internalType": "struct BaseDataAggregator.SupplyMarketData[]",
+						"components": [
+							{
+								"name": "address_",
+								"type": "address",
+								"internalType": "address"
+							},
+							{
+								"name": "asset",
+								"type": "tuple",
+								"internalType": "struct BaseDataAggregator.AssetInfo",
+								"components": [
+									{
+										"name": "address_",
+										"type": "address",
+										"internalType": "address"
+									},
+									{
+										"name": "name",
+										"type": "string",
+										"internalType": "string"
+									},
+									{
+										"name": "logoURI",
+										"type": "string",
+										"internalType": "string"
+									},
+									{
+										"name": "decimals",
+										"type": "uint8",
+										"internalType": "uint8"
+									},
+									{
+										"name": "priceUSD",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "symbol",
+										"type": "string",
+										"internalType": "string"
+									}
+								]
+							},
+							{
+								"name": "state",
+								"type": "tuple",
+								"internalType": "struct BaseDataAggregator.SupplyStateData",
+								"components": [
+									{
+										"name": "totalSupply",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "totalAssets",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "totalAssetsUsd",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "annualApy",
+										"type": "uint256",
+										"internalType": "uint256"
+									}
+								]
+							},
+							{
+								"name": "walletBalance",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "userAssetValue",
+								"type": "uint256",
+								"internalType": "uint256"
+							}
+						]
+					},
+					{
+						"name": "totalSuppliedValueUsd",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "weightedNetApy",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "supplyPositions",
+						"type": "tuple[]",
+						"internalType": "struct BaseDataAggregator.SupplyPosition[]",
+						"components": [
+							{
+								"name": "supplyAsset",
+								"type": "tuple",
+								"internalType": "struct BaseDataAggregator.AssetInfo",
+								"components": [
+									{
+										"name": "address_",
+										"type": "address",
+										"internalType": "address"
+									},
+									{
+										"name": "name",
+										"type": "string",
+										"internalType": "string"
+									},
+									{
+										"name": "logoURI",
+										"type": "string",
+										"internalType": "string"
+									},
+									{
+										"name": "decimals",
+										"type": "uint8",
+										"internalType": "uint8"
+									},
+									{
+										"name": "priceUSD",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "symbol",
+										"type": "string",
+										"internalType": "string"
+									}
+								]
+							},
+							{
+								"name": "underlyingAsset",
+								"type": "tuple",
+								"internalType": "struct BaseDataAggregator.AssetInfo",
+								"components": [
+									{
+										"name": "address_",
+										"type": "address",
+										"internalType": "address"
+									},
+									{
+										"name": "name",
+										"type": "string",
+										"internalType": "string"
+									},
+									{
+										"name": "logoURI",
+										"type": "string",
+										"internalType": "string"
+									},
+									{
+										"name": "decimals",
+										"type": "uint8",
+										"internalType": "uint8"
+									},
+									{
+										"name": "priceUSD",
+										"type": "uint256",
+										"internalType": "uint256"
+									},
+									{
+										"name": "symbol",
+										"type": "string",
+										"internalType": "string"
+									}
+								]
+							},
+							{
+								"name": "suppliedAmount",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "marketValue",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "receiptTokens",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "exchangeRate",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "yieldRate",
+								"type": "uint256",
+								"internalType": "uint256"
+							},
+							{
+								"name": "effectiveYield",
+								"type": "uint256",
+								"internalType": "uint256"
+							}
+						]
+					}
+				]
+			}
+		],
+		"stateMutability": "view"
+	},
+	{
+		"type": "function",
+		"name": "initializeData",
+		"inputs": [
+			{
+				"name": "_diamond",
+				"type": "address",
+				"internalType": "address"
+			},
+			{
+				"name": "_pricer",
+				"type": "address",
+				"internalType": "address"
+			},
+			{
+				"name": "_interestRate",
+				"type": "address",
+				"internalType": "address"
+			}
+		],
 		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
+		"stateMutability": "nonpayable"
+	},
+	{
+		"type": "function",
+		"name": "interestRate",
+		"inputs": [],
+		"outputs": [
+			{
+				"name": "",
+				"type": "address",
+				"internalType": "address"
+			}
+		],
+		"stateMutability": "view"
+	},
+	{
+		"type": "function",
+		"name": "pricer",
+		"inputs": [],
+		"outputs": [
+			{
+				"name": "",
+				"type": "address",
+				"internalType": "address"
+			}
+		],
+		"stateMutability": "view"
+	},
+	{
+		"type": "function",
+		"name": "setTokenMetadata",
+		"inputs": [
+			{
+				"name": "tokenAddress",
+				"type": "address",
+				"internalType": "address"
+			},
+			{
+				"name": "name",
+				"type": "string",
+				"internalType": "string"
+			},
+			{
+				"name": "symbol",
+				"type": "string",
+				"internalType": "string"
+			},
+			{
+				"name": "decimals",
+				"type": "uint8",
+				"internalType": "uint8"
+			},
+			{
+				"name": "logoURI",
+				"type": "string",
+				"internalType": "string"
+			}
+		],
+		"outputs": [],
+		"stateMutability": "nonpayable"
+	},
+	{
+		"type": "event",
+		"name": "DataRequested",
+		"inputs": [
+			{
+				"name": "requester",
+				"type": "address",
+				"indexed": true,
+				"internalType": "address"
+			},
+			{
+				"name": "dataType",
+				"type": "string",
+				"indexed": false,
+				"internalType": "string"
+			}
+		],
+		"anonymous": false
+	},
+	{
+		"type": "error",
+		"name": "AlreadyInitialized",
+		"inputs": []
 	}
 ]
