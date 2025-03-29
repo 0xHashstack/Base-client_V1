@@ -1,12 +1,11 @@
 'use client';
 import React, { ReactNode } from 'react';
 import { BorrowFormProvider } from '../store/borrow-form.store';
-import { CollateralToken, HstkToken } from '@/types/web3/token.types';
+import { MarketLoan } from '@/types/web3/borrow-market.types';
 
 interface BorrowFormContextProviderProps {
 	children: ReactNode;
-	token: CollateralToken | null;
-	initialBorrowMarket?: HstkToken | null;
+	initialBorrowMarket?: MarketLoan | null;
 }
 
 /**
@@ -14,11 +13,11 @@ interface BorrowFormContextProviderProps {
  */
 export function BorrowFormContextProvider({
 	children,
-	token,
+
 	initialBorrowMarket = null,
 }: BorrowFormContextProviderProps) {
 	return (
-		<BorrowFormProvider initialToken={token} initialBorrowMarket={initialBorrowMarket}>
+		<BorrowFormProvider initialBorrowMarket={initialBorrowMarket}>
 			{children}
 		</BorrowFormProvider>
 	);

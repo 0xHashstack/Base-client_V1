@@ -1,4 +1,7 @@
-import { CollateralToken, HstkToken } from '@/types/web3/token.types';
+import {
+	BorrowMarketCollateral,
+	MarketLoan,
+} from '@/types/web3/borrow-market.types';
 import { createContext, useContext, useRef, useEffect } from 'react';
 import { create, useStore } from 'zustand';
 
@@ -6,56 +9,54 @@ import { create, useStore } from 'zustand';
 interface BorrowFormState {
 	amount: string;
 	isLoading: boolean;
-	token: CollateralToken | null;
-	borrowMarket: HstkToken | null;
+	collateralMarket: BorrowMarketCollateral | null;
+	borrowMarket: MarketLoan | null;
 	borrowAmount: string;
 
 	// Actions
 	setAmount: (amount: string) => void;
-	setMaxAmount: () => void;
-	setToken: (token: BorrowFormState['token']) => void;
-	setBorrowMarket: (token: HstkToken | null) => void;
+	setCollateralMarket: (token: BorrowFormState['collateralMarket']) => void;
+	setBorrowMarket: (borrowMarket: BorrowFormState['borrowMarket']) => void;
 	setBorrowAmount: (amount: string) => void;
 	setBorrowMaxAmount: () => void;
 	setIsLoading: (isLoading: boolean) => void;
 	reset: () => void;
-	resetStore: (newToken?: BorrowFormState['token'], newBorrowMarket?: HstkToken | null) => void;
+	resetStore: (newBorrowMarket?: BorrowFormState['borrowMarket']) => void;
 }
 
 const initialState = {
 	amount: '',
 	isLoading: false,
-	token: null,
+	collateralMarket: null,
 	borrowMarket: null,
 	borrowAmount: '',
 };
 
 // Create a Zustand store
-const createBorrowFormStore = (
-	initialToken: BorrowFormState['token'] = null,
-	initialBorrowMarket: HstkToken | null = null
-) =>
+const createBorrowFormStore = (initialBorrowMarket: MarketLoan | null = null) =>
 	create<BorrowFormState>((set) => ({
 		...initialState,
-		token: initialToken,
 		borrowMarket: initialBorrowMarket,
 		setAmount: (amount) => set({ amount }),
-		setMaxAmount: () => {
-			set({ amount: '1000' }); // This would be replaced with actual balance logic
-		},
-		setToken: (token) => set({ token }),
+		setCollateralMarket: (token) => set({ collateralMarket: token }),
 		setBorrowMarket: (borrowMarket) => set({ borrowMarket }),
 		setBorrowAmount: (borrowAmount) => set({ borrowAmount }),
 		setBorrowMaxAmount: () => {
 			set({ borrowAmount: '5000' }); // This would be replaced with actual reserve logic
 		},
 		setIsLoading: (isLoading) => set({ isLoading }),
-		reset: () => set({ ...initialState, token: initialToken, borrowMarket: initialBorrowMarket }),
-		resetStore: (newToken, newBorrowMarket) =>
+		reset: () =>
 			set({
 				...initialState,
-				token: newToken !== undefined ? newToken : initialToken,
-				borrowMarket: newBorrowMarket !== undefined ? newBorrowMarket : initialBorrowMarket,
+				borrowMarket: initialBorrowMarket,
+			}),
+		resetStore: (newBorrowMarket) =>
+			set({
+				...initialState,
+				borrowMarket:
+					newBorrowMarket !== undefined ? newBorrowMarket : (
+						initialBorrowMarket
+					),
 			}),
 	}));
 
@@ -67,31 +68,29 @@ const BorrowFormStoreContext = createContext<ReturnType<
 // Provider component
 interface BorrowFormProviderProps {
 	children: React.ReactNode;
-	initialToken: BorrowFormState['token'];
-	initialBorrowMarket?: HstkToken | null;
+	initialBorrowMarket: MarketLoan | null;
 }
 
 export const BorrowFormProvider = ({
 	children,
-	initialToken,
 	initialBorrowMarket = null,
 }: BorrowFormProviderProps) => {
-	const storeRef = useRef<ReturnType<
-		typeof createBorrowFormStore
-	> | null>(null);
+	const storeRef = useRef<ReturnType<typeof createBorrowFormStore> | null>(
+		null
+	);
 
 	// Create the store if it doesn't exist
 	if (!storeRef.current) {
-		storeRef.current = createBorrowFormStore(initialToken, initialBorrowMarket);
+		storeRef.current = createBorrowFormStore(initialBorrowMarket);
 	}
 
 	// Update the token when it changes
 	useEffect(() => {
 		if (storeRef.current) {
 			// Reset the form with the new token
-			storeRef.current.getState().resetStore(initialToken, initialBorrowMarket);
+			storeRef.current.getState().resetStore(initialBorrowMarket);
 		}
-	}, [initialToken, initialBorrowMarket]);
+	}, [initialBorrowMarket]);
 
 	return (
 		<BorrowFormStoreContext.Provider value={storeRef.current}>

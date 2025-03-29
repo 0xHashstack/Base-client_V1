@@ -11,13 +11,21 @@ export function useBorrowForm() {
 	// Use selectors to get only what we need from the store
 	const amount = useBorrowFormStore((state) => state.amount);
 	const isLoading = useBorrowFormStore((state) => state.isLoading);
-	const token = useBorrowFormStore((state) => state.token);
+	const collateralMarket = useBorrowFormStore(
+		(state) => state.collateralMarket
+	);
 	const borrowAmount = useBorrowFormStore((state) => state.borrowAmount);
 	const borrowMarket = useBorrowFormStore((state) => state.borrowMarket);
 	const setAmount = useBorrowFormStore((state) => state.setAmount);
-	const setToken = useBorrowFormStore((state) => state.setToken);
-	const setBorrowAmount = useBorrowFormStore((state) => state.setBorrowAmount);
-	const setBorrowMarket = useBorrowFormStore((state) => state.setBorrowMarket);
+	const setCollateralMarket = useBorrowFormStore(
+		(state) => state.setCollateralMarket
+	);
+	const setBorrowAmount = useBorrowFormStore(
+		(state) => state.setBorrowAmount
+	);
+	const setBorrowMarket = useBorrowFormStore(
+		(state) => state.setBorrowMarket
+	);
 	const setIsLoading = useBorrowFormStore((state) => state.setIsLoading);
 	const reset = useBorrowFormStore((state) => state.reset);
 
@@ -28,12 +36,10 @@ export function useBorrowForm() {
 	 * Handle borrow submission
 	 */
 	const handleBorrow = useCallback(async () => {
-		if (!token || !borrowMarket || !borrowAmount) return;
+		if (!collateralMarket || !borrowMarket || !borrowAmount) return;
 
 		try {
 			setIsLoading(true);
-			// In a real implementation, this would call the contract to borrow
-			console.log(`Borrowing ${borrowAmount} ${borrowMarket.symbol} with ${amount} ${token.symbol} as collateral`);
 
 			// Simulate API call
 			await new Promise((resolve) => setTimeout(resolve, 1500));
@@ -48,20 +54,27 @@ export function useBorrowForm() {
 		} finally {
 			setIsLoading(false);
 		}
-	}, [amount, token, borrowAmount, borrowMarket, closeDrawer, setIsLoading, reset]);
+	}, [
+		collateralMarket,
+		borrowAmount,
+		borrowMarket,
+		closeDrawer,
+		setIsLoading,
+		reset,
+	]);
 
 	return {
 		// State
 		amount,
 		isLoading,
-		token,
+		collateralMarket,
 		borrowAmount,
 		borrowMarket,
 		handleBorrow,
 
 		// Actions
 		setAmount,
-		setToken,
+		setCollateralMarket,
 		setBorrowAmount,
 		setBorrowMarket,
 		reset,

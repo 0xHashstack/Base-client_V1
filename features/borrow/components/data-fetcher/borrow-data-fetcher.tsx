@@ -1,14 +1,13 @@
 import React, { useEffect } from 'react';
 
 import { useReadContract } from 'wagmi';
-import {
-	intermediateContract,
-	web3DataProvider,
-} from '@/constant/config/web3-config.constant';
+import { intermediateContract } from '@/constant/config/web3-config.constant';
 import { useTokenStore } from '@/store/useTokenStore';
 import { useQueryKeyStore } from '@/store/useQueryKeyStore';
-import { CurrentDebt } from '@/types/web3/borrow.types';
-import { HstkToken } from '@/types/web3/token.types';
+import {
+	UserBorrowData,
+	BorrowMarketQuickOverview,
+} from '@/types/web3/borrow-market.types';
 import { useDappUser } from '@/context/user-data.context';
 import { FALLBACK_USER_ADDRESS } from '@/constant/web3';
 
@@ -41,7 +40,7 @@ const BorrowDataFetcher: React.FC = () => {
 		(state) => state.setBorrowMarketOverviewQueryKey
 	);
 
-	// Call getUserBorrowMarketData from the intermediate contract
+	// Call getUserBorrowData from the intermediate contract
 	const {
 		data: borrowMarketData,
 		isLoading: isLoadingBorrowMarket,
@@ -49,8 +48,7 @@ const BorrowDataFetcher: React.FC = () => {
 		refetch: refetchBorrowMarket,
 		queryKey,
 	} = useReadContract({
-		...intermediateContract.getContractConfig('getUserBorrowMarketData', [
-			web3DataProvider.tokens(),
+		...intermediateContract.getContractConfig('getUserBorrowData', [
 			address,
 		]),
 		query: {
@@ -95,12 +93,8 @@ const BorrowDataFetcher: React.FC = () => {
 			!isLoadingBorrowMarket &&
 			!isBorrowMarketError
 		) {
-			setBorrowMarketData(borrowMarketData as unknown as {
-				markets: HstkToken[];
-				borrowPositions: CurrentDebt[];
-				totalBorrowedValueUsd: bigint;
-				weightedBorrowApr: bigint;
-			});
+			// Update the store with processed data
+			setBorrowMarketData(borrowMarketData as UserBorrowData);
 		}
 	}, [
 		borrowMarketData,
@@ -124,10 +118,7 @@ const BorrowDataFetcher: React.FC = () => {
 			!isMarketOverviewError
 		) {
 			setBorrowMarketOverview(
-				marketOverviewData as unknown as {
-					marketBorrowApr: bigint;
-					marketBorrowedAmount: bigint;
-				}
+				marketOverviewData as BorrowMarketQuickOverview
 			);
 		}
 	}, [

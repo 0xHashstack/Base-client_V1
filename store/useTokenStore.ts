@@ -6,8 +6,16 @@ import {
 	UserSupplyData,
 	UserSupplyQuickOverview,
 } from '@/types/web3/supply-market.types';
-import { CurrentDebt } from '@/types/web3/borrow.types';
+import {
+	UserLoan,
+	BorrowMarketQuickOverview,
+	UserBorrowQuickOverview,
+	MarketLoan,
+	UserBorrowData,
+	BorrowMarketCollateral,
+} from '@/types/web3/borrow-market.types';
 import { create } from 'zustand';
+import { transformToBorrowMarketCollateral } from '@/utils/web3/supply/supply-market.utils';
 
 /**
  * State shape
@@ -18,18 +26,13 @@ interface TokenState {
 	userSupplyPositions: SupplyPosition[];
 	userSupplyQuickOverview: UserSupplyQuickOverview;
 	supplyMarketQuickOverview: SupplyMarketQuickOverview;
+	borrowMarketCollateral: BorrowMarketCollateral[];
 
 	// Borrow market data
-	borrowMarketData: HstkToken[];
-	userBorrowPositions: CurrentDebt[];
-	userBorrowQuickOverview: {
-		totalBorrowedValueUsd: bigint;
-		weightedBorrowApr: bigint;
-	};
-	borrowMarketQuickOverview: {
-		marketBorrowApr: bigint;
-		marketBorrowedAmount: bigint;
-	};
+	borrowMarketData: MarketLoan[];
+	userBorrowPositions: UserLoan[];
+	userBorrowQuickOverview: UserBorrowQuickOverview;
+	borrowMarketQuickOverview: BorrowMarketQuickOverview;
 
 	// Token data
 	collateralTokens: CollateralToken[];
@@ -46,18 +49,14 @@ interface TokenState {
 	isLoadingBorrowMarketOverview: boolean;
 
 	// Actions
-	setCollateralTokens: (tokens: CollateralToken[]) => void;
-	setBorrowMarketTokens: (tokens: HstkToken[]) => void;
-	setBorrowTokens: (tokens: HstkToken[]) => void;
 	setSupplyMarketData: (data: UserSupplyData) => void;
 	setSupplyMarketLoading: (isLoading: boolean) => void;
 	setBorrowMarketLoading: (isLoading: boolean) => void;
 	setSupplyMarketOverview: (data: SupplyMarketQuickOverview) => void;
 	setSupplyMarketOverviewLoading: (isLoading: boolean) => void;
-	setBorrowMarketData: (data: { markets: HstkToken[], borrowPositions: CurrentDebt[], totalBorrowedValueUsd: bigint, weightedBorrowApr: bigint }) => void;
-	setBorrowMarketOverview: (data: { marketBorrowApr: bigint, marketBorrowedAmount: bigint }) => void;
+	setBorrowMarketData: (data: UserBorrowData) => void;
+	setBorrowMarketOverview: (data: BorrowMarketQuickOverview) => void;
 	setBorrowMarketOverviewLoading: (isLoading: boolean) => void;
-	resetMarketData: () => void;
 }
 
 /**
@@ -77,6 +76,8 @@ const staticState: TokenState = (() => {
 			marketApr: BigInt(0),
 			marketDeposit: BigInt(0),
 		},
+		// Derived data
+		borrowMarketCollateral: [],
 		// Borrow market data
 		borrowMarketData: [],
 		userBorrowPositions: [],
@@ -85,9 +86,11 @@ const staticState: TokenState = (() => {
 			weightedBorrowApr: BigInt(0),
 		},
 		borrowMarketQuickOverview: {
-			marketBorrowApr: BigInt(0),
-			marketBorrowedAmount: BigInt(0),
+			avgBorrowApr: BigInt(0),
+			avgUtilization: BigInt(0),
+			totalDebt: BigInt(0),
 		},
+
 		// Token data
 		collateralTokens: [],
 		collateralTokensMap: {},
@@ -124,45 +127,10 @@ const staticState: TokenState = (() => {
  */
 export const useTokenStore = create<TokenState>((set) => ({
 	...staticState,
-	setCollateralTokens: (tokens) => {
-		set({
-			collateralTokens: tokens,
-			collateralTokensMap: tokens.reduce(
-				(map, token) => {
-					map[token.address] = token;
-					return map;
-				},
-				{} as Record<string, CollateralToken>
-			),
-		});
-	},
-	setBorrowMarketTokens: (tokens) => {
-		set({
-			borrowMarketTokens: tokens,
-			borrowMarketTokensMap: tokens.reduce(
-				(map, token) => {
-					map[token.address] = token;
-					return map;
-				},
-				{} as Record<string, HstkToken>
-			),
-		});
-	},
-	setBorrowTokens: (tokens) => {
-		set({
-			borrowTokens: tokens,
-			borrowTokensMap: tokens.reduce(
-				(map, token) => {
-					map[token.address] = token;
-					return map;
-				},
-				{} as Record<string, HstkToken>
-			),
-		});
-	},
 
 	// Set supply market data and update related fields
 	setSupplyMarketData: (data) => {
+		const collateralTokens = transformToBorrowMarketCollateral(data);
 		set({
 			supplyMarketData: data.markets,
 			userSupplyPositions: data.supplyPositions,
@@ -170,6 +138,7 @@ export const useTokenStore = create<TokenState>((set) => ({
 				weightedNetApy: data.weightedNetApy,
 				totalSuppliedValueUsd: data.totalSuppliedValueUsd,
 			},
+			borrowMarketCollateral: collateralTokens,
 			isLoadingSupplyMarket: false,
 		});
 	},
@@ -187,8 +156,10 @@ export const useTokenStore = create<TokenState>((set) => ({
 	// Set borrow market data and update related fields
 	setBorrowMarketData: (data) => {
 		set({
-			borrowMarketData: data.markets,
-			userBorrowPositions: data.borrowPositions,
+			borrowMarketData: data.marketLoans,
+			userBorrowPositions: data.marketLoans.map(
+				({ userLoan }) => userLoan
+			),
 			userBorrowQuickOverview: {
 				totalBorrowedValueUsd: data.totalBorrowedValueUsd,
 				weightedBorrowApr: data.weightedBorrowApr,
@@ -221,35 +192,5 @@ export const useTokenStore = create<TokenState>((set) => ({
 	// Set market overview loading state
 	setSupplyMarketOverviewLoading: (isLoading: boolean) => {
 		set({ isLoadingSupplyMarketOverview: isLoading });
-	},
-
-	// Reset market data
-	resetMarketData: () => {
-		set({
-			supplyMarketData: [],
-			userSupplyPositions: [],
-			userSupplyQuickOverview: {
-				weightedNetApy: BigInt(0),
-				totalSuppliedValueUsd: BigInt(0),
-			},
-			supplyMarketQuickOverview: {
-				marketApr: BigInt(0),
-				marketDeposit: BigInt(0),
-			},
-			borrowMarketData: [],
-			userBorrowPositions: [],
-			userBorrowQuickOverview: {
-				totalBorrowedValueUsd: BigInt(0),
-				weightedBorrowApr: BigInt(0),
-			},
-			borrowMarketQuickOverview: {
-				marketBorrowApr: BigInt(0),
-				marketBorrowedAmount: BigInt(0),
-			},
-			isLoadingSupplyMarket: false,
-			isLoadingBorrowMarket: false,
-			isLoadingSupplyMarketOverview: false,
-			isLoadingBorrowMarketOverview: false,
-		});
 	},
 }));

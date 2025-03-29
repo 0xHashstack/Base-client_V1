@@ -8,21 +8,18 @@ import { useBorrowForm } from '../../../hooks/useBorrowForm';
 import BorrowFormInputs from './components/borrow-form-inputs';
 import BorrowPriceBreakdownCard from './components/borrow-price-breakdown-card';
 import { Card } from '@/components/ui/card';
-import { CollateralToken, HstkToken } from '@/types/web3/token.types';
+import { MarketLoan } from '@/types/web3/borrow-market.types';
 
 interface BorrowFormProps {
-	token: CollateralToken;
-	initialBorrowMarket?: HstkToken;
+	borrowMarket: MarketLoan;
 }
 
 /**
  * Form component for borrowing with collateral
  */
-function BorrowForm({ token, initialBorrowMarket }: BorrowFormProps) {
+function BorrowForm({ borrowMarket }: BorrowFormProps) {
 	return (
-		<BorrowFormContextProvider
-			token={token}
-			initialBorrowMarket={initialBorrowMarket}>
+		<BorrowFormContextProvider initialBorrowMarket={borrowMarket}>
 			<BorrowFormContent />
 		</BorrowFormContextProvider>
 	);
@@ -35,7 +32,6 @@ function BorrowFormContent() {
 	// Get handlers from the hook
 	const {
 		handleBorrow,
-		token,
 		amount,
 		borrowAmount,
 		borrowMarket,
@@ -43,8 +39,7 @@ function BorrowFormContent() {
 		isLoading,
 	} = useBorrowForm();
 
-	// If token is not set, don't render anything
-	if (!token) return null;
+	if (!borrowMarket) return null;
 
 	return (
 		<>
@@ -72,10 +67,7 @@ function BorrowFormContent() {
 					}
 					showConnectButton
 					parentWidth>
-					{isLoading ?
-						'Processing...'
-					:	`Borrow ${borrowAmount} ${borrowMarket?.symbol || ''} with ${token.symbol} Collateral`
-					}
+					{isLoading ? 'Processing...' : `Borrow`}
 				</ConnectedBtn.Primary>
 			</SideDrawer.Footer>
 		</>

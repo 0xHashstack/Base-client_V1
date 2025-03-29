@@ -1,30 +1,39 @@
+'use client';
+import React, { useCallback } from 'react';
 import { Btn } from '@/components/ui/button';
 import {
 	Table,
 	TableBody,
 	TableCell,
+	TableHead,
 	TableHeader,
 	TableRow,
 	TableNoData,
+	TableLoader,
 } from '@/components/ui/table';
-import { useBorrowContext } from '../../context/borrow.context';
 import { useBorrowDrawer } from '../../context/borrow-drawer.context';
 import BorrowQuickStat from '../common/borrow-quick-stat';
 import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
-import { currencyFormat } from '@/utils';
 import { Text } from '@/components/ui/typography/Text';
 import If from '@/components/common/If';
-import { useCallback } from 'react';
 import BorrowForm from '../form/borrow-form';
-import { CollateralToken } from '@/types/web3/token.types';
+import { useTokenStore } from '@/store/useTokenStore';
+import AddTokenToWallet from '@/components/actions/cta/add-token-to-wallet';
+import '@prototype/bigint.prototype';
+import { MarketLoan } from './borrow-market.types';
 
+/**
+ * BorrowTable component
+ * Displays a table of available borrow markets and allows users to borrow assets
+ */
 function BorrowTable() {
-	const { tokens } = useBorrowContext();
 	const { openDrawer, setDrawerContent } = useBorrowDrawer();
+	const { borrowMarketData, isLoadingBorrowMarket } = useTokenStore();
 
+	// Handle opening the borrow drawer
 	const handleBorrow = useCallback(
-		(token: CollateralToken) => {
-			setDrawerContent(<BorrowForm token={token} />);
+		(token: MarketLoan) => {
+			setDrawerContent(<BorrowForm borrowMarket={token} />);
 			openDrawer();
 		},
 		[setDrawerContent, openDrawer]
@@ -39,47 +48,83 @@ function BorrowTable() {
 			<Table isPrimary>
 				<TableHeader>
 					<TableRow>
-						<TableCell>Borrow Market</TableCell>
-						<TableCell>Price</TableCell>
-						<TableCell>Utilization Rate</TableCell>
-						<TableCell>Borrow APR</TableCell>
+						<TableHead className='w-1/3'>Borrow Market</TableHead>
+						<TableHead className='w-1/4'>Price</TableHead>
+						<TableHead className='w-1/4'>
+							Utilization Rate
+						</TableHead>
+						<TableHead className='w-1/4'>Borrow APR</TableHead>
+						<TableHead className='w-[100px]'></TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
-					<If isTrue={tokens.length === 0}>
-						<TableNoData
-							message='No borrow markets available'
-							colSpan={5}
+					<If isTrue={isLoadingBorrowMarket}>
+						<TableLoader
+							rowCount={4}
+							colCount={6}
 						/>
-						<>
-							{tokens.map((token) => (
-								<TableRow key={token.address}>
-									<TableCell className='font-medium'>
-										<div className='flex items-center gap-3'>
-											<ImageWithLoader
-												src={token.iconUrl}
-												alt={token.name}
-												width={20}
-												height={20}
-												className='rounded-full'
-											/>
-											{token.name}
-										</div>
-									</TableCell>
-									<TableCell>
-										{currencyFormat('1000000')}
-									</TableCell>
-									<TableCell>80.00%</TableCell>
-									<TableCell>2.5%</TableCell>
-									<TableCell className='w-[100px]'>
-										<Btn.Secondary
-											onClick={() => handleBorrow(token)}>
-											Borrow
-										</Btn.Secondary>
-									</TableCell>
-								</TableRow>
-							))}
-						</>
+						<If isTrue={borrowMarketData.length === 0}>
+							<TableNoData
+								message='No borrow markets available'
+								colSpan={6}
+							/>
+							<>
+								{borrowMarketData.map((market) => (
+									<TableRow key={market.address_}>
+										<TableCell className='font-medium'>
+											<div className='flex items-center gap-3'>
+												<ImageWithLoader
+													src={market.asset.logoURI}
+													alt={market.asset.name}
+													width={20}
+													height={20}
+													className='rounded-full'
+												/>
+												{market.asset.name}
+												<AddTokenToWallet
+													className='bg-background w-6 h-6 rounded-full'
+													address={market.address_}
+													symbol={market.asset.symbol}
+													decimals={
+														market.asset.decimals
+													}
+													name={market.asset.name}
+													iconUrl={
+														market.asset.logoURI
+													}
+												/>
+											</div>
+										</TableCell>
+										<TableCell>
+											$
+											{market.asset.priceUSD.formatBalance(
+												market.asset.decimals
+											)}
+										</TableCell>
+										<TableCell>
+											{market.utilizationRate.formatToString(
+												10
+											)}
+											%
+										</TableCell>
+										<TableCell>
+											{market.borrowApr.formatToString(
+												10
+											)}
+											%
+										</TableCell>
+										<TableCell>
+											<Btn.Secondary
+												onClick={() =>
+													handleBorrow(market)
+												}>
+												Borrow
+											</Btn.Secondary>
+										</TableCell>
+									</TableRow>
+								))}
+							</>
+						</If>
 					</If>
 				</TableBody>
 			</Table>

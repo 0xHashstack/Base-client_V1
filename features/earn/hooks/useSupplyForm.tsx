@@ -73,7 +73,6 @@ export function useSupplyForm() {
 
 	const handleApprove = useCallback(async () => {
 		if (!market || !tokenModel || !walletAddress) return;
-		console.log('Approving tokens...', amount);
 
 		try {
 			setTransactionStatus(TransactionStatus.APPROVING);

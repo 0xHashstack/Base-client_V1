@@ -1,10 +1,14 @@
 'use client';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useBorrowFormStore } from '../store/borrow-form.store';
-import { CollateralToken, HstkToken, Web3Address } from '@/types/web3';
+import { Web3Address } from '@/types/web3';
 import { useTokenStore } from '@/store/useTokenStore';
 import { useBalance } from 'wagmi';
 import { formatUnits } from 'viem';
+import {
+	BorrowMarketCollateral,
+	MarketLoan,
+} from '@/types/web3/borrow-market.types';
 
 /**
  * Hook to handle the borrow form inputs
@@ -13,17 +17,30 @@ import { formatUnits } from 'viem';
 export function useBorrowFormInputs() {
 	// Use selectors to get only what we need from the store
 	const amount = useBorrowFormStore((state) => state.amount);
-	const token = useBorrowFormStore((state) => state.token);
+	const collateralMarket = useBorrowFormStore(
+		(state) => state.collateralMarket
+	);
 	const borrowAmount = useBorrowFormStore((state) => state.borrowAmount);
 	const borrowMarket = useBorrowFormStore((state) => state.borrowMarket);
 	const setAmount = useBorrowFormStore((state) => state.setAmount);
-	const setToken = useBorrowFormStore((state) => state.setToken);
-	const setBorrowAmount = useBorrowFormStore((state) => state.setBorrowAmount);
-	const setBorrowMarket = useBorrowFormStore((state) => state.setBorrowMarket);
-	const setBorrowMaxAmount = useBorrowFormStore((state) => state.setBorrowMaxAmount);
+	const setCollateralMarket = useBorrowFormStore(
+		(state) => state.setCollateralMarket
+	);
+	const setBorrowAmount = useBorrowFormStore(
+		(state) => state.setBorrowAmount
+	);
+	const setBorrowMarket = useBorrowFormStore(
+		(state) => state.setBorrowMarket
+	);
+	const setBorrowMaxAmount = useBorrowFormStore(
+		(state) => state.setBorrowMaxAmount
+	);
 
-	const availableCollateralTokens = useTokenStore((state) => state.collateralTokens);
-	const borrowMarketTokens = useTokenStore((state) => state.borrowMarketTokens);
+	const collateralMarketList = useTokenStore(
+		(state) => state.borrowMarketCollateral
+	);
+
+	const borrowMarketList = useTokenStore((state) => state.borrowMarketData);
 
 	const {
 		data: walletBalance,
@@ -31,14 +48,14 @@ export function useBorrowFormInputs() {
 		isError: walletBalanceError,
 		refetch: refetchWalletBalance,
 	} = useBalance({
-		address: token?.address as Web3Address,
+		address: collateralMarket?.address as Web3Address,
 	});
 
 	// Get formatted wallet balance
 	const formattedWalletBalance = useMemo(() => {
-		if (!walletBalance || !token) return '0';
-		return formatUnits(walletBalance.value, token.decimals);
-	}, [walletBalance, token]);
+		if (!walletBalance || !collateralMarket) return '0';
+		return formatUnits(walletBalance.value, collateralMarket.decimals);
+	}, [walletBalance, collateralMarket]);
 
 	// Maximum amount for the slider (from wallet balance)
 	const MAX_AMOUNT = useMemo(() => {
@@ -66,48 +83,53 @@ export function useBorrowFormInputs() {
 	);
 
 	const sliderPercentage = useMemo(() => {
-		if (!token || !token.availableCollateral) return 0;
-		const percentage =
-			(parseFloat(amount) / token.availableCollateral) * 100;
-		return Math.min(percentage, 100); // Ensure it doesn't exceed 100%
-	}, [amount, token]);
+		// if (!collateralMarket || !collateralMarket.availableCollateral)
+		// 	return 0;
+		// const percentage =
+		// 	(parseFloat(amount) / collateralMarket.availableCollateral) * 100;
+		// return Math.min(percentage, 100); // Ensure it doesn't exceed 100%
+		return 0;
+	}, [amount, collateralMarket]);
 
 	// Handle max click
 	const handleMaxClick = useCallback(() => {
-		if (!token) return;
+		if (!collateralMarket) return;
 
 		// Set amount to max available collateral
-		const maxAmount = token.availableCollateral?.toString() || '0';
-		setAmount(maxAmount);
-	}, [token, setAmount]);
+		// const maxAmount =
+		// 	collateralMarket.availableCollateral?.toString() || '0';
+		// setAmount(maxAmount);
+	}, [collateralMarket, setAmount]);
 
 	// Handle slider change
 	const handleSliderChange = useCallback(
 		(values: number[]) => {
-			if (!token || !token.availableCollateral) return;
+			// if (!collateralMarket || !collateralMarket.availableCollateral)
+			// 	return;
 
-			const percentage = values[0];
+			// const percentage = values[0];
 
-			// Calculate amount based on percentage
-			const calculatedAmount =
-				(percentage / 100) * token.availableCollateral;
-			setAmount(calculatedAmount.toString());
+			// // Calculate amount based on percentage
+			// const calculatedAmount =
+			// 	(percentage / 100) * collateralMarket.availableCollateral;
+			// setAmount(calculatedAmount.toString());
+			return 0;
 		},
-		[token, setAmount]
+		[collateralMarket, setAmount]
 	);
 
 	// Handle token change
 	const handleTokenChange = useCallback(
-		(newToken: CollateralToken) => {
-			setToken(newToken);
+		(newToken: BorrowMarketCollateral) => {
+			setCollateralMarket(newToken);
 			setAmount('');
 		},
-		[setToken, setAmount]
+		[setCollateralMarket, setAmount]
 	);
 
 	// Handle borrow market change
 	const handleBorrowMarketChange = useCallback(
-		(newToken: HstkToken) => {
+		(newToken: MarketLoan) => {
 			setBorrowMarket(newToken);
 			setBorrowAmount('');
 		},
@@ -162,8 +184,8 @@ export function useBorrowFormInputs() {
 	return {
 		amount,
 		sliderPercentage,
-		token,
-		availableCollateralTokens,
+		collateralMarket,
+		collateralMarketList,
 		handleAmountChange,
 		handleMaxClick,
 		handleSliderChange,
@@ -177,7 +199,7 @@ export function useBorrowFormInputs() {
 		// Borrow market related
 		borrowAmount,
 		borrowMarket,
-		borrowMarketTokens,
+		borrowMarketList,
 		borrowSliderPercentage,
 		availableReserve,
 		handleBorrowAmountChange,

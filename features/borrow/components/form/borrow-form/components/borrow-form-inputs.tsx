@@ -4,13 +4,16 @@ import { Slider } from '@/components/ui/slider';
 import { SingleSelect } from '@/components/ui/select/single-select';
 import { Text } from '@/components/ui/typography/Text';
 import { useBorrowFormInputs } from '@/features/borrow/hooks/useBorrowFormInputs';
-import { CollateralToken, HstkToken } from '@/types/web3/token.types';
 import Image from 'next/image';
 import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton/skeleton';
 import { ArrowsClockwise } from '@phosphor-icons/react';
 import { Btn } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import {
+	BorrowMarketCollateral,
+	MarketLoan,
+} from '@/types/web3/borrow-market.types';
 
 /**
  * Component for the borrow form inputs
@@ -19,8 +22,8 @@ function BorrowFormInputs() {
 	const {
 		amount,
 		sliderPercentage,
-		token,
-		availableCollateralTokens,
+		collateralMarket,
+		collateralMarketList,
 		handleAmountChange,
 		handleMaxClick,
 		handleSliderChange,
@@ -33,7 +36,7 @@ function BorrowFormInputs() {
 		// Borrow market related
 		borrowAmount,
 		borrowMarket,
-		borrowMarketTokens,
+		borrowMarketList,
 		borrowSliderPercentage,
 		availableReserve,
 		handleBorrowAmountChange,
@@ -44,13 +47,13 @@ function BorrowFormInputs() {
 
 	// Custom render function for token options
 	const renderTokenOption = (
-		option: CollateralToken,
+		option: BorrowMarketCollateral,
 		isSelected: boolean
 	) => (
 		<div
 			className={`flex items-center gap-2 px-3 py-2 ${isSelected ? 'bg-primary/10' : 'hover:bg-muted'} rounded-lg`}>
 			<Image
-				src={option.iconUrl}
+				src={option.logoURI}
 				alt={option.symbol}
 				className='rounded-full'
 				width={18}
@@ -61,12 +64,12 @@ function BorrowFormInputs() {
 	);
 
 	// Custom render function for selected token
-	const renderTokenValue = (selectedToken: CollateralToken | null) => {
+	const renderTokenValue = (selectedToken: BorrowMarketCollateral | null) => {
 		if (!selectedToken) return null;
 		return (
 			<div className='flex items-center gap-2'>
 				<Image
-					src={selectedToken.iconUrl}
+					src={selectedToken.logoURI}
 					alt={selectedToken.symbol}
 					className='rounded-full'
 					width={18}
@@ -79,35 +82,35 @@ function BorrowFormInputs() {
 
 	// Custom render function for borrow market token options
 	const renderBorrowMarketOption = (
-		option: HstkToken,
+		option: MarketLoan,
 		isSelected: boolean
 	) => (
 		<div
 			className={`flex items-center gap-2 px-3 py-2 ${isSelected ? 'bg-primary/10' : 'hover:bg-muted'} rounded-lg`}>
 			<Image
-				src={option.iconUrl}
-				alt={option.symbol}
+				src={option.asset.logoURI}
+				alt={option.asset.symbol}
 				className='rounded-full'
 				width={18}
 				height={18}
 			/>
-			<Text.Regular14>{option.symbol}</Text.Regular14>
+			<Text.Regular14>{option.asset.symbol}</Text.Regular14>
 		</div>
 	);
 
 	// Custom render function for selected borrow market token
-	const renderBorrowMarketValue = (selectedToken: HstkToken | null) => {
+	const renderBorrowMarketValue = (selectedToken: MarketLoan | null) => {
 		if (!selectedToken) return null;
 		return (
 			<div className='flex items-center gap-2'>
 				<Image
-					src={selectedToken.iconUrl}
-					alt={selectedToken.symbol}
+					src={selectedToken.asset.logoURI}
+					alt={selectedToken.asset.symbol}
 					className='rounded-full'
 					width={18}
 					height={18}
 				/>
-				<Text.Medium14>{selectedToken.symbol}</Text.Medium14>
+				<Text.Medium14>{selectedToken.asset.symbol}</Text.Medium14>
 			</div>
 		);
 	};
@@ -135,7 +138,8 @@ function BorrowFormInputs() {
 
 		return (
 			<Text.Regular12 textColor={600}>
-				Wallet Balance: {formattedWalletBalance} {token?.symbol || ''}
+				Wallet Balance: {formattedWalletBalance}{' '}
+				{collateralMarket?.symbol || ''}
 			</Text.Regular12>
 		);
 	};
@@ -146,9 +150,9 @@ function BorrowFormInputs() {
 			<Card className='flex flex-col gap-3 px-6 py-4'>
 				<SingleSelect
 					label='Borrow Market'
-					options={borrowMarketTokens}
+					options={borrowMarketList}
 					value={borrowMarket}
-					valueKey='address'
+					valueKey='address_'
 					labelKey='symbol'
 					placeholder='Select a token'
 					renderOption={renderBorrowMarketOption}
@@ -172,7 +176,7 @@ function BorrowFormInputs() {
 									type='number'
 									value={borrowAmount}
 									onChange={handleBorrowAmountChange}
-									placeholder={`00.00 ${borrowMarket?.symbol || ''}`}
+									placeholder={`00.00 ${borrowMarket?.asset.symbol || ''}`}
 									disabled={!borrowMarket}
 								/>
 							</div>
@@ -187,7 +191,7 @@ function BorrowFormInputs() {
 						<div className='flex items-center gap-1'>
 							<Text.Regular12 textColor={600}>
 								Available Reserve: {availableReserve}{' '}
-								{borrowMarket?.symbol || ''}
+								{borrowMarket?.asset.symbol || ''}
 							</Text.Regular12>
 						</div>
 					</div>
@@ -211,8 +215,8 @@ function BorrowFormInputs() {
 			<Card className='flex flex-col gap-3 px-6 py-4'>
 				<SingleSelect
 					label='Collateral Market'
-					options={availableCollateralTokens}
-					value={token}
+					options={collateralMarketList}
+					value={collateralMarket}
 					valueKey='address'
 					labelKey='symbol'
 					placeholder='Select a token'
@@ -235,7 +239,7 @@ function BorrowFormInputs() {
 									type='number'
 									value={amount}
 									onChange={handleAmountChange}
-									placeholder={`00.00 ${token?.symbol || ''}`}
+									placeholder={`00.00 ${collateralMarket?.symbol || ''}`}
 									disabled={isFormDisabled}
 								/>
 							</div>
