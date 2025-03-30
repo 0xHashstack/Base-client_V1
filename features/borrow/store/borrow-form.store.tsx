@@ -13,6 +13,10 @@ interface BorrowFormState {
 	borrowMarket: MarketLoan | null;
 	borrowAmount: string;
 
+	// Values needed for validation
+
+	maxBorrowAmount: number;
+
 	// Actions
 	setAmount: (amount: string) => void;
 	setCollateralMarket: (token: BorrowFormState['collateralMarket']) => void;
@@ -20,6 +24,7 @@ interface BorrowFormState {
 	setBorrowAmount: (amount: string) => void;
 	setBorrowMaxAmount: () => void;
 	setIsLoading: (isLoading: boolean) => void;
+	setMaxBorrowAmount: (amount: number) => void;
 	reset: () => void;
 	resetStore: (newBorrowMarket?: BorrowFormState['borrowMarket']) => void;
 }
@@ -30,6 +35,9 @@ const initialState = {
 	collateralMarket: null,
 	borrowMarket: null,
 	borrowAmount: '',
+	walletBalance: BigInt(0),
+	formattedWalletBalance: '0',
+	maxBorrowAmount: 0,
 };
 
 // Create a Zustand store
@@ -42,9 +50,14 @@ const createBorrowFormStore = (initialBorrowMarket: MarketLoan | null = null) =>
 		setBorrowMarket: (borrowMarket) => get().resetStore(borrowMarket),
 		setBorrowAmount: (borrowAmount) => set({ borrowAmount }),
 		setBorrowMaxAmount: () => {
-			set({ borrowAmount: '5000' }); // This would be replaced with actual reserve logic
+			const { maxBorrowAmount } = get();
+			if (maxBorrowAmount > 0) {
+				set({ borrowAmount: maxBorrowAmount.toFixed(3) });
+			}
 		},
 		setIsLoading: (isLoading) => set({ isLoading }),
+
+		setMaxBorrowAmount: (maxBorrowAmount) => set({ maxBorrowAmount }),
 		reset: () =>
 			set({
 				...initialState,

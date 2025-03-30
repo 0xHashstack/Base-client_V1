@@ -8,7 +8,6 @@ import {
 import { useEarnDrawer } from '../context/earn-drawer.context';
 import { SupplyTokenModel } from '@/lib/model/supply-token.model';
 import { Web3Address } from '@/types/web3';
-import { useWalletTokenBalance } from '@/hooks/useWalletTokenBalance';
 import { useWalletToken } from '@/context/wallet-token-provider';
 import { useDappUser } from '@/context/user-data.context';
 import { useWriteContract } from 'wagmi';
@@ -45,15 +44,8 @@ export function useSupplyForm() {
 	// Get the current wallet address
 	const { address: walletAddress } = useDappUser();
 
-	// Fetch wallet balance for the current token
-	const { formatted: formattedWalletBalance } = useWalletTokenBalance(
-		market?.asset.address_ as Web3Address,
-		{
-			decimals: market?.asset.decimals,
-		}
-	);
-
-	const { formatted: walletBalance } = useWalletToken();
+	const { formatted: walletBalance, formatted: formattedWalletBalance } =
+		useWalletToken();
 	const queryClient = useQueryClient();
 
 	// Create a token model instance when the market changes

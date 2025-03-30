@@ -11,6 +11,8 @@ import '@prototype/bigint.prototype';
 import { DECIMALS } from '@/constant/web3/decimal.constant';
 import { formatUnits } from 'viem';
 
+// Validation logic has been moved to useBorrowForm
+
 /**
  * Hook to handle the borrow form inputs
  * @returns Form input state and handlers
@@ -32,6 +34,9 @@ export function useBorrowFormInputs() {
 	);
 	const setBorrowMarket = useBorrowFormStore(
 		(state) => state.setBorrowMarket
+	);
+	const setMaxBorrowAmount = useBorrowFormStore(
+		(state) => state.setMaxBorrowAmount
 	);
 
 	const collateralMarketList = useTokenStore(
@@ -164,19 +169,34 @@ export function useBorrowFormInputs() {
 
 	// Calculate maximum borrowable amount based on collateral amount and price ratio
 	const maxBorrowAmount = useMemo(() => {
-		if (!borrowMarket || !collateralMarket || !amount) return 0;
+		if (!borrowMarket || !collateralMarket || !amount) {
+			// Update store with zero when conditions aren't met
+			if (setMaxBorrowAmount) {
+				setMaxBorrowAmount(0);
+			}
+			return 0;
+		}
 
 		try {
 			// Convert string amount to number
 			const collateralAmountNum = parseFloat(amount);
-			if (isNaN(collateralAmountNum) || collateralAmountNum <= 0)
+			if (isNaN(collateralAmountNum) || collateralAmountNum <= 0) {
+				if (setMaxBorrowAmount) {
+					setMaxBorrowAmount(0);
+				}
 				return 0;
+			}
 
 			// Get prices from both assets (they are bigint)
 			const collateralPrice = collateralMarket.priceUSD;
 			const borrowPrice = borrowMarket.asset.priceUSD;
 
-			if (borrowPrice === BigInt(0)) return 0; // Avoid division by zero
+			if (borrowPrice === BigInt(0)) {
+				if (setMaxBorrowAmount) {
+					setMaxBorrowAmount(0);
+				}
+				return 0; // Avoid division by zero
+			}
 
 			// Get token decimals
 			const collateralDecimals = collateralMarket.decimals;
@@ -194,11 +214,22 @@ export function useBorrowFormInputs() {
 				normalizedCollateralPrice / normalizedBorrowPrice;
 
 			// Calculate max borrow (5x leverage adjusted by price ratio)
-			return collateralAmountNum * 5 * priceRatio;
+			const calculatedMaxBorrow = collateralAmountNum * 5 * priceRatio;
+
+			// Update the store with the calculated max borrow amount
+			if (setMaxBorrowAmount) {
+				setMaxBorrowAmount(calculatedMaxBorrow);
+			}
+
+			return calculatedMaxBorrow;
 		} catch (error) {
 			console.error('Error calculating max borrow amount:', error);
+			if (setMaxBorrowAmount) {
+				setMaxBorrowAmount(0);
+			}
 			return 0;
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [borrowMarket, collateralMarket, amount]);
 
 	// Handle borrow max click
@@ -243,6 +274,8 @@ export function useBorrowFormInputs() {
 			DECIMALS.BORROW_MARKET
 		);
 	}, [borrowMarket]);
+
+	// Validation logic has been moved to useBorrowForm
 
 	return {
 		amount,

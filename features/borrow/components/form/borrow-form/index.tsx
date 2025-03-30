@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Text } from '@/components/ui/typography/Text';
 import { Btn, ConnectedBtn } from '@/components/ui/button';
 import SideDrawer from '@/components/drawer/side-drawer';
@@ -53,7 +53,16 @@ function BorrowFormContent() {
 		borrowMarket,
 		closeDrawer,
 		isLoading,
+		validateForm,
+		isButtonDisabled,
+		formattedWalletBalance,
+		maxBorrowAmount,
 	} = useBorrowForm();
+	
+	// Validate form and get error messages if any
+	const { collateralValid, borrowValid, collateralError, borrowError } = useMemo(() => {
+		return validateForm();
+	}, [validateForm]);
 
 	if (!borrowMarket) return null;
 
@@ -76,11 +85,33 @@ function BorrowFormContent() {
 				</div>
 			</SideDrawer.Body>
 			<SideDrawer.Footer>
+				{amount && !collateralValid && (
+					<div className='mb-2 py-2 px-3 bg-badge-error border text-badge-error rounded-md'>
+						<p className='text-sm'>
+							{collateralError}
+							{collateralError === 'Insufficient balance' && (
+								<span className='block text-xs mt-1'>
+									Available: {formattedWalletBalance}
+								</span>
+							)}
+						</p>
+					</div>
+				)}
+				{borrowAmount && !borrowValid && (
+					<div className='mb-2 py-2 px-3 bg-badge-error border text-badge-error rounded-md'>
+						<p className='text-sm'>
+							{borrowError}
+							{borrowError === 'Exceeds maximum borrowable amount' && (
+								<span className='block text-xs mt-1'>
+									Max borrowable: {maxBorrowAmount.toFixed(4)} {borrowMarket?.asset.symbol}
+								</span>
+							)}
+						</p>
+					</div>
+				)}
 				<ConnectedBtn.Primary
 					onClick={handleBorrow}
-					disabled={
-						!amount || !borrowAmount || !borrowMarket || isLoading
-					}
+					disabled={isButtonDisabled}
 					showConnectButton
 					parentWidth>
 					{isLoading ? 'Processing...' : `Borrow`}

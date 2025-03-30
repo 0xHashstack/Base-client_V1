@@ -1,7 +1,16 @@
 'use client';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useBorrowFormStore } from '../store/borrow-form.store';
 import { useBorrowDrawer } from '../context/borrow-drawer.context';
+import { useWalletToken } from '@/context/wallet-token-provider';
+
+/**
+ * Type for validation result
+ */
+interface ValidationResult {
+	valid: boolean;
+	error: string;
+}
 
 /**
  * Hook to handle the borrow form functionality
@@ -29,14 +38,128 @@ export function useBorrowForm() {
 	const setIsLoading = useBorrowFormStore((state) => state.setIsLoading);
 	const reset = useBorrowFormStore((state) => state.reset);
 
+	// Get values needed for validation from the store
+	const { formatted: walletBalance, formatted: formattedWalletBalance } =
+		useWalletToken();
+	const maxBorrowAmount = useBorrowFormStore(
+		(state) => state.maxBorrowAmount
+	);
+
 	// Get drawer context functions
 	const { closeDrawer } = useBorrowDrawer();
+
+	/**
+	 * Validate if the collateral amount is valid
+	 */
+	const validateCollateralAmount = useCallback((): ValidationResult => {
+		if (!amount || amount === '0') {
+			return {
+				valid: false,
+				error: 'Please enter an amount',
+			};
+		}
+
+		const amountNum = parseFloat(amount);
+		const walletBalanceNum = parseFloat(formattedWalletBalance || '0');
+
+		if (isNaN(amountNum)) {
+			return {
+				valid: false,
+				error: 'Invalid amount',
+			};
+		}
+
+		if (amountNum <= 0) {
+			return {
+				valid: false,
+				error: 'Amount must be greater than 0',
+			};
+		}
+
+		if (amountNum > walletBalanceNum) {
+			return {
+				valid: false,
+				error: 'Insufficient balance',
+			};
+		}
+
+		return {
+			valid: true,
+			error: '',
+		};
+	}, [amount, formattedWalletBalance]);
+
+	/**
+	 * Validate if the borrow amount is valid
+	 */
+	const validateBorrowAmount = useCallback((): ValidationResult => {
+		if (!borrowAmount || borrowAmount === '0') {
+			return {
+				valid: false,
+				error: 'Please enter a borrow amount',
+			};
+		}
+
+		const borrowAmountNum = parseFloat(borrowAmount);
+
+		if (isNaN(borrowAmountNum)) {
+			return {
+				valid: false,
+				error: 'Invalid borrow amount',
+			};
+		}
+
+		if (borrowAmountNum <= 0) {
+			return {
+				valid: false,
+				error: 'Borrow amount must be greater than 0',
+			};
+		}
+
+		if (borrowAmountNum > maxBorrowAmount) {
+			return {
+				valid: false,
+				error: 'Exceeds maximum borrowable amount',
+			};
+		}
+
+		return {
+			valid: true,
+			error: '',
+		};
+	}, [borrowAmount, maxBorrowAmount]);
+
+	/**
+	 * Validate both collateral and borrow amounts
+	 */
+	const validateForm = useCallback(() => {
+		const collateralValidation = validateCollateralAmount();
+		const borrowValidation = validateBorrowAmount();
+
+		return {
+			isValid: collateralValidation.valid && borrowValidation.valid,
+			collateralError: collateralValidation.error,
+			borrowError: borrowValidation.error,
+			collateralValid: collateralValidation.valid,
+			borrowValid: borrowValidation.valid,
+		};
+	}, [validateCollateralAmount, validateBorrowAmount]);
 
 	/**
 	 * Handle borrow submission
 	 */
 	const handleBorrow = useCallback(async () => {
 		if (!collateralMarket || !borrowMarket || !borrowAmount) return;
+
+		// Validate form before proceeding
+		const { isValid, collateralError, borrowError } = validateForm();
+		if (!isValid) {
+			console.error('Validation errors:', {
+				collateralError,
+				borrowError,
+			});
+			return;
+		}
 
 		try {
 			setIsLoading(true);
@@ -61,7 +184,20 @@ export function useBorrowForm() {
 		closeDrawer,
 		setIsLoading,
 		reset,
+		validateForm,
 	]);
+
+	/**
+	 * Check if the borrow button should be disabled
+	 */
+	const isButtonDisabled = useMemo(() => {
+		if (!amount || !borrowAmount || !borrowMarket || isLoading) {
+			return true;
+		}
+
+		const { isValid } = validateForm();
+		return !isValid;
+	}, [amount, borrowAmount, borrowMarket, isLoading, validateForm]);
 
 	return {
 		// State
@@ -71,6 +207,9 @@ export function useBorrowForm() {
 		borrowAmount,
 		borrowMarket,
 		handleBorrow,
+		walletBalance,
+		formattedWalletBalance,
+		maxBorrowAmount,
 
 		// Actions
 		setAmount,
@@ -79,5 +218,9 @@ export function useBorrowForm() {
 		setBorrowMarket,
 		reset,
 		closeDrawer,
+
+		// Validation
+		validateForm,
+		isButtonDisabled,
 	};
 }
