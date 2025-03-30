@@ -1,7 +1,7 @@
 import { BorrowMarketCollateral } from '@/types/web3/borrow-market.types';
 import { UserSupplyData } from '@/types/web3/supply-market.types';
 
-export const transformToBorrowMarketCollateral = (
+export const userSupplyTransformToMarketCollateral = (
 	payload: UserSupplyData
 ): BorrowMarketCollateral[] => {
 	const { supplyPositions, markets } = payload;

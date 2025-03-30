@@ -27,7 +27,7 @@ export interface BorrowAsset {
  */
 export interface UserLoan {
 	/** Loan ID */
-	loanId: string;
+	loanId: bigint;
 	/** Borrower address */
 	borrower: Web3Address;
 	/** Borrow market address */

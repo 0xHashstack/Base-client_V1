@@ -7,7 +7,6 @@ import {
 	UserSupplyQuickOverview,
 } from '@/types/web3/supply-market.types';
 import {
-	UserLoan,
 	BorrowMarketQuickOverview,
 	UserBorrowQuickOverview,
 	MarketLoan,
@@ -15,7 +14,7 @@ import {
 	BorrowMarketCollateral,
 } from '@/types/web3/borrow-market.types';
 import { create } from 'zustand';
-import { transformToBorrowMarketCollateral } from '@/utils/web3/supply/supply-market.utils';
+import { userSupplyTransformToMarketCollateral } from '@/utils/web3/supply/supply-market.utils';
 
 /**
  * State shape
@@ -30,7 +29,6 @@ interface TokenState {
 
 	// Borrow market data
 	borrowMarketData: MarketLoan[];
-	userBorrowPositions: UserLoan[];
 	userBorrowQuickOverview: UserBorrowQuickOverview;
 	borrowMarketQuickOverview: BorrowMarketQuickOverview;
 
@@ -80,7 +78,6 @@ const staticState: TokenState = (() => {
 		borrowMarketCollateral: [],
 		// Borrow market data
 		borrowMarketData: [],
-		userBorrowPositions: [],
 		userBorrowQuickOverview: {
 			totalBorrowedValueUsd: BigInt(0),
 			weightedBorrowApr: BigInt(0),
@@ -130,7 +127,7 @@ export const useTokenStore = create<TokenState>((set) => ({
 
 	// Set supply market data and update related fields
 	setSupplyMarketData: (data) => {
-		const collateralTokens = transformToBorrowMarketCollateral(data);
+		const collateralTokens = userSupplyTransformToMarketCollateral(data);
 		set({
 			supplyMarketData: data.markets,
 			userSupplyPositions: data.supplyPositions,
@@ -157,9 +154,6 @@ export const useTokenStore = create<TokenState>((set) => ({
 	setBorrowMarketData: (data) => {
 		set({
 			borrowMarketData: data.marketLoans,
-			userBorrowPositions: data.marketLoans.map(
-				({ userLoan }) => userLoan
-			),
 			userBorrowQuickOverview: {
 				totalBorrowedValueUsd: data.totalBorrowedValueUsd,
 				weightedBorrowApr: data.weightedBorrowApr,
