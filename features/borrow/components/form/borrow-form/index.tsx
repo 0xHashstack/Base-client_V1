@@ -52,17 +52,18 @@ function BorrowFormContent() {
 		borrowAmount,
 		borrowMarket,
 		closeDrawer,
-		isLoading,
 		validateForm,
 		isButtonDisabled,
 		formattedWalletBalance,
 		maxBorrowAmount,
+		getButtonText,
 	} = useBorrowForm();
-	
+
 	// Validate form and get error messages if any
-	const { collateralValid, borrowValid, collateralError, borrowError } = useMemo(() => {
-		return validateForm();
-	}, [validateForm]);
+	const { collateralValid, borrowValid, collateralError, borrowError } =
+		useMemo(() => {
+			return validateForm();
+		}, [validateForm]);
 
 	if (!borrowMarket) return null;
 
@@ -101,9 +102,11 @@ function BorrowFormContent() {
 					<div className='mb-2 py-2 px-3 bg-badge-error border text-badge-error rounded-md'>
 						<p className='text-sm'>
 							{borrowError}
-							{borrowError === 'Exceeds maximum borrowable amount' && (
+							{borrowError ===
+								'Exceeds maximum borrowable amount' && (
 								<span className='block text-xs mt-1'>
-									Max borrowable: {maxBorrowAmount.toFixed(4)} {borrowMarket?.asset.symbol}
+									Max borrowable: {maxBorrowAmount.toFixed(4)}{' '}
+									{borrowMarket?.asset.symbol}
 								</span>
 							)}
 						</p>
@@ -114,7 +117,7 @@ function BorrowFormContent() {
 					disabled={isButtonDisabled}
 					showConnectButton
 					parentWidth>
-					{isLoading ? 'Processing...' : `Borrow`}
+					{getButtonText()}
 				</ConnectedBtn.Primary>
 			</SideDrawer.Footer>
 		</>

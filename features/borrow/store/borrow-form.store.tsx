@@ -5,6 +5,16 @@ import {
 import { createContext, useContext, useRef, useEffect } from 'react';
 import { create, useStore } from 'zustand';
 
+// Define transaction status enum
+export enum TransactionStatus {
+	IDLE = 'idle',
+	APPROVING = 'approving',
+	APPROVED = 'approved',
+	TRANSACTION_PROCESSING = 'transactionProcessing',
+	TRANSACTION_FAILED = 'transactionFailed',
+	TRANSACTION_SUCCESS = 'transactionSuccess',
+}
+
 // Define the store state and actions
 interface BorrowFormState {
 	amount: string;
@@ -12,9 +22,9 @@ interface BorrowFormState {
 	collateralMarket: BorrowMarketCollateral | null;
 	borrowMarket: MarketLoan | null;
 	borrowAmount: string;
+	transactionStatus: TransactionStatus;
 
 	// Values needed for validation
-
 	maxBorrowAmount: number;
 
 	// Actions
@@ -25,6 +35,7 @@ interface BorrowFormState {
 	setBorrowMaxAmount: () => void;
 	setIsLoading: (isLoading: boolean) => void;
 	setMaxBorrowAmount: (amount: number) => void;
+	setTransactionStatus: (status: TransactionStatus) => void;
 	reset: () => void;
 	resetStore: (newBorrowMarket?: BorrowFormState['borrowMarket']) => void;
 }
@@ -38,6 +49,7 @@ const initialState = {
 	walletBalance: BigInt(0),
 	formattedWalletBalance: '0',
 	maxBorrowAmount: 0,
+	transactionStatus: TransactionStatus.IDLE,
 };
 
 // Create a Zustand store
@@ -56,8 +68,8 @@ const createBorrowFormStore = (initialBorrowMarket: MarketLoan | null = null) =>
 			}
 		},
 		setIsLoading: (isLoading) => set({ isLoading }),
-
 		setMaxBorrowAmount: (maxBorrowAmount) => set({ maxBorrowAmount }),
+		setTransactionStatus: (status) => set({ transactionStatus: status }),
 		reset: () =>
 			set({
 				...initialState,

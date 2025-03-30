@@ -1,8 +1,20 @@
 'use client';
 import { useCallback, useMemo } from 'react';
-import { useBorrowFormStore } from '../store/borrow-form.store';
+import {
+	useBorrowFormStore,
+	TransactionStatus,
+} from '../store/borrow-form.store';
 import { useBorrowDrawer } from '../context/borrow-drawer.context';
 import { useWalletToken } from '@/context/wallet-token-provider';
+import { BorrowTokenModel } from '@/lib/model/borrow-token.model';
+import { SupplyTokenModel } from '@/lib/model/supply-token.model';
+import { Web3Address } from '@/types/web3';
+import { useDappUser } from '@/context/user-data.context';
+import { useWriteContract } from 'wagmi';
+import { useCurrentTransactionStore } from '@/store/useCurrentTransactionStore';
+import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
+import { useQueryKeyStore } from '@/store/useQueryKeyStore';
 
 /**
  * Type for validation result
@@ -37,6 +49,15 @@ export function useBorrowForm() {
 	);
 	const setIsLoading = useBorrowFormStore((state) => state.setIsLoading);
 	const reset = useBorrowFormStore((state) => state.reset);
+	const resetStore = useBorrowFormStore((state) => state.resetStore);
+
+	// Get transaction status from the store
+	const transactionStatus = useBorrowFormStore(
+		(state) => state.transactionStatus
+	);
+	const setTransactionStatus = useBorrowFormStore(
+		(state) => state.setTransactionStatus
+	);
 
 	// Get values needed for validation from the store
 	const { formatted: walletBalance, formatted: formattedWalletBalance } =
@@ -45,8 +66,18 @@ export function useBorrowForm() {
 		(state) => state.maxBorrowAmount
 	);
 
+	// Get the current wallet address
+	const { address: walletAddress } = useDappUser();
+
 	// Get drawer context functions
 	const { closeDrawer } = useBorrowDrawer();
+
+	// Setup for API calls
+	const { writeContractAsync } = useWriteContract();
+	const { setTransaction } = useCurrentTransactionStore();
+	const queryClient = useQueryClient();
+	const { borrowMarketDataQueryKey, borrowMarketOverviewQueryKey } =
+		useQueryKeyStore();
 
 	/**
 	 * Validate if the collateral amount is valid
@@ -146,34 +177,191 @@ export function useBorrowForm() {
 	}, [validateCollateralAmount, validateBorrowAmount]);
 
 	/**
+	 * Create token model instances when the markets change
+	 */
+	const collateralTokenModel = useMemo(() => {
+		if (!collateralMarket) return null;
+		// Use SupplyTokenModel for the collateral token (for approvals)
+		return new SupplyTokenModel(
+			collateralMarket.address as Web3Address,
+			collateralMarket.decimals
+		);
+	}, [collateralMarket]);
+
+	const borrowTokenModel = useMemo(() => {
+		if (!borrowMarket) return null;
+		return new BorrowTokenModel(
+			borrowMarket.asset.address_ as Web3Address,
+			borrowMarket.asset.decimals
+		);
+	}, [borrowMarket]);
+
+	/**
+	 * Handle token approval for collateral
+	 */
+	const handleApprove = useCallback(async () => {
+		if (
+			!collateralMarket ||
+			!collateralTokenModel ||
+			!walletAddress ||
+			!borrowMarket
+		)
+			return;
+
+		try {
+			setTransactionStatus(TransactionStatus.APPROVING);
+
+			// Get the parameters for the approve transaction
+			const approveParams = collateralTokenModel.getApproveParams({
+				spender: borrowMarket.address_ as Web3Address, // Use the market address as the spender
+				amount,
+			});
+
+			// Call the approve function on the token contract
+			const txHash = await writeContractAsync({
+				...approveParams,
+				address: approveParams.address as `0x${string}`,
+			});
+
+			if (txHash) {
+				// Set transaction in the store for monitoring
+				setTransaction({
+					hash: txHash,
+					successToastMessage: `Approved ${collateralMarket.name} for collateral`,
+					onSuccess: () => {
+						setTransactionStatus(TransactionStatus.APPROVED);
+					},
+					onError: () => {
+						setTransactionStatus(
+							TransactionStatus.TRANSACTION_FAILED
+						);
+						toast.error(
+							`Failed to approve ${collateralMarket.name}`
+						);
+					},
+				});
+
+				// Show initial info toast
+				toast.info(`Approving ${collateralMarket.name} tokens...`);
+			}
+		} catch (error) {
+			console.error('Error approving tokens:', error);
+			toast.error(
+				`Failed to approve ${collateralMarket.name}. Please try again.`
+			);
+			setTransactionStatus(TransactionStatus.TRANSACTION_FAILED);
+		}
+	}, [
+		collateralMarket,
+		collateralTokenModel,
+		amount,
+		walletAddress,
+		borrowMarket,
+		setTransactionStatus,
+		writeContractAsync,
+		setTransaction,
+	]);
+
+	/**
 	 * Handle borrow submission
 	 */
 	const handleBorrow = useCallback(async () => {
-		if (!collateralMarket || !borrowMarket || !borrowAmount) return;
+		if (
+			!collateralMarket ||
+			!borrowMarket ||
+			!borrowAmount ||
+			!walletAddress ||
+			!borrowTokenModel
+		)
+			return;
 
 		// Validate form before proceeding
-		const { isValid, collateralError, borrowError } = validateForm();
+		const { isValid } = validateForm();
 		if (!isValid) {
-			console.error('Validation errors:', {
-				collateralError,
-				borrowError,
-			});
+			return;
+		}
+
+		// If not approved yet, start the approval process
+		if (transactionStatus === TransactionStatus.IDLE) {
+			return handleApprove();
+		}
+
+		// If already in approving state, don't do anything
+		if (transactionStatus === TransactionStatus.APPROVING) {
+			return;
+		}
+
+		// Reset the form if transaction failed
+		if (transactionStatus === TransactionStatus.TRANSACTION_FAILED) {
+			resetStore(borrowMarket);
 			return;
 		}
 
 		try {
+			setTransactionStatus(TransactionStatus.TRANSACTION_PROCESSING);
 			setIsLoading(true);
 
-			// Simulate API call
-			await new Promise((resolve) => setTimeout(resolve, 1500));
+			// Get loan request parameters using the token model
+			const loanRequestParams =
+				borrowTokenModel.getLoanRequestFromBorrowCollateral({
+					collateral: collateralMarket,
+					collateralAmount: amount,
+					borrowAmount,
+					recipient: walletAddress as Web3Address,
+				});
+			console.log({ loanRequestParams });
+			// Call the loan request function on the contract
+			const txHash = await writeContractAsync({
+				...loanRequestParams,
+				address: loanRequestParams.address as `0x${string}`,
+			});
 
-			// Close the drawer after successful borrowing
-			closeDrawer();
+			if (txHash) {
+				// Set transaction in the store for monitoring
+				setTransaction({
+					hash: txHash,
+					successToastMessage: `Successfully borrowed ${borrowAmount} ${borrowMarket.asset.symbol}`,
+					onSuccess: () => {
+						// Invalidate the borrow market data query if available
+						if (borrowMarketDataQueryKey) {
+							queryClient.invalidateQueries({
+								queryKey: borrowMarketDataQueryKey,
+							});
+						}
+						// Invalidate the borrow market overview query if available
+						if (borrowMarketOverviewQueryKey) {
+							queryClient.invalidateQueries({
+								queryKey: borrowMarketOverviewQueryKey,
+							});
+						}
+						// Set status to success
+						setTransactionStatus(
+							TransactionStatus.TRANSACTION_SUCCESS
+						);
+						// Close the drawer after successful borrow
+						closeDrawer();
+						// Reset the form
+						reset();
+					},
+					onError: () => {
+						setTransactionStatus(
+							TransactionStatus.TRANSACTION_FAILED
+						);
+						setIsLoading(false);
+						toast.error(
+							`Failed to borrow ${borrowMarket.asset.symbol}`
+						);
+					},
+				});
 
-			// Reset the form
-			reset();
+				// Show initial info toast
+				toast.info(
+					`Borrowing ${borrowAmount} ${borrowMarket.asset.symbol}...`
+				);
+			}
 		} catch (error) {
-			console.error('Error borrowing:', error);
+			console.error('Error borrowing tokens:', error);
+			setTransactionStatus(TransactionStatus.TRANSACTION_FAILED);
 		} finally {
 			setIsLoading(false);
 		}
@@ -181,11 +369,45 @@ export function useBorrowForm() {
 		collateralMarket,
 		borrowAmount,
 		borrowMarket,
+		walletAddress,
+		transactionStatus,
+		validateForm,
+		handleApprove,
 		closeDrawer,
 		setIsLoading,
+		setTransactionStatus,
 		reset,
-		validateForm,
+		resetStore,
+		writeContractAsync,
+		setTransaction,
+		queryClient,
+		borrowMarketDataQueryKey,
+		borrowMarketOverviewQueryKey,
+		amount,
+		borrowTokenModel, // Add borrowTokenModel to dependencies
 	]);
+
+	/**
+	 * Get the button text based on the current transaction status
+	 */
+	const getButtonText = useCallback(() => {
+		if (!borrowMarket) return 'Borrow';
+		if (!collateralMarket) return `Borrow ${borrowMarket?.asset.symbol}`;
+		switch (transactionStatus) {
+			case TransactionStatus.APPROVING:
+				return `Approving ${collateralMarket.name}...`;
+			case TransactionStatus.APPROVED:
+				return `Approved! Borrow ${borrowMarket.asset.symbol}`;
+			case TransactionStatus.TRANSACTION_PROCESSING:
+				return 'Processing...';
+			case TransactionStatus.TRANSACTION_FAILED:
+				return 'Failed - Try Again';
+			case TransactionStatus.TRANSACTION_SUCCESS:
+				return 'Success!';
+			default:
+				return `Borrow ${borrowMarket.asset.symbol}`;
+		}
+	}, [collateralMarket, borrowMarket, transactionStatus]);
 
 	/**
 	 * Check if the borrow button should be disabled
@@ -196,8 +418,33 @@ export function useBorrowForm() {
 		}
 
 		const { isValid } = validateForm();
-		return !isValid;
-	}, [amount, borrowAmount, borrowMarket, isLoading, validateForm]);
+		return (
+			!isValid ||
+			transactionStatus === TransactionStatus.APPROVING ||
+			transactionStatus === TransactionStatus.TRANSACTION_PROCESSING
+		);
+	}, [
+		amount,
+		borrowAmount,
+		borrowMarket,
+		isLoading,
+		validateForm,
+		transactionStatus,
+	]);
+
+	/**
+	 * Get validation error message for collateral amount if any
+	 */
+	const getCollateralValidationError = useCallback(() => {
+		return validateCollateralAmount().error;
+	}, [validateCollateralAmount]);
+
+	/**
+	 * Get validation error message for borrow amount if any
+	 */
+	const getBorrowValidationError = useCallback(() => {
+		return validateBorrowAmount().error;
+	}, [validateBorrowAmount]);
 
 	return {
 		// State
@@ -206,21 +453,26 @@ export function useBorrowForm() {
 		collateralMarket,
 		borrowAmount,
 		borrowMarket,
+		transactionStatus,
 		handleBorrow,
 		walletBalance,
 		formattedWalletBalance,
 		maxBorrowAmount,
+		getButtonText,
 
 		// Actions
 		setAmount,
 		setCollateralMarket,
 		setBorrowAmount,
 		setBorrowMarket,
+		setTransactionStatus,
 		reset,
 		closeDrawer,
 
 		// Validation
 		validateForm,
 		isButtonDisabled,
+		getCollateralValidationError,
+		getBorrowValidationError,
 	};
 }

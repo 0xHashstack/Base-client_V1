@@ -63,20 +63,20 @@ export class BorrowTokenModel {
 	 * @returns Parameters for useWriteContract
 	 */
 	getLoanRequestParams({
-		amount,
 		collateralAsset,
 		collateralAmount,
+		borrowAmount,
 		recipient,
 		collateralDecimals,
 	}: {
-		amount: string;
 		collateralAsset: Web3Address;
 		collateralAmount: string;
+		borrowAmount: string;
 		recipient: Web3Address;
 		collateralDecimals: number;
 	}) {
 		// Convert the amount from human-readable format to wei
-		const amountInWei = this.convertToWei(amount);
+		const borrowAmountInWei = this.convertToWei(borrowAmount);
 
 		// Convert the collateral amount based on its decimals
 		const collateralAmountInWei = parseUnits(
@@ -90,7 +90,7 @@ export class BorrowTokenModel {
 			functionName: 'loanRequest',
 			args: [
 				this.address,
-				amountInWei,
+				borrowAmountInWei,
 				collateralAsset,
 				collateralAmountInWei,
 				recipient,
@@ -108,20 +108,20 @@ export class BorrowTokenModel {
 	 * @returns Parameters for useWriteContract
 	 */
 	getLoanRequestWithRTokenParams({
-		amount,
+		borrowAmount,
 		rToken,
 		rTokenAmount,
 		recipient,
 		rTokenDecimals,
 	}: {
-		amount: string;
+		borrowAmount: string;
 		rToken: Web3Address;
 		rTokenAmount: string;
 		recipient: Web3Address;
 		rTokenDecimals: number;
 	}) {
 		// Convert the amount from human-readable format to wei
-		const amountInWei = this.convertToWei(amount);
+		const borrowAmountInWei = this.convertToWei(borrowAmount);
 
 		// Convert the rToken amount based on its decimals
 		const rTokenAmountInWei = parseUnits(rTokenAmount, rTokenDecimals);
@@ -132,7 +132,7 @@ export class BorrowTokenModel {
 			functionName: 'loanRequestWithRToken',
 			args: [
 				this.address,
-				amountInWei,
+				borrowAmountInWei,
 				rToken,
 				rTokenAmountInWei,
 				recipient,
@@ -160,17 +160,17 @@ export class BorrowTokenModel {
 	}) {
 		if (collateral.isRToken) {
 			return this.getLoanRequestWithRTokenParams({
-				amount: collateralAmount,
+				borrowAmount,
 				rToken: collateral.address,
-				rTokenAmount: borrowAmount,
+				rTokenAmount: collateralAmount,
 				recipient,
 				rTokenDecimals: collateral.decimals,
 			});
 		}
 		return this.getLoanRequestParams({
-			amount: collateralAmount,
+			borrowAmount,
 			collateralAsset: collateral.address,
-			collateralAmount: collateralAmount,
+			collateralAmount,
 			recipient,
 			collateralDecimals: collateral.decimals,
 		});

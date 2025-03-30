@@ -171,9 +171,8 @@ export function useBorrowFormInputs() {
 	const maxBorrowAmount = useMemo(() => {
 		if (!borrowMarket || !collateralMarket || !amount) {
 			// Update store with zero when conditions aren't met
-			if (setMaxBorrowAmount) {
-				setMaxBorrowAmount(0);
-			}
+
+			setMaxBorrowAmount(0);
 			return 0;
 		}
 
@@ -181,9 +180,7 @@ export function useBorrowFormInputs() {
 			// Convert string amount to number
 			const collateralAmountNum = parseFloat(amount);
 			if (isNaN(collateralAmountNum) || collateralAmountNum <= 0) {
-				if (setMaxBorrowAmount) {
-					setMaxBorrowAmount(0);
-				}
+				setMaxBorrowAmount(0);
 				return 0;
 			}
 
@@ -192,9 +189,7 @@ export function useBorrowFormInputs() {
 			const borrowPrice = borrowMarket.asset.priceUSD;
 
 			if (borrowPrice === BigInt(0)) {
-				if (setMaxBorrowAmount) {
-					setMaxBorrowAmount(0);
-				}
+				setMaxBorrowAmount(0);
 				return 0; // Avoid division by zero
 			}
 
@@ -217,9 +212,8 @@ export function useBorrowFormInputs() {
 			const calculatedMaxBorrow = collateralAmountNum * 5 * priceRatio;
 
 			// Update the store with the calculated max borrow amount
-			if (setMaxBorrowAmount) {
-				setMaxBorrowAmount(calculatedMaxBorrow);
-			}
+
+			setMaxBorrowAmount(calculatedMaxBorrow);
 
 			return calculatedMaxBorrow;
 		} catch (error) {
