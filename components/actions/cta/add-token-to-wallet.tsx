@@ -54,9 +54,8 @@ function AddTokenToWallet({
 	useEffect(() => {
 		if (isError) {
 			toast.error('Failed to add token to wallet');
-			console.error(error);
 		}
-	}, [isError]);
+	}, [isError, error]);
 
 	return (
 		<TooltipProvider>

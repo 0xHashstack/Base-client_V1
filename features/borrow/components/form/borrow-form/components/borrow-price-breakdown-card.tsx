@@ -6,13 +6,13 @@ import React from 'react';
  * Component that displays the price breakdown for borrowing
  */
 function BorrowPriceBreakdownCard() {
-	const { amount, token } = useBorrowForm();
+	const { amount, borrowMarket } = useBorrowForm();
 
 	// Calculate values based on amount and token
 	const numericAmount = parseFloat(amount) || 0;
 	const tokenPrice =
-		token?.symbol === 'ETH' ? 3000
-		: token?.symbol === 'USDC' ? 1
+		borrowMarket?.asset.symbol === 'ETH' ? 3000
+		: borrowMarket?.asset.symbol === 'USDC' ? 1
 		: 60000;
 	const usdValue = numericAmount * (tokenPrice || 0);
 
@@ -25,7 +25,8 @@ function BorrowPriceBreakdownCard() {
 			<div className='flex items-center justify-between'>
 				<Text.Regular12>Collateral</Text.Regular12>
 				<Text.Regular12>
-					{numericAmount.toFixed(4)} {token?.symbol || ''}
+					{numericAmount.toFixed(4)}{' '}
+					{borrowMarket?.asset.symbol || ''}
 				</Text.Regular12>
 			</div>
 			<div className='flex items-center justify-between'>
