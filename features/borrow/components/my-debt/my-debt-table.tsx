@@ -42,10 +42,9 @@ function MyDebtTable() {
 	// Filter active loans (amount > 0)
 	const activeLoanMarkets = useMemo(() => {
 		if (!borrowMarketData) return [];
-
 		// Filter loans with non-zero amounts
 		const loanMarket = borrowMarketData.filter(
-			({ userLoan }) => userLoan.loanId === BigInt(0)
+			({ userLoan }) => userLoan.loanId !== BigInt(0)
 		);
 
 		// Map the loans to their corresponding market data

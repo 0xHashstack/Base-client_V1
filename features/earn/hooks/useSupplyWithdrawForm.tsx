@@ -142,7 +142,6 @@ export function useSupplyWithdrawForm() {
 
 			// Get withdraw parameters using the token model
 			const withdrawParams = tokenModel.getWithdrawDepositParams({
-				diamondAddress: position.supplyAsset.address_ as Web3Address,
 				rTokenShares: amount,
 				receiver: walletAddress as Web3Address,
 				owner: walletAddress as Web3Address,

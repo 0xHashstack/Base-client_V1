@@ -2,6 +2,7 @@ import diamondAbi from '@/web3/abi/diamond.abi.json';
 import erc20Abi from '@/web3/abi/erc_20.abi.json';
 import { Web3Address } from '@/types/web3';
 import { Abi, parseUnits } from 'viem';
+import { web3DataProvider } from '@/constant/config';
 
 /**
  * Model for handling token supply operations
@@ -111,12 +112,10 @@ export class SupplyTokenModel {
 	 * @returns Parameters for useWriteContract
 	 */
 	getWithdrawDepositParams({
-		diamondAddress,
 		rTokenShares,
 		receiver,
 		owner,
 	}: {
-		diamondAddress: Web3Address;
 		rTokenShares: string;
 		receiver: Web3Address;
 		owner: Web3Address;
@@ -125,7 +124,7 @@ export class SupplyTokenModel {
 		const rTokenSharesInWei = this.convertToWei(rTokenShares);
 
 		return {
-			address: diamondAddress,
+			address: web3DataProvider.diamondAddress as Web3Address,
 			abi: this.getDiamondAbi(),
 			functionName: 'withdrawDeposit',
 			args: [this.address, rTokenSharesInWei, receiver, owner],
