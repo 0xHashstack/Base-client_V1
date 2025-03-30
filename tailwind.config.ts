@@ -35,6 +35,7 @@ export default {
 				badge: {
 					success: 'hsl(var(--badge-success-text))',
 					secondary: 'hsl(var(--badge-secondary-text))',
+					error: 'hsl(var(--bade-error-text))',
 				},
 				placeholder: {
 					DEFAULT: 'hsl(var(--placeholder))',
@@ -59,6 +60,7 @@ export default {
 				badge: {
 					success: 'hsl(var(--badge-success))',
 					secondary: 'hsl(var(--badge-secondary))',
+					error: 'hsl(var(--bade-error))',
 				},
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',

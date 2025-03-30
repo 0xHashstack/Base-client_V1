@@ -92,8 +92,8 @@ function SupplyFormContent() {
 			</SideDrawer.Body>
 			<SideDrawer.Footer>
 				{amount && !isAmountValid && (
-					<div className='mb-2 py-2 px-3 bg-red-50 border border-red-200 rounded-md'>
-						<p className='text-sm text-red-600'>
+					<div className='mb-2 py-2 px-3 bg-badge-error border text-badge-error  rounded-md'>
+						<p className='text-sm text'>
 							{validationError}
 							{validationError === 'Insufficient balance' && (
 								<span className='block text-xs mt-1'>
