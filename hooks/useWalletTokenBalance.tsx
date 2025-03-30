@@ -9,6 +9,7 @@ import erc20ABI from '@/web3/abi/erc_20.abi.json';
 import { formatTokenBalance } from '@/utils/web3';
 import { useMemo } from 'react';
 import { useDappUser } from '@/context/user-data.context';
+import '@prototype/bigint.prototype';
 
 // Types for wagmi contract results
 type ContractResult = {
@@ -56,8 +57,8 @@ export const useWalletTokenBalance = (
 		});
 
 	return {
-		data,
-		formatted: formatTokenBalance(data as bigint, decimals),
+		data: data as bigint,
+		formatted: (data as bigint)?.formatBalance(decimals),
 		isError,
 		isLoading,
 		isSuccess,

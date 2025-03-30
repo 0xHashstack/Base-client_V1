@@ -1,14 +1,15 @@
 'use client';
 import { useCallback, useMemo } from 'react';
 import { useBorrowFormStore } from '../store/borrow-form.store';
-import { Web3Address } from '@/types/web3';
 import { useTokenStore } from '@/store/useTokenStore';
-import { useBalance } from 'wagmi';
-import { formatUnits } from 'viem';
 import {
 	BorrowMarketCollateral,
 	MarketLoan,
 } from '@/types/web3/borrow-market.types';
+import { useWalletToken } from '@/context/wallet-token-provider';
+import '@prototype/bigint.prototype';
+import { DECIMALS } from '@/constant/web3/decimal.constant';
+import { formatUnits } from 'viem';
 
 /**
  * Hook to handle the borrow form inputs
@@ -32,9 +33,6 @@ export function useBorrowFormInputs() {
 	const setBorrowMarket = useBorrowFormStore(
 		(state) => state.setBorrowMarket
 	);
-	const setBorrowMaxAmount = useBorrowFormStore(
-		(state) => state.setBorrowMaxAmount
-	);
 
 	const collateralMarketList = useTokenStore(
 		(state) => state.borrowMarketCollateral
@@ -44,18 +42,11 @@ export function useBorrowFormInputs() {
 
 	const {
 		data: walletBalance,
-		isFetching: walletBalanceLoading,
+		isLoading: walletBalanceLoading,
 		isError: walletBalanceError,
 		refetch: refetchWalletBalance,
-	} = useBalance({
-		address: collateralMarket?.address as Web3Address,
-	});
-
-	// Get formatted wallet balance
-	const formattedWalletBalance = useMemo(() => {
-		if (!walletBalance || !collateralMarket) return '0';
-		return formatUnits(walletBalance.value, collateralMarket.decimals);
-	}, [walletBalance, collateralMarket]);
+		formatted: formattedWalletBalance,
+	} = useWalletToken();
 
 	// Maximum amount for the slider (from wallet balance)
 	const MAX_AMOUNT = useMemo(() => {
@@ -73,6 +64,10 @@ export function useBorrowFormInputs() {
 		return walletBalanceError || MAX_AMOUNT <= 0;
 	}, [walletBalanceError, MAX_AMOUNT]);
 
+	/**
+	 * Supply functions
+	 */
+
 	// Handle amount change
 	const handleAmountChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,40 +77,59 @@ export function useBorrowFormInputs() {
 		[setAmount]
 	);
 
-	const sliderPercentage = useMemo(() => {
-		// if (!collateralMarket || !collateralMarket.availableCollateral)
-		// 	return 0;
-		// const percentage =
-		// 	(parseFloat(amount) / collateralMarket.availableCollateral) * 100;
-		// return Math.min(percentage, 100); // Ensure it doesn't exceed 100%
-		return 0;
-	}, [amount, collateralMarket]);
+	// Convert amount string to number for slider
+	const amountValue = useMemo(() => {
+		const parsed = parseFloat(amount);
+		return isNaN(parsed) ? 0 : parsed;
+	}, [amount]);
 
-	// Handle max click
+	// Calculate slider percentage (0-100)
+	const sliderPercentage = useMemo(() => {
+		if (MAX_AMOUNT <= 0) return 0;
+		const percentage = (amountValue / MAX_AMOUNT) * 100;
+		return Math.min(percentage, 100); // Ensure it doesn't exceed 100%
+	}, [amountValue, MAX_AMOUNT]);
+
+	/**
+	 * Handle max button click for collateral
+	 */
 	const handleMaxClick = useCallback(() => {
 		if (!collateralMarket) return;
+		if (walletBalanceLoading || walletBalanceError || MAX_AMOUNT <= 0)
+			return;
 
-		// Set amount to max available collateral
-		// const maxAmount =
-		// 	collateralMarket.availableCollateral?.toString() || '0';
-		// setAmount(maxAmount);
-	}, [collateralMarket, setAmount]);
+		// Set to wallet balance (with 3 decimal places for readability)
+		setAmount(parseFloat(formattedWalletBalance).toFixed(3));
+	}, [
+		setAmount,
+		collateralMarket,
+		formattedWalletBalance,
+		walletBalanceLoading,
+		walletBalanceError,
+		MAX_AMOUNT,
+	]);
 
-	// Handle slider change
+	/**
+	 * Handle slider change for collateral amount
+	 * @param values Slider value array (0-100)
+	 */
 	const handleSliderChange = useCallback(
 		(values: number[]) => {
-			// if (!collateralMarket || !collateralMarket.availableCollateral)
-			// 	return;
+			if (!collateralMarket) return;
+			if (walletBalanceLoading || walletBalanceError || MAX_AMOUNT <= 0)
+				return;
 
-			// const percentage = values[0];
-
-			// // Calculate amount based on percentage
-			// const calculatedAmount =
-			// 	(percentage / 100) * collateralMarket.availableCollateral;
-			// setAmount(calculatedAmount.toString());
-			return 0;
+			const percentage = values[0];
+			const newAmount = (percentage / 100) * MAX_AMOUNT;
+			setAmount(newAmount.toFixed(3));
 		},
-		[collateralMarket, setAmount]
+		[
+			setAmount,
+			collateralMarket,
+			MAX_AMOUNT,
+			walletBalanceLoading,
+			walletBalanceError,
+		]
 	);
 
 	// Handle token change
@@ -127,13 +141,16 @@ export function useBorrowFormInputs() {
 		[setCollateralMarket, setAmount]
 	);
 
+	/**
+	 * Borrow functions
+	 */
+
 	// Handle borrow market change
 	const handleBorrowMarketChange = useCallback(
 		(newToken: MarketLoan) => {
 			setBorrowMarket(newToken);
-			setBorrowAmount('');
 		},
-		[setBorrowMarket, setBorrowAmount]
+		[setBorrowMarket]
 	);
 
 	// Handle borrow amount change
@@ -145,41 +162,87 @@ export function useBorrowFormInputs() {
 		[setBorrowAmount]
 	);
 
+	// Calculate maximum borrowable amount based on collateral amount and price ratio
+	const maxBorrowAmount = useMemo(() => {
+		if (!borrowMarket || !collateralMarket || !amount) return 0;
+
+		try {
+			// Convert string amount to number
+			const collateralAmountNum = parseFloat(amount);
+			if (isNaN(collateralAmountNum) || collateralAmountNum <= 0)
+				return 0;
+
+			// Get prices from both assets (they are bigint)
+			const collateralPrice = collateralMarket.priceUSD;
+			const borrowPrice = borrowMarket.asset.priceUSD;
+
+			if (borrowPrice === BigInt(0)) return 0; // Avoid division by zero
+
+			// Get token decimals
+			const collateralDecimals = collateralMarket.decimals;
+			const borrowDecimals = borrowMarket.asset.decimals;
+
+			// Calculate the price ratio (convert bigint to number for calculation)
+			// Adjust for different token decimals when calculating the price ratio
+			const normalizedCollateralPrice = Number(
+				formatUnits(collateralPrice, collateralDecimals)
+			);
+			const normalizedBorrowPrice = Number(
+				formatUnits(borrowPrice, borrowDecimals)
+			);
+			const priceRatio =
+				normalizedCollateralPrice / normalizedBorrowPrice;
+
+			// Calculate max borrow (5x leverage adjusted by price ratio)
+			return collateralAmountNum * 5 * priceRatio;
+		} catch (error) {
+			console.error('Error calculating max borrow amount:', error);
+			return 0;
+		}
+	}, [borrowMarket, collateralMarket, amount]);
+
 	// Handle borrow max click
 	const handleBorrowMaxClick = useCallback(() => {
-		if (!borrowMarket) return;
+		if (!borrowMarket || !collateralMarket || maxBorrowAmount <= 0) return;
 
-		// Set amount to max available in reserve (hardcoded for now)
-		setBorrowMaxAmount();
-	}, [borrowMarket, setBorrowMaxAmount]);
+		// Set to max borrowable amount
+		setBorrowAmount(maxBorrowAmount.toFixed(3));
+	}, [borrowMarket, collateralMarket, maxBorrowAmount, setBorrowAmount]);
 
-	// Available reserve (hardcoded for now)
-	const availableReserve = useMemo(() => {
-		return borrowMarket ? '10000' : '0';
-	}, [borrowMarket]);
+	// Convert borrow amount string to number for slider
+	const borrowAmountValue = useMemo(() => {
+		const parsed = parseFloat(borrowAmount);
+		return isNaN(parsed) ? 0 : parsed;
+	}, [borrowAmount]);
 
 	// Borrow slider percentage
 	const borrowSliderPercentage = useMemo(() => {
-		if (!borrowMarket || !availableReserve) return 0;
-		const percentage =
-			(parseFloat(borrowAmount) / parseFloat(availableReserve)) * 100;
+		if (maxBorrowAmount <= 0) return 0;
+		const percentage = (borrowAmountValue / maxBorrowAmount) * 100;
 		return Math.min(percentage, 100); // Ensure it doesn't exceed 100%
-	}, [borrowAmount, borrowMarket, availableReserve]);
+	}, [borrowAmountValue, maxBorrowAmount]);
 
 	// Handle borrow slider change
 	const handleBorrowSliderChange = useCallback(
 		(values: number[]) => {
-			if (!borrowMarket || !availableReserve) return;
+			if (!borrowMarket || !collateralMarket || maxBorrowAmount <= 0)
+				return;
 
 			const percentage = values[0];
 
-			// Calculate amount based on percentage
-			const calculatedAmount =
-				(percentage / 100) * parseFloat(availableReserve);
-			setBorrowAmount(calculatedAmount.toString());
+			// Calculate amount based on percentage of max borrow amount
+			const calculatedAmount = (percentage / 100) * maxBorrowAmount;
+			setBorrowAmount(calculatedAmount.toFixed(3));
 		},
-		[borrowMarket, availableReserve, setBorrowAmount]
+		[borrowMarket, collateralMarket, maxBorrowAmount, setBorrowAmount]
 	);
+
+	const availableReserve = useMemo(() => {
+		if (!borrowMarket) return 0;
+		return borrowMarket.availableToBorrow.formatBalance(
+			DECIMALS.BORROW_MARKET
+		);
+	}, [borrowMarket]);
 
 	return {
 		amount,
@@ -206,5 +269,6 @@ export function useBorrowFormInputs() {
 		handleBorrowMaxClick,
 		handleBorrowMarketChange,
 		handleBorrowSliderChange,
+		maxBorrowAmount,
 	};
 }

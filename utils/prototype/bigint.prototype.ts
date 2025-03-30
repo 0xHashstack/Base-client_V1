@@ -37,7 +37,11 @@ if (typeof BigInt.prototype.formatBalance !== 'function') {
 			const formatted = parseFloat(formatUnits(value, decimals));
 
 			// Format with appropriate suffix
-			if (Math.abs(formatted) >= 1e9) {
+			if (Math.abs(formatted) >= 1e12) {
+				// Trillions
+				const inTrillions = formatted / 1e12;
+				return `${inTrillions.toFixed(inTrillions % 1 !== 0 ? 3 : toFixed)}T`;
+			} else if (Math.abs(formatted) >= 1e9) {
 				// Billions
 				const inBillions = formatted / 1e9;
 				return `${inBillions.toFixed(inBillions % 1 !== 0 ? 3 : toFixed)}B`;

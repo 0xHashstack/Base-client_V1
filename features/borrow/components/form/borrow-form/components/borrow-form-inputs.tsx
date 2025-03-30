@@ -14,6 +14,7 @@ import {
 	BorrowMarketCollateral,
 	MarketLoan,
 } from '@/types/web3/borrow-market.types';
+import { formatToReadableValue } from '@/utils/web3';
 
 /**
  * Component for the borrow form inputs
@@ -43,6 +44,7 @@ function BorrowFormInputs() {
 		handleBorrowMaxClick,
 		handleBorrowMarketChange,
 		handleBorrowSliderChange,
+		maxBorrowAmount,
 	} = useBorrowFormInputs();
 
 	// Custom render function for token options
@@ -102,15 +104,21 @@ function BorrowFormInputs() {
 	const renderBorrowMarketValue = (selectedToken: MarketLoan | null) => {
 		if (!selectedToken) return null;
 		return (
-			<div className='flex items-center gap-2'>
-				<Image
-					src={selectedToken.asset.logoURI}
-					alt={selectedToken.asset.symbol}
-					className='rounded-full'
-					width={18}
-					height={18}
-				/>
-				<Text.Medium14>{selectedToken.asset.symbol}</Text.Medium14>
+			<div className='flex flex-col gap-1'>
+				<div className='flex items-center gap-2'>
+					<Image
+						src={selectedToken.asset.logoURI}
+						alt={selectedToken.asset.symbol}
+						className='rounded-full'
+						width={18}
+						height={18}
+					/>
+					<Text.Medium14>{selectedToken.asset.symbol}</Text.Medium14>
+				</div>
+				<Text.Regular12 textColor={500}>
+					Available Reserve: {availableReserve}{' '}
+					{borrowMarket?.asset.symbol || ''}
+				</Text.Regular12>
 			</div>
 		);
 	};
@@ -190,7 +198,8 @@ function BorrowFormInputs() {
 						</div>
 						<div className='flex items-center gap-1'>
 							<Text.Regular12 textColor={600}>
-								Available Reserve: {availableReserve}{' '}
+								Available To Borrow:{' '}
+								{formatToReadableValue(maxBorrowAmount)}{' '}
 								{borrowMarket?.asset.symbol || ''}
 							</Text.Regular12>
 						</div>
