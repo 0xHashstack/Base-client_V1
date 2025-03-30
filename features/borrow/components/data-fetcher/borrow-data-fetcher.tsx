@@ -94,6 +94,7 @@ const BorrowDataFetcher: React.FC = () => {
 			!isBorrowMarketError
 		) {
 			// Update the store with processed data
+			console.log('borrowMarketData', borrowMarketData);
 			setBorrowMarketData(borrowMarketData as UserBorrowData);
 		}
 	}, [

@@ -34,12 +34,12 @@ const initialState = {
 
 // Create a Zustand store
 const createBorrowFormStore = (initialBorrowMarket: MarketLoan | null = null) =>
-	create<BorrowFormState>((set) => ({
+	create<BorrowFormState>((set, get) => ({
 		...initialState,
 		borrowMarket: initialBorrowMarket,
 		setAmount: (amount) => set({ amount }),
 		setCollateralMarket: (token) => set({ collateralMarket: token }),
-		setBorrowMarket: (borrowMarket) => set({ borrowMarket }),
+		setBorrowMarket: (borrowMarket) => get().resetStore(borrowMarket),
 		setBorrowAmount: (borrowAmount) => set({ borrowAmount }),
 		setBorrowMaxAmount: () => {
 			set({ borrowAmount: '5000' }); // This would be replaced with actual reserve logic

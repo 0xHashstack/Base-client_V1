@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useBorrowFormStore } from '../store/borrow-form.store';
 import { Web3Address } from '@/types/web3';
 import { useTokenStore } from '@/store/useTokenStore';

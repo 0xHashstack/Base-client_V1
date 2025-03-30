@@ -9,6 +9,8 @@ import BorrowFormInputs from './components/borrow-form-inputs';
 import BorrowPriceBreakdownCard from './components/borrow-price-breakdown-card';
 import { Card } from '@/components/ui/card';
 import { MarketLoan } from '@/types/web3/borrow-market.types';
+import { useBorrowFormStore } from '../../../store/borrow-form.store';
+import { WalletTokenProvider } from '@/context/wallet-token-provider';
 
 interface BorrowFormProps {
 	borrowMarket: MarketLoan;
@@ -20,8 +22,22 @@ interface BorrowFormProps {
 function BorrowForm({ borrowMarket }: BorrowFormProps) {
 	return (
 		<BorrowFormContextProvider initialBorrowMarket={borrowMarket}>
-			<BorrowFormContent />
+			<BorrowFormWithTokenProvider />
 		</BorrowFormContextProvider>
+	);
+}
+
+function BorrowFormWithTokenProvider() {
+	const collateralMarket = useBorrowFormStore(
+		(state) => state.collateralMarket
+	);
+
+	return (
+		<WalletTokenProvider
+			tokenAddress={collateralMarket?.address}
+			decimals={collateralMarket?.decimals}>
+			<BorrowFormContent />
+		</WalletTokenProvider>
 	);
 }
 

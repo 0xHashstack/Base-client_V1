@@ -14,6 +14,7 @@ export const transformToBorrowMarketCollateral = (
 			decimals: asset.decimals,
 			logoURI: asset.logoURI,
 			isRToken: false,
+			priceUSD: asset.priceUSD,
 		};
 	});
 	const rMarketCollateral: BorrowMarketCollateral[] = supplyPositions.map(
@@ -26,8 +27,9 @@ export const transformToBorrowMarketCollateral = (
 				decimals: supplyAsset.decimals,
 				logoURI: underlyingAsset.logoURI,
 				isRToken: true,
+				priceUSD: supplyAsset.priceUSD,
 			};
 		}
 	);
-	return [...marketCollateral, ...rMarketCollateral];
+	return [...rMarketCollateral, ...marketCollateral];
 };

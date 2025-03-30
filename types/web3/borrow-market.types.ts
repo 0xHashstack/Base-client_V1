@@ -139,7 +139,7 @@ export interface BorrowMarketToken {
  */
 export interface BorrowMarketCollateral {
 	/** Contract address of the collateral */
-	address: string;
+	address: Web3Address;
 	/** Name of the collateral */
 	name: string;
 	/** Symbol of the collateral */
@@ -150,4 +150,6 @@ export interface BorrowMarketCollateral {
 	logoURI: string;
 	/** isRToken */
 	isRToken: boolean;
+	/** priceUSD */
+	priceUSD: bigint;
 }

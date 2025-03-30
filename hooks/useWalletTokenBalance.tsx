@@ -36,7 +36,7 @@ const extractValue = (result: ContractResult): bigint | undefined => {
  * Hook to fetch and format token balance for a single token
  */
 export const useWalletTokenBalance = (
-	tokenAddress: Web3Address,
+	tokenAddress: Web3Address | undefined,
 	{ decimals = 18, address }: TokenBalanceParams = {}
 ) => {
 	const { address: walletAccount } = useDappUser();
@@ -44,7 +44,7 @@ export const useWalletTokenBalance = (
 
 	const { data, isError, isLoading, isSuccess, error, refetch, queryKey } =
 		useReadContract({
-			address: tokenAddress as Web3Address,
+			address: tokenAddress,
 			abi: erc20ABI,
 			functionName: 'balanceOf',
 			args: [wAccount],
