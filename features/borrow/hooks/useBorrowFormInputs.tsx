@@ -1,6 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
-import { useCallback, useMemo } from 'react';
-import { useBorrowFormStore } from '../store/borrow-form.store';
+import { useCallback, useEffect, useMemo } from 'react';
+import {
+	TransactionStatus,
+	useBorrowFormStore,
+} from '../store/borrow-form.store';
 import { useTokenStore } from '@/store/useTokenStore';
 import {
 	BorrowMarketCollateral,
@@ -42,6 +46,9 @@ export function useBorrowFormInputs() {
 	const collateralMarketList = useTokenStore(
 		(state) => state.borrowMarketCollateral
 	);
+	const transactionStatus = useBorrowFormStore(
+		(state) => state.transactionStatus
+	);
 
 	const borrowMarketList = useTokenStore((state) => state.borrowMarketData);
 
@@ -66,8 +73,12 @@ export function useBorrowFormInputs() {
 
 	// Check if form inputs should be disabled
 	const isFormDisabled = useMemo(() => {
-		return walletBalanceError || MAX_AMOUNT <= 0;
-	}, [walletBalanceError, MAX_AMOUNT]);
+		return (
+			walletBalanceError ||
+			MAX_AMOUNT <= 0 ||
+			transactionStatus !== TransactionStatus.IDLE
+		);
+	}, [walletBalanceError, MAX_AMOUNT, transactionStatus]);
 
 	/**
 	 * Supply functions
@@ -170,9 +181,6 @@ export function useBorrowFormInputs() {
 	// Calculate maximum borrowable amount based on collateral amount and price ratio
 	const maxBorrowAmount = useMemo(() => {
 		if (!borrowMarket || !collateralMarket || !amount) {
-			// Update store with zero when conditions aren't met
-
-			setMaxBorrowAmount(0);
 			return 0;
 		}
 
@@ -180,7 +188,6 @@ export function useBorrowFormInputs() {
 			// Convert string amount to number
 			const collateralAmountNum = parseFloat(amount);
 			if (isNaN(collateralAmountNum) || collateralAmountNum <= 0) {
-				setMaxBorrowAmount(0);
 				return 0;
 			}
 
@@ -189,7 +196,6 @@ export function useBorrowFormInputs() {
 			const borrowPrice = borrowMarket.asset.priceUSD;
 
 			if (borrowPrice === BigInt(0)) {
-				setMaxBorrowAmount(0);
 				return 0; // Avoid division by zero
 			}
 
@@ -211,20 +217,16 @@ export function useBorrowFormInputs() {
 			// Calculate max borrow (5x leverage adjusted by price ratio)
 			const calculatedMaxBorrow = collateralAmountNum * 5 * priceRatio;
 
-			// Update the store with the calculated max borrow amount
-
-			setMaxBorrowAmount(calculatedMaxBorrow);
-
 			return calculatedMaxBorrow;
 		} catch (error) {
 			console.error('Error calculating max borrow amount:', error);
-			if (setMaxBorrowAmount) {
-				setMaxBorrowAmount(0);
-			}
 			return 0;
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [borrowMarket, collateralMarket, amount]);
+
+	useEffect(() => {
+		setMaxBorrowAmount(maxBorrowAmount);
+	}, [maxBorrowAmount]);
 
 	// Handle borrow max click
 	const handleBorrowMaxClick = useCallback(() => {

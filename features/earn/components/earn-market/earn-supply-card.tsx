@@ -56,35 +56,29 @@ function EarnSupplyCard({
 		market.asset.symbol;
 
 	const cardData = useMemo<CardDataItem[]>(
-		() =>
-			[
-				{
-					title: 'Price',
-					value: formattedPrice,
-					rawValue: formattedPrice,
-					change: priceChangePercentage,
-				},
-				{
-					title: 'Liquidity',
-					value: formattedLiquidity,
-					rawValue: formattedLiquidity,
-				},
-				{
-					title: 'Net APY',
-					value: formattedNetApy,
-					rawValue: formattedNetApy,
-				},
-				{
-					title: 'Wallet Balance',
-					value: formattedWalletBalance,
-					rawValue: formattedWalletBalance,
-				},
-			].filter(
-				(
-					item
-				): item is CardDataItem & { value: string; rawValue: string } =>
-					item.rawValue !== null && item.rawValue !== undefined
-			),
+		() => [
+			{
+				title: 'Price',
+				value: formattedPrice,
+				rawValue: formattedPrice,
+				change: priceChangePercentage,
+			},
+			{
+				title: 'Liquidity',
+				value: formattedLiquidity,
+				rawValue: formattedLiquidity,
+			},
+			{
+				title: 'Net APY',
+				value: formattedNetApy,
+				rawValue: formattedNetApy,
+			},
+			{
+				title: 'Wallet Balance',
+				value: formattedWalletBalance,
+				rawValue: formattedWalletBalance,
+			},
+		],
 		[
 			formattedPrice,
 			formattedLiquidity,

@@ -20,7 +20,7 @@ import BorrowForm from '../form/borrow-form';
 import { useTokenStore } from '@/store/useTokenStore';
 import AddTokenToWallet from '@/components/actions/cta/add-token-to-wallet';
 import '@prototype/bigint.prototype';
-import { MarketLoan } from './borrow-market.types';
+import { MarketLoan } from '@/types/web3/borrow-market.types';
 
 /**
  * BorrowTable component
