@@ -72,7 +72,7 @@ export class SupplyTokenModel {
 		const amountInWei = this.convertToWei(amount);
 
 		return {
-			address: diamondAddress,
+			address: web3DataProvider.diamondAddress as Web3Address,
 			abi: this.getDiamondAbi(),
 			functionName: 'deposit',
 			args: [this.address, amountInWei, receiver],
