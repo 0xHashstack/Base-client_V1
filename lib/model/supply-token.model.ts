@@ -60,11 +60,9 @@ export class SupplyTokenModel {
 	 * @returns Parameters for useWriteContract
 	 */
 	getDepositParams({
-		diamondAddress,
 		amount,
 		receiver,
 	}: {
-		diamondAddress: Web3Address;
 		amount: string;
 		receiver: Web3Address;
 	}) {
@@ -86,20 +84,18 @@ export class SupplyTokenModel {
 	 * @returns Parameters for useWriteContract
 	 */
 	getApproveParams({
-		spender,
 		amount,
 	}: {
-		spender: Web3Address;
 		amount: string;
 	}) {
 		// Convert the amount from human-readable format to wei
 		const amountInWei = this.convertToWei(amount);
-
+		const diamond = web3DataProvider.diamondAddress as Web3Address;
 		return {
 			address: this.address,
 			abi: erc20Abi as Abi,
 			functionName: 'approve',
-			args: [spender, amountInWei],
+			args: [diamond, amountInWei],
 		};
 	}
 

@@ -65,13 +65,11 @@ export function useSupplyForm() {
 
 	const handleApprove = useCallback(async () => {
 		if (!market || !tokenModel || !walletAddress) return;
-
 		try {
 			setTransactionStatus(TransactionStatus.APPROVING);
 
 			// Get the parameters for the approve transaction
 			const approveParams = tokenModel.getApproveParams({
-				spender: market.address_, // Use the market address as the spender
 				amount,
 			});
 
@@ -192,7 +190,6 @@ export function useSupplyForm() {
 
 			// Get deposit parameters using the token model
 			const depositParams = tokenModel.getDepositParams({
-				diamondAddress: market.address_ as Web3Address,
 				amount,
 				receiver: walletAddress as Web3Address,
 			});
