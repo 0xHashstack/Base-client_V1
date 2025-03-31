@@ -30,6 +30,8 @@ import { MarketLoan } from '@/types/web3/borrow-market.types';
 import If from '@/components/common/If';
 import '@prototype/bigint.prototype';
 import { CollateralToken, HstkToken } from '@/types/web3/token.types';
+import { DECIMALS } from '@/constant/web3/decimal.constant';
+import { FEES } from '@/constant/web3/fees.constant';
 
 /**
  * MyDebtTable component
@@ -145,27 +147,21 @@ function MyDebtTable() {
 						activeLoanMarkets.map((market) => {
 							// Calculate the borrowed value in USD
 							const { userLoan } = market;
-							const borrowedAmount = userLoan.amount;
-							const borrowedValueUsd =
-								market ?
-									(borrowedAmount * market.asset.priceUSD) /
-									BigInt(10) ** BigInt(market.asset.decimals)
-								:	BigInt(0);
+
+							const currentAmount =
+								userLoan.currentAmount.formatBalance(
+									DECIMALS.BORROW_MARKET
+								);
 
 							// Format the values for display
 							const formattedAmount =
-								borrowedAmount.formatBalance(
-									market?.asset.decimals || 18
+								userLoan.amount.formatBalance(
+									DECIMALS.BORROW_MARKET
 								);
-							const formattedValueUsd =
-								'$' +
-								borrowedValueUsd.formatBalance(
-									market?.asset.decimals || 18
-								);
+
 							const formattedApr =
-								market ?
-									market.borrowApr.formatToString(10) + '%'
-								:	'0%';
+								market.borrowApr.formatToString(DECIMALS.APR) +
+								'%';
 
 							// Health factor calculation (placeholder - replace with actual calculation)
 							const healthFactor = 3.34; // This should be calculated based on collateral value vs debt
@@ -189,24 +185,20 @@ function MyDebtTable() {
 									</TableCell>
 									<TableCell>
 										<HoverBorrowValueCard
-											borrowAmount={parseFloat(
-												formattedAmount
-											)}
+											borrowAmount={formattedAmount}
 											tokenName={market?.asset.name || ''}
 											dTokenName={
 												'd' + (market?.asset.name || '')
 											}
-											dTokenIssued={parseFloat(
-												formattedAmount
+											dTokenIssued={formattedAmount}
+											pricePerToken={market.asset.priceUSD.formatBalance(
+												market.asset.decimals
 											)}
-											pricePerToken={Number(
-												market?.asset.priceUSD || 0
+											tokenPrice={market.asset.priceUSD.formatBalance(
+												market.asset.decimals
 											)}
-											tokenPrice={Number(
-												market?.asset.priceUSD || 0
-											)}
-											dappFees={0.12}>
-											<span>{formattedValueUsd}</span>
+											dappFees={FEES.DAPP_FEE.toFixed(2)}>
+											<span>${currentAmount}</span>
 										</HoverBorrowValueCard>
 									</TableCell>
 									<TableCell>

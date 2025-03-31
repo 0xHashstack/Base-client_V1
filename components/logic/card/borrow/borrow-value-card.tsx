@@ -7,13 +7,13 @@ import { SealCheck } from '@phosphor-icons/react';
 import React, { useMemo } from 'react';
 
 export interface BorrowValueCardProps {
-	borrowAmount: number;
+	borrowAmount: string;
 	tokenName: string;
 	dTokenName: string;
-	dTokenIssued?: number;
-	pricePerToken?: number;
-	tokenPrice?: number;
-	dappFees?: number;
+	dTokenIssued?: string;
+	pricePerToken?: string;
+	tokenPrice?: string;
+	dappFees?: string;
 }
 
 type DataItem = { label: string; value: string };
@@ -28,20 +28,16 @@ function BorrowValueCard({
 	dappFees,
 }: BorrowValueCardProps) {
 	const data = useMemo(() => {
-		const items: Array<[string, number | undefined, string | undefined]> = [
-			[`${dTokenName} issued`, dTokenIssued, dTokenIssued?.toFixed(3)],
-			[`1 ${tokenName}`, tokenPrice, `$${tokenPrice?.toFixed(3)}`],
-			[
-				`Price per ${tokenName}`,
-				pricePerToken,
-				`$${pricePerToken?.toFixed(3)}`,
-			],
-			['Dapp fee', dappFees, `$${dappFees?.toFixed(3)}`],
+		const items: Array<[string, string | undefined, string | undefined]> = [
+			[`${dTokenName} issued`, dTokenIssued, dTokenIssued],
+			[`1 ${tokenName}`, tokenPrice, `$${tokenPrice}`],
+			[`Price per ${tokenName}`, pricePerToken, `$${pricePerToken}`],
+			['Dapp fee', dappFees, `$${dappFees}`],
 		];
 
 		return items
 			.filter(
-				(item): item is [string, number, string] =>
+				(item): item is [string, string, string] =>
 					item[1] !== undefined
 			)
 			.map(
@@ -60,13 +56,13 @@ function BorrowValueCard({
 	]);
 
 	return (
-		<div className='flex flex-col gap-4'>
+		<div className='flex flex-col gap-4 overflow-hidden'>
 			<div className='flex items-start justify-between gap-2'>
 				<div className='flex flex-col gap-1'>
 					<Text.Regular12 textColor={500}>
 						Borrow Amount
 					</Text.Regular12>
-					<Text.Semibold14>{borrowAmount.toFixed(3)}</Text.Semibold14>
+					<Text.Semibold14>{borrowAmount}</Text.Semibold14>
 				</div>
 				<IconCard icon={SealCheck} />
 			</div>
