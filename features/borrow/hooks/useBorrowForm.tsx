@@ -213,7 +213,6 @@ export function useBorrowForm() {
 
 			// Get the parameters for the approve transaction
 			const approveParams = collateralTokenModel.getApproveParams({
-				spender: borrowMarket.address_ as Web3Address, // Use the market address as the spender
 				amount,
 			});
 
