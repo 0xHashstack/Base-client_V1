@@ -199,4 +199,161 @@ export class BorrowTokenModel {
 			args: [loanId, repayAmountInWei],
 		};
 	}
+
+	/**
+	 * Get the parameters for adding collateral to a loan
+	 * @param loanId The ID of the loan to add collateral to
+	 * @param collateralAsset The address of the collateral asset
+	 * @param collateralAmount The amount of collateral in human-readable format
+	 * @param collateralDecimals The decimals of the collateral asset
+	 * @returns Parameters for useWriteContract
+	 */
+	getAddCollateralParams({
+		loanId,
+		collateralAsset,
+		collateralAmount,
+		collateralDecimals,
+	}: {
+		loanId: bigint;
+		collateralAsset: Web3Address;
+		collateralAmount: string;
+		collateralDecimals: number;
+	}) {
+		// Convert the collateral amount based on its decimals
+		const collateralAmountInWei = parseUnits(
+			collateralAmount,
+			collateralDecimals
+		);
+
+		return {
+			address: web3DataProvider.diamondAddress,
+			abi: this.getDiamondAbi(),
+			functionName: 'addCollateral',
+			args: [loanId, collateralAsset, collateralAmountInWei],
+		};
+	}
+
+	/**
+	 * Get the parameters for adding rToken collateral to a loan
+	 * @param loanId The ID of the loan to add collateral to
+	 * @param rToken The address of the rToken to use as collateral
+	 * @param rTokenAmount The amount of rToken in human-readable format
+	 * @param rTokenDecimals The decimals of the rToken
+	 * @returns Parameters for useWriteContract
+	 */
+	getAddRTokenCollateralParams({
+		loanId,
+		rToken,
+		rTokenAmount,
+		rTokenDecimals,
+	}: {
+		loanId: bigint;
+		rToken: Web3Address;
+		rTokenAmount: string;
+		rTokenDecimals: number;
+	}) {
+		// Convert the rToken amount based on its decimals
+		const rTokenAmountInWei = parseUnits(rTokenAmount, rTokenDecimals);
+
+		return {
+			address: web3DataProvider.diamondAddress,
+			abi: this.getDiamondAbi(),
+			functionName: 'addRTokenCollateral',
+			args: [loanId, rToken, rTokenAmountInWei],
+		};
+	}
+
+	/**
+	 * Get the parameters for interacting with APY
+	 * @param params The parameters for the interaction
+	 * @returns Parameters for useWriteContract
+	 */
+	getInteractWithApyParams({
+		loanId,
+		dappId,
+		action,
+		isCrossChain,
+		amountIn,
+		minAmountOut,
+		tokenIn,
+		tokenOut,
+		data,
+		tokenInDecimals,
+	}: {
+		loanId: bigint;
+		dappId: number;
+		action: number;
+		isCrossChain: boolean;
+		amountIn: string;
+		minAmountOut: string;
+		tokenIn: Web3Address;
+		tokenOut: Web3Address;
+		data: string;
+		tokenInDecimals: number;
+	}) {
+		// Convert the amounts based on token decimals
+		const amountInWei = parseUnits(amountIn, tokenInDecimals);
+		const minAmountOutWei = parseUnits(minAmountOut, tokenInDecimals);
+
+		const spendParams = {
+			loanId,
+			dappId,
+			action,
+			isCrossChain,
+			amount_in: amountInWei,
+			min_amount_out: minAmountOutWei,
+			token_in: tokenIn,
+			token_out: tokenOut,
+			data,
+		};
+
+		return {
+			address: web3DataProvider.diamondAddress,
+			abi: this.getDiamondAbi(),
+			functionName: 'interactWithApy',
+			args: [spendParams],
+		};
+	}
+
+	/**
+	 * Get the parameters for reverting an interaction with APY
+	 * @param params The parameters for the revert interaction
+	 * @returns Parameters for useWriteContract
+	 */
+	getRevertInteractionWithApyParams({
+		loanId,
+		amount,
+		tokenOut,
+		dappAddress,
+		dappId,
+		actionType,
+		tokenOutDecimals,
+	}: {
+		loanId: bigint;
+		amount: string;
+		tokenOut: Web3Address;
+		dappAddress: Web3Address;
+		dappId: number;
+		actionType: number;
+		tokenOutDecimals: number;
+	}) {
+		// Convert the amount based on token decimals
+		const amountInWei = parseUnits(amount, tokenOutDecimals);
+
+		const revertSpendParams = {
+			loanId,
+			amount: amountInWei,
+			tokenOut,
+			dappAddress,
+			dappId,
+			actionType,
+		};
+
+		return {
+			address: web3DataProvider.diamondAddress,
+			abi: this.getDiamondAbi(),
+			functionName: 'revertInteractionWithApy',
+			args: [revertSpendParams],
+		};
+	}
 }

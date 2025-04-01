@@ -15,7 +15,8 @@ import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 import { useQueryKeyStore } from '@/store/useQueryKeyStore';
 import { SupplyTokenModel } from '@/lib/model/supply-token.model';
-
+import '@prototype/bigint.prototype';
+import { DECIMALS } from '@/constant/web3/decimal.constant';
 /**
  * Hook to handle the borrow repay form functionality
  * @returns Borrow repay form state and handlers
@@ -162,6 +163,27 @@ export function useBorrowRepayForm() {
 	]);
 
 	/**
+	 * Check if the amount is a full repayment
+	 */
+	const isFullRepayment = useCallback(() => {
+		if (!marketLoan || !amount) return false;
+
+		// Get the outstanding debt amount
+		// Convert bigint to string then to float for comparison
+		const outstandingDebt =
+			parseFloat(marketLoan.userLoan.repayAmount.toString()) /
+			10 ** marketLoan.asset.decimals;
+		const repayAmount = parseFloat(amount);
+
+		// Consider it a full repayment if the amount is equal to or greater than the debt
+		// or if it's very close (within 0.1% to account for potential rounding issues)
+		return (
+			repayAmount >= outstandingDebt ||
+			(outstandingDebt - repayAmount) / outstandingDebt < 0.001
+		);
+	}, [marketLoan, amount]);
+
+	/**
 	 * Handle repay submission
 	 */
 	const handleRepay = useCallback(async () => {
@@ -195,11 +217,26 @@ export function useBorrowRepayForm() {
 			setTransactionStatus(TransactionStatus.TRANSACTION_PROCESSING);
 			setIsLoading(true);
 
-			// Get repay parameters using the token model
-			const repayParams = borrowTokenModel.getRepayLoanParams({
-				loanId: marketLoan.userLoan.loanId,
-				repayAmount: amount,
-			});
+			// Determine if this is a full repayment
+			const fullRepayment = isFullRepayment();
+
+			// Get appropriate repay parameters based on repayment type
+			let repayParams;
+			if (fullRepayment) {
+				// Use zero repay loan for full repayments
+				repayParams = borrowTokenModel.getRepayLoanParams({
+					loanId: marketLoan.userLoan.loanId,
+					repayAmount: marketLoan.userLoan.repayAmount
+						.format(DECIMALS.BORROW_MARKET)
+						.toString(),
+				});
+			} else {
+				// Use regular repay loan for partial repayments
+				repayParams = borrowTokenModel.getRepayLoanParams({
+					loanId: marketLoan.userLoan.loanId,
+					repayAmount: amount,
+				});
+			}
 
 			// Call the repay function on the diamond contract
 			const txHash = await writeContractAsync({
@@ -211,7 +248,10 @@ export function useBorrowRepayForm() {
 				// Set transaction in the store for monitoring
 				setTransaction({
 					hash: txHash,
-					successToastMessage: `Successfully repaid ${amount} ${marketLoan.asset.symbol}`,
+					successToastMessage:
+						fullRepayment ?
+							`Successfully repaid full loan of ${marketLoan.asset.symbol}`
+						:	`Successfully repaid ${amount} ${marketLoan.asset.symbol}`,
 					onSuccess: () => {
 						// Invalidate the borrow market data query
 						queryClient.invalidateQueries({
@@ -242,7 +282,11 @@ export function useBorrowRepayForm() {
 				});
 
 				// Show initial info toast
-				toast.info(`Repaying ${amount} ${marketLoan.asset.symbol}...`);
+				toast.info(
+					fullRepayment ?
+						`Repaying full loan of ${marketLoan.asset.symbol}...`
+					:	`Repaying ${amount} ${marketLoan.asset.symbol}...`
+				);
 			}
 		} catch (error) {
 			console.error('Error repaying tokens:', error);
@@ -269,6 +313,7 @@ export function useBorrowRepayForm() {
 		queryClient,
 		borrowMarketDataQueryKey,
 		borrowMarketOverviewQueryKey,
+		isFullRepayment,
 	]);
 
 	/**
