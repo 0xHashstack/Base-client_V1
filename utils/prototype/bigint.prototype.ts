@@ -22,6 +22,13 @@ declare global {
 			locale?: string,
 			options?: Intl.NumberFormatOptions
 		): string;
+
+		/**
+		 * Format bigint value to a locale string number
+		 * @param decimals - Number of decimals to format with
+		 * @returns Formatted locale string value
+		 */
+		format(decimals: number): number;
 	}
 }
 
@@ -77,6 +84,20 @@ if (typeof BigInt.prototype.formatToString !== 'function') {
 			return formatted.toLocaleString(locale, options);
 		} catch {
 			return '0';
+		}
+	};
+}
+
+// Add formatToString method to BigInt prototype if it doesn't exist already
+if (typeof BigInt.prototype.format !== 'function') {
+	BigInt.prototype.format = function (decimals: number): number {
+		try {
+			// Convert 'this' to a bigint value explicitly
+			const value = BigInt(this.toString());
+			const formatted = formatUnits(value, decimals);
+			return parseFloat(formatted);
+		} catch {
+			return 0;
 		}
 	};
 }

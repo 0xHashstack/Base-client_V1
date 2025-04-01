@@ -16,7 +16,6 @@ import { Btn } from '@/components/ui/button';
  */
 function BorrowRepayFormInputs() {
 	const {
-		amount,
 		sliderPercentage,
 		borrowMarket,
 		borrowTokens,
@@ -28,6 +27,8 @@ function BorrowRepayFormInputs() {
 		formattedWalletBalance,
 		walletBalanceLoading,
 		walletBalanceError,
+		repayAmount,
+		isFormDisabled,
 	} = useBorrowRepayFormInputs();
 
 	// Custom render function for token options
@@ -106,7 +107,7 @@ function BorrowRepayFormInputs() {
 					valueKey='address'
 					labelKey='symbol'
 					placeholder='Select a market'
-					disabled={true}
+					disabled={isFormDisabled}
 					renderOption={renderTokenOption}
 					renderValue={renderTokenValue}
 					onChange={handleTokenChange}
@@ -125,17 +126,17 @@ function BorrowRepayFormInputs() {
 								<CustomInput.Amount
 									autoFocus
 									type='number'
-									value={amount}
+									value={repayAmount}
 									onChange={handleAmountChange}
 									placeholder={`00.00 ${borrowMarket?.asset.symbol || ''}`}
-									disabled={true}
+									disabled={isFormDisabled}
 								/>
 							</div>
 
 							<Btn.Self
 								onClick={handleMaxClick}
 								className='text-link'
-								disabled={true}>
+								disabled={isFormDisabled}>
 								MAX
 							</Btn.Self>
 						</div>
@@ -151,7 +152,7 @@ function BorrowRepayFormInputs() {
 						step={1}
 						onValueChange={handleSliderChange}
 						className='mt-1'
-						disabled={true}
+						disabled={isFormDisabled}
 					/>
 					<div className='flex items-center justify-between'>
 						<Text.Regular10>0%</Text.Regular10>

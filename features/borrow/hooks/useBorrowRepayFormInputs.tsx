@@ -2,7 +2,8 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useBorrowRepayFormStore } from '../store/borrow-repay-form.store';
 import { useWalletToken } from '@/context/wallet-token-provider';
-
+import '@prototype/bigint.prototype';
+import { DECIMALS } from '@/constant/web3/decimal.constant';
 /**
  * Hook to handle the borrow repay form inputs
  * @returns Form input state and handlers
@@ -14,6 +15,15 @@ export function useBorrowRepayFormInputs() {
 	const fee = useBorrowRepayFormStore((state) => state.fee);
 	const setAmount = useBorrowRepayFormStore((state) => state.setAmount);
 	const setFee = useBorrowRepayFormStore((state) => state.setFee);
+
+	const repayAmount = useMemo(() => {
+		if (!borrowMarket?.userLoan) return 0;
+		return (
+			borrowMarket.userLoan?.repayAmount
+				?.format(DECIMALS.BORROW_MARKET)
+				.toFixed(3) || '0.00'
+		);
+	}, [borrowMarket?.userLoan]);
 
 	const {
 		data: walletBalance,
@@ -36,8 +46,9 @@ export function useBorrowRepayFormInputs() {
 
 	// Check if form inputs should be disabled
 	const isFormDisabled = useMemo(() => {
-		return walletBalanceError || MAX_AMOUNT <= 0;
-	}, [walletBalanceError, MAX_AMOUNT]);
+		return true;
+		// return walletBalanceError || MAX_AMOUNT <= 0;
+	}, []);
 
 	// Handle amount change
 	const handleAmountChange = useCallback(
@@ -104,5 +115,6 @@ export function useBorrowRepayFormInputs() {
 		walletBalance,
 		isFormDisabled,
 		formattedWalletBalance,
+		repayAmount,
 	};
 }
