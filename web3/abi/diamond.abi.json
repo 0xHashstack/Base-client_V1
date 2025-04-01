@@ -718,29 +718,6 @@
 	},
 	{
 		"type": "function",
-		"name": "loanRequestWithRTokens",
-		"inputs": [
-			{
-				"name": "loanMarket",
-				"type": "address",
-				"internalType": "address"
-			},
-			{ "name": "amount", "type": "uint256", "internalType": "uint256" },
-			{ "name": "rToken", "type": "address", "internalType": "address" },
-			{ "name": "rAmount", "type": "uint256", "internalType": "uint256" },
-			{
-				"name": "recipient",
-				"type": "address",
-				"internalType": "address"
-			}
-		],
-		"outputs": [
-			{ "name": "loanId", "type": "uint256", "internalType": "uint256" }
-		],
-		"stateMutability": "nonpayable"
-	},
-	{
-		"type": "function",
 		"name": "repayLoan",
 		"inputs": [
 			{ "name": "loanId", "type": "uint256", "internalType": "uint256" },
@@ -873,6 +850,48 @@
 		],
 		"outputs": [
 			{ "name": "asset", "type": "uint256", "internalType": "uint256" }
+		],
+		"stateMutability": "nonpayable"
+	},
+	{
+		"type": "function",
+		"name": "zeroRepayLoan",
+		"inputs": [
+			{ "name": "loanId", "type": "uint256", "internalType": "uint256" }
+		],
+		"outputs": [
+			{
+				"name": "result",
+				"type": "tuple",
+				"internalType": "struct ReleasedAsset",
+				"components": [
+					{
+						"name": "repaidDebt",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "currentMarket",
+						"type": "address",
+						"internalType": "address"
+					},
+					{
+						"name": "currentAmount",
+						"type": "uint256",
+						"internalType": "uint256"
+					},
+					{
+						"name": "collateralMarket",
+						"type": "address",
+						"internalType": "address"
+					},
+					{
+						"name": "collateralAmount",
+						"type": "uint256",
+						"internalType": "uint256"
+					}
+				]
+			}
 		],
 		"stateMutability": "nonpayable"
 	},
