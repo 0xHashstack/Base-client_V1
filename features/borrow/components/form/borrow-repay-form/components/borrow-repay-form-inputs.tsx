@@ -18,7 +18,7 @@ function BorrowRepayFormInputs() {
 	const {
 		amount,
 		sliderPercentage,
-		token,
+		borrowMarket,
 		borrowTokens,
 		handleAmountChange,
 		handleMaxClick,
@@ -28,7 +28,6 @@ function BorrowRepayFormInputs() {
 		formattedWalletBalance,
 		walletBalanceLoading,
 		walletBalanceError,
-		isFormDisabled,
 	} = useBorrowRepayFormInputs();
 
 	// Custom render function for token options
@@ -61,7 +60,7 @@ function BorrowRepayFormInputs() {
 				<div className='flex flex-col'>
 					<Text.Medium14>{selectedToken.symbol}</Text.Medium14>
 					<Text.Regular12 textColor={500}>
-						Borrow balance: 54.15 USDC
+						Borrow balance: {borrowMarket?.userLoan.currentAmount}
 					</Text.Regular12>
 				</div>
 			</div>
@@ -91,7 +90,8 @@ function BorrowRepayFormInputs() {
 
 		return (
 			<Text.Regular12 textColor={600}>
-				Wallet Balance: {formattedWalletBalance} {token?.symbol || ''}
+				Wallet Balance: {formattedWalletBalance}{' '}
+				{borrowMarket?.asset.symbol || ''}
 			</Text.Regular12>
 		);
 	};
@@ -100,15 +100,16 @@ function BorrowRepayFormInputs() {
 		<div className='flex flex-col gap-5'>
 			<Card className='flex flex-col gap-3 px-6 py-4'>
 				<SingleSelect
-					label='Token to Repay'
+					label='Borrow Market'
 					options={borrowTokens}
-					value={token}
+					value={borrowMarket}
 					valueKey='address'
 					labelKey='symbol'
-					placeholder='Select a token'
+					placeholder='Select a market'
+					disabled={true}
 					renderOption={renderTokenOption}
 					renderValue={renderTokenValue}
-					onChange={(_, value) => handleTokenChange(value)}
+					onChange={handleTokenChange}
 					className='border-none p-0 shadow-none ring-0'
 					dropdownClassName='select-primary-displacement'
 				/>
@@ -126,15 +127,15 @@ function BorrowRepayFormInputs() {
 									type='number'
 									value={amount}
 									onChange={handleAmountChange}
-									placeholder={`00.00 ${token?.symbol || ''}`}
-									disabled={isFormDisabled}
+									placeholder={`00.00 ${borrowMarket?.asset.symbol || ''}`}
+									disabled={true}
 								/>
 							</div>
 
 							<Btn.Self
 								onClick={handleMaxClick}
 								className='text-link'
-								disabled={isFormDisabled}>
+								disabled={true}>
 								MAX
 							</Btn.Self>
 						</div>
@@ -150,7 +151,7 @@ function BorrowRepayFormInputs() {
 						step={1}
 						onValueChange={handleSliderChange}
 						className='mt-1'
-						disabled={isFormDisabled}
+						disabled={true}
 					/>
 					<div className='flex items-center justify-between'>
 						<Text.Regular10>0%</Text.Regular10>

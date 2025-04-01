@@ -48,6 +48,8 @@ export interface UserLoan {
 	createdAt: string;
 	/** Fee amount as a bigint */
 	feeAmount: bigint;
+	/** Repay amount */
+	repayAmount: bigint;
 }
 
 /**

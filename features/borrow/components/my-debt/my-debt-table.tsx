@@ -101,9 +101,7 @@ function MyDebtTable() {
 	// Handle repaying debt
 	const handleRepay = useCallback(
 		(market: MarketLoan) => {
-			setDrawerContent(
-				<BorrowRepayForm token={convertToHstkToken(market)} />
-			);
+			setDrawerContent(<BorrowRepayForm marketLoan={market} />);
 			openDrawer();
 		},
 		[setDrawerContent, openDrawer]

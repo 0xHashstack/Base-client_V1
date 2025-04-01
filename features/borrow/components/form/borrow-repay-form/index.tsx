@@ -8,21 +8,39 @@ import { useBorrowRepayForm } from '../../../hooks/useBorrowRepayForm';
 import BorrowRepayFormInputs from './components/borrow-repay-form-inputs';
 import BorrowRepayPriceBreakdownCard from './components/borrow-repay-price-breakdown-card';
 import { Card } from '@/components/ui/card';
-import { HstkToken } from '@/types/web3/token.types';
 import BorrowRepayDetailsCard from './components/borrow-repay-details-card';
+import { MarketLoan } from '@/types/web3/borrow-market.types';
+import { useBorrowRepayFormStore } from '../../../store/borrow-repay-form.store';
+import { WalletTokenProvider } from '@/context/wallet-token-provider';
+import { Web3Address } from '@/types/web3';
 
 interface BorrowRepayFormProps {
-	token: HstkToken;
+	marketLoan: MarketLoan;
 }
 
 /**
  * Form component for repaying borrowed tokens
  */
-function BorrowRepayForm({ token }: BorrowRepayFormProps) {
+function BorrowRepayForm({ marketLoan }: BorrowRepayFormProps) {
 	return (
-		<BorrowRepayFormContextProvider token={token}>
-			<BorrowRepayFormContent />
+		<BorrowRepayFormContextProvider marketLoan={marketLoan}>
+			<BorrowRepayFormWithTokenProvider />
 		</BorrowRepayFormContextProvider>
+	);
+}
+
+/**
+ * Wrapper component that provides wallet token context
+ */
+function BorrowRepayFormWithTokenProvider() {
+	const token = useBorrowRepayFormStore((state) => state.token);
+
+	return (
+		<WalletTokenProvider
+			tokenAddress={token?.asset.address_ as Web3Address | undefined}
+			decimals={token?.asset.decimals}>
+			<BorrowRepayFormContent />
+		</WalletTokenProvider>
 	);
 }
 
@@ -63,9 +81,7 @@ function BorrowRepayFormContent() {
 					disabled={!amount || !token || isLoading}
 					showConnectButton
 					parentWidth>
-					{isLoading ?
-						'Processing...'
-					:	`Repay ${amount} ${token?.symbol || ''}`}
+					{isLoading ? 'Processing...' : `Repay `}
 				</ConnectedBtn.Primary>
 			</SideDrawer.Footer>
 		</>
