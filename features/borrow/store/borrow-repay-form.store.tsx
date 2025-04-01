@@ -2,12 +2,23 @@ import { MarketLoan } from '@/types/web3/borrow-market.types';
 import { createContext, useContext, useRef, useEffect } from 'react';
 import { create, useStore } from 'zustand';
 
+// Define transaction status enum
+export enum TransactionStatus {
+	IDLE = 'idle',
+	APPROVING = 'approving',
+	APPROVED = 'approved',
+	TRANSACTION_PROCESSING = 'transactionProcessing',
+	TRANSACTION_FAILED = 'transactionFailed',
+	TRANSACTION_SUCCESS = 'transactionSuccess',
+}
+
 // Define the store state and actions
 interface BorrowRepayFormState {
 	amount: string;
 	isLoading: boolean;
 	marketLoan: MarketLoan | null;
 	fee: string;
+	transactionStatus: TransactionStatus;
 
 	// Actions
 	setAmount: (amount: string) => void;
@@ -15,6 +26,7 @@ interface BorrowRepayFormState {
 	setMarketLoan: (marketLoan: BorrowRepayFormState['marketLoan']) => void;
 	setIsLoading: (isLoading: boolean) => void;
 	setFee: (fee: string) => void;
+	setTransactionStatus: (status: TransactionStatus) => void;
 	reset: () => void;
 	resetStore: (newMarketLoan?: BorrowRepayFormState['marketLoan']) => void;
 }
@@ -24,6 +36,7 @@ const initialState = {
 	isLoading: false,
 	marketLoan: null,
 	fee: '0.00',
+	transactionStatus: TransactionStatus.IDLE,
 };
 
 // Create a Zustand store
@@ -40,6 +53,7 @@ const createBorrowRepayFormStore = (
 		setMarketLoan: (marketLoan) => set({ marketLoan }),
 		setIsLoading: (isLoading) => set({ isLoading }),
 		setFee: (fee) => set({ fee }),
+		setTransactionStatus: (status) => set({ transactionStatus: status }),
 		reset: () => set({ ...initialState, marketLoan: initialMarket }),
 		resetStore: (marketLoan) =>
 			set({

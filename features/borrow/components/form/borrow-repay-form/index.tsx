@@ -5,6 +5,7 @@ import { Btn, ConnectedBtn } from '@/components/ui/button';
 import SideDrawer from '@/components/drawer/side-drawer';
 import { BorrowRepayFormContextProvider } from '../../../context/borrow-repay-form.context';
 import { useBorrowRepayForm } from '../../../hooks/useBorrowRepayForm';
+import { TransactionStatus } from '../../../store/borrow-repay-form.store';
 import BorrowRepayFormInputs from './components/borrow-repay-form-inputs';
 import BorrowRepayPriceBreakdownCard from './components/borrow-repay-price-breakdown-card';
 import { Card } from '@/components/ui/card';
@@ -49,8 +50,16 @@ function BorrowRepayFormWithTokenProvider() {
  */
 function BorrowRepayFormContent() {
 	// Get handlers from the hook
-	const { handleRepay, marketLoan, amount, closeDrawer, isLoading } =
-		useBorrowRepayForm();
+	const {
+		handleRepay,
+		marketLoan,
+		closeDrawer,
+		transactionStatus,
+		getButtonText,
+		isButtonDisabled,
+		getValidationError,
+		formattedWalletBalance,
+	} = useBorrowRepayForm();
 
 	// If token is not set, don't render anything
 	if (!marketLoan) return null;
@@ -72,16 +81,42 @@ function BorrowRepayFormContent() {
 
 					<Card className='flex flex-col gap-3 p-6 bg-card-bold'>
 						<BorrowRepayPriceBreakdownCard />
+
+						{/* Wallet balance */}
+						<div className='flex justify-between text-sm text-muted-foreground'>
+							<span>Wallet Balance</span>
+							<span>{formattedWalletBalance}</span>
+						</div>
+
+						{/* Validation error */}
+						{getValidationError() && (
+							<div className='text-sm text-destructive'>
+								{getValidationError()}
+							</div>
+						)}
 					</Card>
 				</div>
 			</SideDrawer.Body>
 			<SideDrawer.Footer>
+				{getValidationError() && (
+					<div className='mb-2 py-2 px-3 bg-badge-error border text-badge-error rounded-md'>
+						<p className='text-sm'>{getValidationError()}</p>
+					</div>
+				)}
 				<ConnectedBtn.Primary
 					onClick={handleRepay}
-					disabled={!amount || !marketLoan || isLoading}
+					disabled={isButtonDisabled()}
 					showConnectButton
-					parentWidth>
-					{isLoading ? 'Processing...' : `Repay `}
+					parentWidth
+					className={
+						(
+							transactionStatus ===
+							TransactionStatus.TRANSACTION_FAILED
+						) ?
+							'bg-destructive'
+						:	''
+					}>
+					{getButtonText()}
 				</ConnectedBtn.Primary>
 			</SideDrawer.Footer>
 		</>

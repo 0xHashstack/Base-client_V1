@@ -175,4 +175,28 @@ export class BorrowTokenModel {
 			collateralDecimals: collateral.decimals,
 		});
 	}
+
+	/**
+	 * Get the parameters for repaying a loan
+	 * @param loanId The ID of the loan to repay
+	 * @param repayAmount The amount to repay in human-readable format
+	 * @returns Parameters for useWriteContract
+	 */
+	getRepayLoanParams({
+		loanId,
+		repayAmount,
+	}: {
+		loanId: bigint;
+		repayAmount: string;
+	}) {
+		// Convert the amount from human-readable format to wei
+		const repayAmountInWei = this.convertToWei(repayAmount);
+
+		return {
+			address: web3DataProvider.diamondAddress,
+			abi: this.getDiamondAbi(),
+			functionName: 'repayLoan',
+			args: [loanId, repayAmountInWei],
+		};
+	}
 }
