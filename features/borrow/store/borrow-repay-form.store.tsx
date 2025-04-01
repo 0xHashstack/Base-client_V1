@@ -6,45 +6,46 @@ import { create, useStore } from 'zustand';
 interface BorrowRepayFormState {
 	amount: string;
 	isLoading: boolean;
-	token: MarketLoan | null;
+	marketLoan: MarketLoan | null;
 	fee: string;
 
 	// Actions
 	setAmount: (amount: string) => void;
 	setMaxAmount: () => void;
-	setToken: (token: BorrowRepayFormState['token']) => void;
+	setMarketLoan: (marketLoan: BorrowRepayFormState['marketLoan']) => void;
 	setIsLoading: (isLoading: boolean) => void;
 	setFee: (fee: string) => void;
 	reset: () => void;
-	resetStore: (newToken?: BorrowRepayFormState['token']) => void;
+	resetStore: (newMarketLoan?: BorrowRepayFormState['marketLoan']) => void;
 }
 
 const initialState = {
 	amount: '',
 	isLoading: false,
-	token: null,
+	marketLoan: null,
 	fee: '0.00',
 };
 
 // Create a Zustand store
 const createBorrowRepayFormStore = (
-	initialToken: BorrowRepayFormState['token'] = null
+	initialMarket: BorrowRepayFormState['marketLoan'] = null
 ) =>
 	create<BorrowRepayFormState>((set) => ({
 		...initialState,
-		token: initialToken,
+		marketLoan: initialMarket,
 		setAmount: (amount) => set({ amount }),
 		setMaxAmount: () => {
 			set({ amount: '1000' }); // This would be replaced with actual balance logic
 		},
-		setToken: (token) => set({ token }),
+		setMarketLoan: (marketLoan) => set({ marketLoan }),
 		setIsLoading: (isLoading) => set({ isLoading }),
 		setFee: (fee) => set({ fee }),
-		reset: () => set({ ...initialState, token: initialToken }),
-		resetStore: (newToken) =>
+		reset: () => set({ ...initialState, marketLoan: initialMarket }),
+		resetStore: (marketLoan) =>
 			set({
 				...initialState,
-				token: newToken !== undefined ? newToken : initialToken,
+				marketLoan:
+					marketLoan !== undefined ? marketLoan : initialMarket,
 			}),
 	}));
 
@@ -56,12 +57,12 @@ const BorrowRepayFormStoreContext = createContext<ReturnType<
 // Provider component
 interface BorrowRepayFormProviderProps {
 	children: React.ReactNode;
-	initialToken: BorrowRepayFormState['token'];
+	initialMarket: BorrowRepayFormState['marketLoan'];
 }
 
 export const BorrowRepayFormProvider = ({
 	children,
-	initialToken: initialMarket,
+	initialMarket,
 }: BorrowRepayFormProviderProps) => {
 	const storeRef = useRef<ReturnType<
 		typeof createBorrowRepayFormStore

@@ -33,7 +33,7 @@ function BorrowRepayForm({ marketLoan }: BorrowRepayFormProps) {
  * Wrapper component that provides wallet token context
  */
 function BorrowRepayFormWithTokenProvider() {
-	const token = useBorrowRepayFormStore((state) => state.token);
+	const token = useBorrowRepayFormStore((state) => state.marketLoan);
 
 	return (
 		<WalletTokenProvider
@@ -49,11 +49,11 @@ function BorrowRepayFormWithTokenProvider() {
  */
 function BorrowRepayFormContent() {
 	// Get handlers from the hook
-	const { handleRepay, token, amount, closeDrawer, isLoading } =
+	const { handleRepay, marketLoan, amount, closeDrawer, isLoading } =
 		useBorrowRepayForm();
 
 	// If token is not set, don't render anything
-	if (!token) return null;
+	if (!marketLoan) return null;
 
 	return (
 		<>
@@ -78,7 +78,7 @@ function BorrowRepayFormContent() {
 			<SideDrawer.Footer>
 				<ConnectedBtn.Primary
 					onClick={handleRepay}
-					disabled={!amount || !token || isLoading}
+					disabled={!amount || !marketLoan || isLoading}
 					showConnectButton
 					parentWidth>
 					{isLoading ? 'Processing...' : `Repay `}

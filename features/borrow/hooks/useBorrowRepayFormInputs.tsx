@@ -11,7 +11,7 @@ import { DECIMALS } from '@/constant/web3/decimal.constant';
 export function useBorrowRepayFormInputs() {
 	// Use selectors to get only what we need from the store
 	const amount = useBorrowRepayFormStore((state) => state.amount);
-	const borrowMarket = useBorrowRepayFormStore((state) => state.token);
+	const borrowMarket = useBorrowRepayFormStore((state) => state.marketLoan);
 	const fee = useBorrowRepayFormStore((state) => state.fee);
 	const setAmount = useBorrowRepayFormStore((state) => state.setAmount);
 	const setFee = useBorrowRepayFormStore((state) => state.setFee);

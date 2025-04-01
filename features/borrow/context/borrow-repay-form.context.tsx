@@ -16,7 +16,7 @@ export function BorrowRepayFormContextProvider({
 	marketLoan,
 }: BorrowRepayFormContextProviderProps) {
 	return (
-		<BorrowRepayFormProvider initialToken={marketLoan}>
+		<BorrowRepayFormProvider initialMarket={marketLoan}>
 			{children}
 		</BorrowRepayFormProvider>
 	);
