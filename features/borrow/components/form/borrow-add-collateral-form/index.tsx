@@ -9,6 +9,9 @@ import AddCollateralFormInputs from './components/add-collateral-form-inputs';
 import AddCollateralPriceBreakdownCard from './components/add-collateral-price-breakdown-card';
 import { Card } from '@/components/ui/card';
 import { LoanPosition } from '@/types/web3/borrow-market.types';
+import { useBorrowAddCollateralFormStore } from '../../../store/borrow-add-collateral-form.store';
+import { WalletTokenProvider } from '@/context/wallet-token-provider';
+import { Web3Address } from '@/types/web3';
 
 interface BorrowAddCollateralFormProps {
 	loanPosition: LoanPosition;
@@ -22,8 +25,27 @@ function BorrowAddCollateralForm({
 }: BorrowAddCollateralFormProps) {
 	return (
 		<BorrowAddCollateralFormContextProvider loanPosition={loanPosition}>
-			<BorrowAddCollateralFormContent />
+			<BorrowAddCollateralFormWithTokenProvider />
 		</BorrowAddCollateralFormContextProvider>
+	);
+}
+
+/**
+ * Wrapper component that provides wallet token context
+ */
+function BorrowAddCollateralFormWithTokenProvider() {
+	const userLoan = useBorrowAddCollateralFormStore(
+		(state) => state.loanPosition
+	);
+
+	return (
+		<WalletTokenProvider
+			tokenAddress={
+				userLoan?.collateralAsset.addr as Web3Address | undefined
+			}
+			decimals={userLoan?.collateralAsset.decimals}>
+			<BorrowAddCollateralFormContent />
+		</WalletTokenProvider>
 	);
 }
 
@@ -32,11 +54,11 @@ function BorrowAddCollateralForm({
  */
 function BorrowAddCollateralFormContent() {
 	// Get handlers from the hook
-	const { handleAddCollateral, token, amount, closeDrawer, isLoading } =
+	const { handleAddCollateral, userLoan, amount, closeDrawer, isLoading } =
 		useBorrowAddCollateralForm();
 
 	// If loanPosition is not set, don't render anything
-	if (!token) return null;
+	if (!userLoan) return null;
 
 	return (
 		<>
@@ -62,9 +84,7 @@ function BorrowAddCollateralFormContent() {
 					disabled={!amount || isLoading}
 					showConnectButton
 					parentWidth>
-					{isLoading ?
-						'Processing...'
-					:	`Add ${token.symbol} Collateral`}
+					{isLoading ? 'Processing...' : `Add  Collateral`}
 				</ConnectedBtn.Primary>
 			</SideDrawer.Footer>
 		</>

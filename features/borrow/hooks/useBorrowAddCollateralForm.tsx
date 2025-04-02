@@ -10,10 +10,15 @@ import { useBorrowDrawer } from '../context/borrow-drawer.context';
 export function useBorrowAddCollateralForm() {
 	// Use selectors to get only what we need from the store
 	const amount = useBorrowAddCollateralFormStore((state) => state.amount);
-	const isLoading = useBorrowAddCollateralFormStore((state) => state.isLoading);
-	const token = useBorrowAddCollateralFormStore((state) => state.token);
-	const setAmount = useBorrowAddCollateralFormStore((state) => state.setAmount);
-	const setToken = useBorrowAddCollateralFormStore((state) => state.setToken);
+	const isLoading = useBorrowAddCollateralFormStore(
+		(state) => state.isLoading
+	);
+	const userLoan = useBorrowAddCollateralFormStore(
+		(state) => state.loanPosition
+	);
+	const setAmount = useBorrowAddCollateralFormStore(
+		(state) => state.setAmount
+	);
 	const setIsLoading = useBorrowAddCollateralFormStore(
 		(state) => state.setIsLoading
 	);
@@ -26,12 +31,14 @@ export function useBorrowAddCollateralForm() {
 	 * Handle add collateral submission
 	 */
 	const handleAddCollateral = useCallback(async () => {
-		if (!token) return;
+		if (!userLoan) return;
 
 		try {
 			setIsLoading(true);
 			// In a real implementation, this would call the contract to add collateral
-			console.log(`Adding ${amount} ${token.symbol} as collateral`);
+			console.log(
+				`Adding ${amount} ${userLoan.collateralAsset.symbol} as collateral for loan ID: ${userLoan.loanId}`
+			);
 
 			// Simulate API call
 			await new Promise((resolve) => setTimeout(resolve, 1500));
@@ -46,18 +53,17 @@ export function useBorrowAddCollateralForm() {
 		} finally {
 			setIsLoading(false);
 		}
-	}, [amount, token, closeDrawer, setIsLoading, reset]);
+	}, [amount, userLoan, closeDrawer, setIsLoading, reset]);
 
 	return {
 		// State
 		amount,
 		isLoading,
-		token,
+		userLoan,
 		handleAddCollateral,
 
 		// Actions
 		setAmount,
-		setToken,
 		reset,
 		closeDrawer,
 	};

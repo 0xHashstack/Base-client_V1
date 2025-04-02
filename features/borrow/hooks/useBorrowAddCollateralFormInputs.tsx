@@ -1,10 +1,8 @@
 'use client';
 import { useCallback, useMemo } from 'react';
 import { useBorrowAddCollateralFormStore } from '../store/borrow-add-collateral-form.store';
-import { CollateralToken, Web3Address } from '@/types/web3';
 import { useTokenStore } from '@/store/useTokenStore';
-import { useBalance } from 'wagmi';
-import { formatUnits } from 'viem';
+import { useWalletToken } from '@/context/wallet-token-provider';
 
 /**
  * Hook to handle the borrow add collateral form inputs
@@ -13,41 +11,43 @@ import { formatUnits } from 'viem';
 export function useBorrowAddCollateralFormInputs() {
 	// Use selectors to get only what we need from the store
 	const amount = useBorrowAddCollateralFormStore((state) => state.amount);
-	const token = useBorrowAddCollateralFormStore((state) => state.token);
+	const userLoan = useBorrowAddCollateralFormStore(
+		(state) => state.loanPosition
+	);
 	const setAmount = useBorrowAddCollateralFormStore(
 		(state) => state.setAmount
 	);
-	const setToken = useBorrowAddCollateralFormStore((state) => state.setToken);
 
-	const availableCollateralTokens = useTokenStore(
-		(state) => state.collateralTokens
+	// We don't need to select from available tokens since we're using the loan's collateral
+	// but we'll keep this for compatibility
+	const userAllLoans = useTokenStore((state) => state.userAllLoans);
+	const borrowMarketCollaterals = useTokenStore(
+		(state) => state.borrowMarketCollateral
 	);
 
 	const {
 		data: walletBalance,
-		isFetching: walletBalanceLoading,
+		isLoading: walletBalanceLoading,
 		isError: walletBalanceError,
 		refetch: refetchWalletBalance,
-	} = useBalance({
-		address: token?.address as Web3Address,
-	});
-
-	// Get formatted wallet balance
-	const formattedWalletBalance = useMemo(() => {
-		if (!walletBalance || !token) return '0';
-		return formatUnits(walletBalance.value, token.decimals);
-	}, [walletBalance, token]);
+		formatted: formattedWalletBalance,
+		formattedNumber: formattedWalletBalanceNumber,
+	} = useWalletToken();
 
 	// Maximum amount for the slider (from wallet balance)
 	const MAX_AMOUNT = useMemo(() => {
 		if (
 			walletBalanceLoading ||
 			walletBalanceError ||
-			!formattedWalletBalance
+			!formattedWalletBalanceNumber
 		)
 			return 0;
-		return parseFloat(formattedWalletBalance);
-	}, [formattedWalletBalance, walletBalanceLoading, walletBalanceError]);
+		return formattedWalletBalanceNumber;
+	}, [
+		formattedWalletBalanceNumber,
+		walletBalanceLoading,
+		walletBalanceError,
+	]);
 
 	// Check if form inputs should be disabled
 	const isFormDisabled = useMemo(() => {
@@ -64,53 +64,46 @@ export function useBorrowAddCollateralFormInputs() {
 	);
 
 	const sliderPercentage = useMemo(() => {
-		if (!token || !token.availableCollateral) return 0;
-		const percentage =
-			(parseFloat(amount) / token.availableCollateral) * 100;
+		if (MAX_AMOUNT <= 0) return 0;
+		if (!amount || isNaN(parseFloat(amount))) return 0;
+
+		const percentage = (parseFloat(amount) / MAX_AMOUNT) * 100;
 		return Math.min(percentage, 100); // Ensure it doesn't exceed 100%
-	}, [amount, token]);
+	}, [amount, MAX_AMOUNT]);
 
 	// Handle max click
 	const handleMaxClick = useCallback(() => {
-		if (!token) return;
+		if (MAX_AMOUNT <= 0) return;
 
-		// Set amount to max available collateral
-		const maxAmount = token.availableCollateral?.toString() || '0';
-		setAmount(maxAmount);
-
-		// Using setMaxAmount from the store if needed
-		// setMaxAmount();
-	}, [token, setAmount]);
+		// Set amount to max available in wallet
+		setAmount(MAX_AMOUNT.toFixed(3));
+	}, [MAX_AMOUNT, setAmount]);
 
 	// Handle slider change
 	const handleSliderChange = useCallback(
 		(values: number[]) => {
-			if (!token || !token.availableCollateral) return;
+			if (MAX_AMOUNT <= 0) return;
 
 			const percentage = values[0];
 
-			// Calculate amount based on percentage
-			const calculatedAmount =
-				(percentage / 100) * token.availableCollateral;
-			setAmount(calculatedAmount.toString());
+			// Calculate amount based on percentage of wallet balance
+			const calculatedAmount = (percentage / 100) * MAX_AMOUNT;
+			setAmount(calculatedAmount.toFixed(3));
 		},
-		[token, setAmount]
+		[MAX_AMOUNT, setAmount]
 	);
 
-	// Handle token change
-	const handleTokenChange = useCallback(
-		(newToken: CollateralToken) => {
-			setToken(newToken);
-			setAmount('');
-		},
-		[setToken, setAmount]
-	);
+	// Handle token change - this is now disabled since we're using the loan's collateral
+	const handleTokenChange = () => {
+		// This function is kept for compatibility but should not be used
+		// as we're using the loan's collateral directly
+	};
 
 	return {
 		amount,
 		sliderPercentage,
-		token,
-		availableCollateralTokens,
+		userLoan,
+		userAllLoans,
 		handleAmountChange,
 		handleMaxClick,
 		handleSliderChange,
@@ -120,6 +113,7 @@ export function useBorrowAddCollateralFormInputs() {
 		refetchWalletBalance,
 		walletBalance,
 		isFormDisabled,
+		borrowMarketCollaterals,
 		formattedWalletBalance,
 	};
 }

@@ -29,6 +29,7 @@ export function useSupplyFormInputs() {
 		isLoading: walletBalanceLoading,
 		refetch: refetchWalletBalance,
 		formatted: formattedWalletBalance,
+		formattedNumber: formattedWalletBalanceNumber,
 	} = useWalletToken();
 
 	// Maximum amount for the slider (from wallet balance)
@@ -36,11 +37,15 @@ export function useSupplyFormInputs() {
 		if (
 			walletBalanceLoading ||
 			walletBalanceError ||
-			!formattedWalletBalance
+			!formattedWalletBalanceNumber
 		)
 			return 0;
-		return parseFloat(formattedWalletBalance);
-	}, [formattedWalletBalance, walletBalanceLoading, walletBalanceError]);
+		return formattedWalletBalanceNumber;
+	}, [
+		formattedWalletBalanceNumber,
+		walletBalanceLoading,
+		walletBalanceError,
+	]);
 
 	// Convert amount string to number for slider
 	const amountValue = useMemo(() => {
@@ -78,10 +83,9 @@ export function useSupplyFormInputs() {
 		if (transactionStatus !== TransactionStatus.IDLE) return;
 		if (walletBalanceLoading || walletBalanceError || MAX_AMOUNT <= 0)
 			return;
-		setAmount(parseFloat(formattedWalletBalance).toFixed(3));
+		setAmount(MAX_AMOUNT.toFixed(3));
 	}, [
 		setAmount,
-		formattedWalletBalance,
 		walletBalanceLoading,
 		walletBalanceError,
 		MAX_AMOUNT,

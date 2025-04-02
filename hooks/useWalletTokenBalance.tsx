@@ -59,6 +59,7 @@ export const useWalletTokenBalance = (
 	return {
 		data: data as bigint,
 		formatted: (data as bigint)?.formatBalance(decimals),
+		formattedNumber: (data as bigint)?.format(decimals),
 		isError,
 		isLoading,
 		isSuccess,

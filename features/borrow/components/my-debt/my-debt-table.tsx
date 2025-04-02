@@ -32,7 +32,7 @@ import {
 } from '@/types/web3/borrow-market.types';
 import If from '@/components/common/If';
 import '@prototype/bigint.prototype';
-import { CollateralToken, HstkToken } from '@/types/web3/token.types';
+import { HstkToken } from '@/types/web3/token.types';
 import { DECIMALS } from '@/constant/web3/decimal.constant';
 import { FEES } from '@/constant/web3/fees.constant';
 
@@ -48,7 +48,9 @@ function MyDebtTable() {
 		(state) => state.isLoadingBorrowMarket
 	);
 
-	const collateralTokens = useTokenStore((state) => state.collateralTokens);
+	const collateralTokens = useTokenStore(
+		(state) => state.borrowMarketCollateral
+	);
 	// Filter active loans based on status
 	const activeLoans = useMemo(() => {
 		if (!userAllLoans || userAllLoans.length === 0) return [];
@@ -72,26 +74,10 @@ function MyDebtTable() {
 		isPaused: false,
 	});
 
-	// Convert LoanPosition to CollateralToken for form components
-	const convertToCollateralToken = (loan: LoanPosition): CollateralToken => ({
-		name: loan.collateralAsset.name,
-		symbol: loan.collateralAsset.symbol,
-		address: loan.collateralAsset.addr,
-		decimals: loan.collateralAsset.decimals,
-		iconUrl: '', // CollateralInfo doesn't have logoURI
-		availableCollateral: Number(
-			loan.collateralAsset.collateralAmount.toString()
-		),
-	});
-
 	// Handle adding collateral
 	const handleAddCollateral = useCallback(
 		(loan: LoanPosition) => {
-			setDrawerContent(
-				<BorrowAddCollateralForm
-					token={convertToCollateralToken(loan)}
-				/>
-			);
+			setDrawerContent(<BorrowAddCollateralForm loanPosition={loan} />);
 			openDrawer();
 		},
 		[setDrawerContent, openDrawer]
@@ -171,7 +157,7 @@ function MyDebtTable() {
 								);
 
 							const {
-								iconUrl: collateralIconUrl = loan.borrowedAsset
+								logoURI: collateralIconUrl = loan.borrowedAsset
 									.logoURI,
 							} =
 								collateralTokens.find(

@@ -58,6 +58,7 @@ export function useBorrowFormInputs() {
 		isError: walletBalanceError,
 		refetch: refetchWalletBalance,
 		formatted: formattedWalletBalance,
+		formattedNumber: formattedWalletBalanceNumber,
 	} = useWalletToken();
 
 	// Maximum amount for the slider (from wallet balance)
@@ -65,11 +66,15 @@ export function useBorrowFormInputs() {
 		if (
 			walletBalanceLoading ||
 			walletBalanceError ||
-			!formattedWalletBalance
+			!formattedWalletBalanceNumber
 		)
 			return 0;
-		return parseFloat(formattedWalletBalance);
-	}, [formattedWalletBalance, walletBalanceLoading, walletBalanceError]);
+		return formattedWalletBalanceNumber;
+	}, [
+		formattedWalletBalanceNumber,
+		walletBalanceLoading,
+		walletBalanceError,
+	]);
 
 	// Check if form inputs should be disabled
 	const isFormDisabled = useMemo(() => {
@@ -115,11 +120,11 @@ export function useBorrowFormInputs() {
 			return;
 
 		// Set to wallet balance (with 3 decimal places for readability)
-		setAmount(parseFloat(formattedWalletBalance).toFixed(3));
+		setAmount(MAX_AMOUNT.toFixed(3));
 	}, [
 		setAmount,
 		collateralMarket,
-		formattedWalletBalance,
+		formattedWalletBalanceNumber,
 		walletBalanceLoading,
 		walletBalanceError,
 		MAX_AMOUNT,

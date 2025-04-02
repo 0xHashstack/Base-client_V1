@@ -32,6 +32,7 @@ export function useBorrowRepayFormInputs() {
 		isError: walletBalanceError,
 		refetch: refetchWalletBalance,
 		formatted: formattedWalletBalance,
+		formattedNumber: formattedWalletBalanceNumber,
 	} = useWalletToken();
 
 	// Maximum amount for the slider (from wallet balance)
@@ -39,11 +40,15 @@ export function useBorrowRepayFormInputs() {
 		if (
 			walletBalanceLoading ||
 			walletBalanceError ||
-			!formattedWalletBalance
+			!formattedWalletBalanceNumber
 		)
 			return 0;
-		return parseFloat(formattedWalletBalance);
-	}, [formattedWalletBalance, walletBalanceLoading, walletBalanceError]);
+		return formattedWalletBalanceNumber;
+	}, [
+		formattedWalletBalanceNumber,
+		walletBalanceLoading,
+		walletBalanceError,
+	]);
 
 	// Check if form inputs should be disabled
 	const isFormDisabled = useMemo(() => {
@@ -71,7 +76,7 @@ export function useBorrowRepayFormInputs() {
 		if (!borrowMarket || MAX_AMOUNT <= 0) return;
 
 		// Set amount to max available in wallet
-		setAmount(MAX_AMOUNT.toString());
+		setAmount(MAX_AMOUNT.toFixed(3));
 	}, [borrowMarket, setAmount, MAX_AMOUNT]);
 
 	// Handle slider change
@@ -83,7 +88,7 @@ export function useBorrowRepayFormInputs() {
 
 			// Calculate amount based on percentage
 			const calculatedAmount = (percentage / 100) * MAX_AMOUNT;
-			setAmount(calculatedAmount.toString());
+			setAmount(calculatedAmount.toFixed(3));
 		},
 		[borrowMarket, setAmount, MAX_AMOUNT]
 	);
