@@ -77,17 +77,15 @@ export interface MarketLoan {
 /**
  * Complete user borrow data
  */
-export interface UserBorrowData {
-	/** Array of market loans */
-	marketLoans: MarketLoan[];
-	/** Total borrowed value in USD as a bigint */
-	totalBorrowedValueUsd: bigint;
-	/** Total collateral value in USD as a bigint */
-	totalCollateralValueUsd: bigint;
-	/** Weighted borrow APR as a bigint */
-	weightedBorrowApr: bigint;
-}
 
+export type UserBorrowData = [
+	{
+		borrowPositions: UserLoan[];
+		totalBorrowApr: bigint;
+		totalBorrowedValue: bigint;
+	},
+	MarketLoan[],
+];
 /**
  * Borrow market quick overview data
  */
@@ -107,7 +105,7 @@ export interface UserBorrowQuickOverview {
 	/** Total borrowed value in USD as a bigint */
 	totalBorrowedValueUsd: bigint;
 	/** Weighted borrow APR as a bigint */
-	weightedBorrowApr: bigint;
+	totalBorrowApr: bigint;
 }
 
 /**

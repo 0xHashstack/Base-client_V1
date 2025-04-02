@@ -29,9 +29,8 @@ function MyDebtQuickStat() {
 			<StatCard
 				title='Weighted Borrow APR'
 				value={
-					userBorrowQuickOverview.weightedBorrowApr.formatBalance(
-						18
-					) + '%'
+					userBorrowQuickOverview.totalBorrowApr.formatBalance(18) +
+					'%'
 				}
 				isLoading={isLoadingBorrowMarket}
 				valueClassName='text-error'

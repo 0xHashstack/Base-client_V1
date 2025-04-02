@@ -8,6 +8,7 @@ import { useEarnDrawer } from '@/features/earn/context/earn-drawer.context';
 import SupplyForm from '../form/supply-form';
 import { SupplyMarketData } from '@/types/web3/supply-market.types';
 import '@prototype/bigint.prototype';
+import { DECIMALS } from '@/constant/web3/decimal.constant';
 
 interface EarnSupplyCardProps {
 	market: SupplyMarketData;
@@ -44,7 +45,7 @@ function EarnSupplyCard({
 
 	// Format the data from the market object
 	const formattedPrice =
-		'$' + market.asset.priceUSD.formatBalance(market.asset.decimals);
+		'$' + market.asset.priceUSD.formatBalance(DECIMALS.PRICE);
 	const formattedLiquidity = market.state.totalSupply.formatBalance(
 		market.asset.decimals
 	);

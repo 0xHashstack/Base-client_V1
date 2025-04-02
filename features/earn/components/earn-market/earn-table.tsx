@@ -21,6 +21,7 @@ import { SupplyMarketData } from '@/types/web3/supply-market.types';
 import '@prototype/bigint.prototype';
 import If from '@/components/common/If';
 import SupplyForm from '../form/supply-form';
+import { DECIMALS } from '@/constant/web3/decimal.constant';
 
 function EarnTable() {
 	const { openDrawer, setDrawerContent } = useEarnDrawer();
@@ -98,7 +99,7 @@ function EarnTable() {
 											<TableCell>
 												$
 												{market.asset.priceUSD.formatBalance(
-													market.asset.decimals
+													DECIMALS.PRICE
 												)}
 											</TableCell>
 											<TableCell>

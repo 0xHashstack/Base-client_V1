@@ -1,6 +1,7 @@
 import ImageCard from '@/components/ui/card/image-card';
 import { Separator } from '@/components/ui/separator';
 import { Text } from '@/components/ui/typography/Text';
+import { DECIMALS } from '@/constant/web3/decimal.constant';
 import { SupplyPosition } from '@/types/web3/supply-market.types';
 
 import React, { useMemo } from 'react';
@@ -19,9 +20,7 @@ function SupplyValueCard({ supplyData }: SupplyValueCardProps) {
 			)
 		);
 		const receiptTokens = Number(
-			supplyData.receiptTokens.formatBalance(
-				supplyData.supplyAsset.decimals
-			)
+			supplyData.receiptTokens.formatBalance(DECIMALS.SUPPLY_MARKET)
 		);
 		const supplyAssetPrice = Number(
 			supplyData.supplyAsset.priceUSD.formatBalance(

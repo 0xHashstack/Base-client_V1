@@ -219,7 +219,7 @@ export function useBorrowForm() {
 			// Call the approve function on the token contract
 			const txHash = await writeContractAsync({
 				...approveParams,
-				address: approveParams.address as `0x${string}`,
+				address: approveParams.address as Web3Address,
 			});
 
 			if (txHash) {
@@ -308,11 +308,11 @@ export function useBorrowForm() {
 					borrowAmount,
 					recipient: walletAddress as Web3Address,
 				});
-			console.log({ loanRequestParams });
+
 			// Call the loan request function on the contract
 			const txHash = await writeContractAsync({
 				...loanRequestParams,
-				address: loanRequestParams.address as `0x${string}`,
+				address: loanRequestParams.address as Web3Address,
 			});
 
 			if (txHash) {

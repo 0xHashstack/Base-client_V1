@@ -21,6 +21,7 @@ import { useTokenStore } from '@/store/useTokenStore';
 import AddTokenToWallet from '@/components/actions/cta/add-token-to-wallet';
 import '@prototype/bigint.prototype';
 import { MarketLoan } from '@/types/web3/borrow-market.types';
+import { DECIMALS } from '@/constant/web3/decimal.constant';
 
 /**
  * BorrowTable component
@@ -98,7 +99,7 @@ function BorrowTable() {
 										<TableCell>
 											$
 											{market.asset.priceUSD.formatBalance(
-												market.asset.decimals
+												DECIMALS.PRICE
 											)}
 										</TableCell>
 										<TableCell>

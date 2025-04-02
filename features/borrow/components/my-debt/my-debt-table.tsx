@@ -190,10 +190,10 @@ function MyDebtTable() {
 											}
 											dTokenIssued={formattedAmount}
 											pricePerToken={market.asset.priceUSD.formatBalance(
-												market.asset.decimals
+												DECIMALS.PRICE
 											)}
 											tokenPrice={market.asset.priceUSD.formatBalance(
-												market.asset.decimals
+												DECIMALS.PRICE
 											)}
 											dappFees={FEES.DAPP_FEE.toFixed(2)}>
 											<span>${currentAmount}</span>

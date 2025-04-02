@@ -199,17 +199,13 @@ export function useBorrowFormInputs() {
 				return 0; // Avoid division by zero
 			}
 
-			// Get token decimals
-			const collateralDecimals = collateralMarket.decimals;
-			const borrowDecimals = borrowMarket.asset.decimals;
-
 			// Calculate the price ratio (convert bigint to number for calculation)
 			// Adjust for different token decimals when calculating the price ratio
 			const normalizedCollateralPrice = Number(
-				formatUnits(collateralPrice, collateralDecimals)
+				formatUnits(collateralPrice, DECIMALS.PRICE)
 			);
 			const normalizedBorrowPrice = Number(
-				formatUnits(borrowPrice, borrowDecimals)
+				formatUnits(borrowPrice, DECIMALS.PRICE)
 			);
 			const priceRatio =
 				normalizedCollateralPrice / normalizedBorrowPrice;

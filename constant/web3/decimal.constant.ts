@@ -2,4 +2,5 @@ export const DECIMALS = {
 	APR: 1000,
 	BORROW_MARKET: 18,
 	SUPPLY_MARKET: 18,
+	PRICE: 26,
 };

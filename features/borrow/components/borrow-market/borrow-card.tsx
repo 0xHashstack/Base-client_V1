@@ -14,7 +14,7 @@ interface BorrowCardProps {
 function BorrowCard({ market, onBorrowClick }: BorrowCardProps) {
 	// Format values from the market object
 	const formattedPrice =
-		'$' + market.asset.priceUSD.formatBalance(market.asset.decimals);
+		'$' + market.asset.priceUSD.formatBalance(DECIMALS.PRICE);
 	const formattedLiquidity =
 		'$' + market.availableToBorrow.formatBalance(DECIMALS.BORROW_MARKET);
 	const formattedNetApy = market.borrowApr.formatToString(10) + '%';

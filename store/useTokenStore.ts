@@ -12,6 +12,7 @@ import {
 	MarketLoan,
 	UserBorrowData,
 	BorrowMarketCollateral,
+	UserLoan,
 } from '@/types/web3/borrow-market.types';
 import { create } from 'zustand';
 import { userSupplyTransformToMarketCollateral } from '@/utils/web3/supply/supply-market.utils';
@@ -29,6 +30,7 @@ interface TokenState {
 
 	// Borrow market data
 	borrowMarketData: MarketLoan[];
+	userAllLoans: UserLoan[];
 	userBorrowQuickOverview: UserBorrowQuickOverview;
 	borrowMarketQuickOverview: BorrowMarketQuickOverview;
 
@@ -80,8 +82,9 @@ const staticState: TokenState = (() => {
 		borrowMarketData: [],
 		userBorrowQuickOverview: {
 			totalBorrowedValueUsd: BigInt(0),
-			weightedBorrowApr: BigInt(0),
+			totalBorrowApr: BigInt(0),
 		},
+		userAllLoans: [],
 		borrowMarketQuickOverview: {
 			avgBorrowApr: BigInt(0),
 			avgUtilization: BigInt(0),
@@ -152,11 +155,13 @@ export const useTokenStore = create<TokenState>((set) => ({
 
 	// Set borrow market data and update related fields
 	setBorrowMarketData: (data) => {
+		const [borrowPositions, marketLoans] = data;
 		set({
-			borrowMarketData: data.marketLoans,
+			borrowMarketData: marketLoans,
+			userAllLoans: borrowPositions.borrowPositions,
 			userBorrowQuickOverview: {
-				totalBorrowedValueUsd: data.totalBorrowedValueUsd,
-				weightedBorrowApr: data.weightedBorrowApr,
+				totalBorrowedValueUsd: borrowPositions.totalBorrowedValue,
+				totalBorrowApr: borrowPositions.totalBorrowApr,
 			},
 			isLoadingBorrowMarket: false,
 		});
