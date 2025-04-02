@@ -13,7 +13,6 @@ export interface SupplyValueCardProps {
 type DataItem = { label: string; value: string };
 
 function SupplyValueCard({ supplyData }: SupplyValueCardProps) {
-	console.log({ supplyData });
 	const data = useMemo(() => {
 		const suppliedAmount = supplyData.suppliedAmount.formatBalance(
 			DECIMALS.PRICE

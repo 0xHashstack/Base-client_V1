@@ -17,9 +17,9 @@ function BorrowCard({ market, onBorrowClick }: BorrowCardProps) {
 		'$' + market.asset.priceUSD.formatBalance(DECIMALS.PRICE);
 	const formattedLiquidity =
 		'$' + market.availableToBorrow.formatBalance(DECIMALS.BORROW_MARKET);
-	const formattedNetApy = market.borrowApr.formatToString(10) + '%';
+	const formattedNetApy = market.borrowApr.formatToString(DECIMALS.APR) + '%';
 	const formattedUtilizationRate =
-		market.utilizationRate.formatToString(10) + '%';
+		market.utilizationRate.formatToString(DECIMALS.UTILIZATION) + '%';
 
 	const cardData = useMemo<
 		{

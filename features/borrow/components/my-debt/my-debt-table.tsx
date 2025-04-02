@@ -148,14 +148,12 @@ function MyDebtTable() {
 
 							const currentAmount =
 								userLoan.currentAmount.formatBalance(
-									DECIMALS.BORROW_MARKET
+									DECIMALS.PRICE
 								);
 
 							// Format the values for display
 							const formattedAmount =
-								userLoan.amount.formatBalance(
-									DECIMALS.BORROW_MARKET
-								);
+								userLoan.amount.formatBalance(DECIMALS.PRICE);
 
 							const formattedApr =
 								market.borrowApr.formatToString(DECIMALS.APR) +

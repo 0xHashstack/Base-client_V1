@@ -1,11 +1,10 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Text } from '@/components/ui/typography/Text';
 import { Select } from '@/components/ui/select';
 import { useBorrowSpendForm } from '../../../../hooks/useBorrowSpendForm';
 import SlidingTab from '@/components/ui/tabs/sliding-tab';
-
 import { useL3DappStore } from '@/store/useL3DappStore';
 import { L3Dapp, L3DappPool } from '@/types/web3/dapp.types';
 import { Barricade } from '@phosphor-icons/react';
@@ -87,10 +86,6 @@ function LiquidityProvisioningTab() {
 			</div>
 		);
 	};
-
-	useEffect(() => {
-		console.log(selectedDapp);
-	}, [selectedDapp]);
 
 	return (
 		<div className='flex flex-col gap-4'>

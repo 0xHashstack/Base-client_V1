@@ -104,13 +104,13 @@ function BorrowTable() {
 										</TableCell>
 										<TableCell>
 											{market.utilizationRate.formatToString(
-												10
+												DECIMALS.UTILIZATION
 											)}
 											%
 										</TableCell>
 										<TableCell>
 											{market.borrowApr.formatToString(
-												10
+												DECIMALS.APR
 											)}
 											%
 										</TableCell>

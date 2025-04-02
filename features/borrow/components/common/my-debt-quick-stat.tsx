@@ -4,6 +4,7 @@ import React from 'react';
 import '@prototype/bigint.prototype';
 import { LOCAL_ROUTE } from '@/constant/routes/routes.constant';
 import useCustomRouter from '@/hooks/useCustomRouter';
+import { DECIMALS } from '@/constant/web3/decimal.constant';
 
 function MyDebtQuickStat() {
 	const { userBorrowQuickOverview, isLoadingBorrowMarket } = useTokenStore();
@@ -19,7 +20,7 @@ function MyDebtQuickStat() {
 				value={
 					'$' +
 					userBorrowQuickOverview.totalBorrowedValueUsd.formatBalance(
-						18
+						DECIMALS.PRICE
 					)
 				}
 				isLoading={isLoadingBorrowMarket}
@@ -29,8 +30,9 @@ function MyDebtQuickStat() {
 			<StatCard
 				title='Weighted Borrow APR'
 				value={
-					userBorrowQuickOverview.totalBorrowApr.formatBalance(18) +
-					'%'
+					userBorrowQuickOverview.totalBorrowApr.formatBalance(
+						DECIMALS.APR
+					) + '%'
 				}
 				isLoading={isLoadingBorrowMarket}
 				valueClassName='text-error'
