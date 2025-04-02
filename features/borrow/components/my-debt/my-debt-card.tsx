@@ -2,20 +2,70 @@ import { Btn } from '@/components/ui/button';
 import { useBorrowDrawer } from '../../context/borrow-drawer.context';
 import PrimaryCard from '@/components/ui/card/primary-card';
 import { Text } from '@/components/ui/typography/Text';
-import { HstkToken } from '@/types/web3/token.types';
-import { currencyFormat } from '@/utils';
 import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
+import { LoanPosition } from '@/types/web3/borrow-market.types';
+import { DECIMALS } from '@/constant/web3/decimal.constant';
+import BorrowAddCollateralForm from '../form/borrow-add-collateral-form';
+import BorrowSpendForm from '../form/borrow-spend-form';
+import BorrowRepayForm from '../form/borrow-repay-form';
+import { HstkToken } from '@/types/web3/token.types';
+import '@prototype/bigint.prototype';
 
 interface MyDebtCardProps {
-	token: HstkToken;
-	amount: string;
-	apy: string;
-	healthFactor: string;
+	loanPosition: LoanPosition;
 }
 
-function MyDebtCard({ token, amount, apy, healthFactor }: MyDebtCardProps) {
-	const { openDrawer } = useBorrowDrawer();
+function MyDebtCard({ loanPosition }: MyDebtCardProps) {
+	const { openDrawer, setDrawerContent } = useBorrowDrawer();
+	// Convert LoanPosition to HstkToken for form components
+	const convertToHstkToken = useCallback(
+		(loan: LoanPosition): HstkToken => ({
+			name: loan.borrowedAsset.name,
+			symbol: loan.borrowedAsset.symbol,
+			address: loan.borrowedAsset.address_,
+			decimals: loan.borrowedAsset.decimals,
+			iconUrl: loan.borrowedAsset.logoURI,
+			isNew: false,
+			isPaused: false,
+		}),
+		[]
+	);
+
+	// Calculate values from loan position
+	const borrowedAmount = loanPosition.borrowedValue.formatBalance(
+		DECIMALS.PRICE
+	);
+	const borrowAPR = loanPosition.rateInfo.effectiveRate.formatToString(
+		DECIMALS.APR
+	);
+	const healthFactor =
+		loanPosition.positionHealth.healthFactor.formatToString(
+			DECIMALS.HEALTH_FACTOR
+		);
+
+	// Handle adding collateral
+	const handleAddCollateral = useCallback(() => {
+		setDrawerContent(
+			<BorrowAddCollateralForm loanPosition={loanPosition} />
+		);
+		openDrawer();
+	}, [loanPosition, setDrawerContent, openDrawer]);
+
+	// Handle spending borrowed assets
+	const handleSpend = useCallback(() => {
+		setDrawerContent(
+			<BorrowSpendForm initialMarket={convertToHstkToken(loanPosition)} />
+		);
+		openDrawer();
+	}, [loanPosition, convertToHstkToken, setDrawerContent, openDrawer]);
+
+	// Handle repaying debt
+	const handleRepay = useCallback(() => {
+		setDrawerContent(<BorrowRepayForm marketLoan={loanPosition} />);
+		openDrawer();
+	}, [loanPosition, setDrawerContent, openDrawer]);
+
 	const cardData = useMemo<
 		{
 			title: string;
@@ -25,18 +75,18 @@ function MyDebtCard({ token, amount, apy, healthFactor }: MyDebtCardProps) {
 		() => [
 			{
 				title: 'Debt',
-				value: currencyFormat(amount),
+				value: `$${borrowedAmount}`,
 			},
 			{
-				title: 'APY',
-				value: `${apy}%`,
+				title: 'APR',
+				value: `${borrowAPR}%`,
 			},
 			{
 				title: 'Health Factor',
 				value: healthFactor,
 			},
 		],
-		[amount, apy, healthFactor]
+		[borrowedAmount, borrowAPR, healthFactor]
 	);
 
 	return (
@@ -44,13 +94,15 @@ function MyDebtCard({ token, amount, apy, healthFactor }: MyDebtCardProps) {
 			<PrimaryCard.Header>
 				<div className='flex items-center gap-3'>
 					<ImageWithLoader
-						src={token.iconUrl}
-						alt={token.name}
+						src={loanPosition.borrowedAsset.logoURI || ''}
+						alt={loanPosition.borrowedAsset.name || ''}
 						width={24}
 						height={24}
 						className='rounded-full'
 					/>
-					<Text.Semibold20>{token.name}</Text.Semibold20>
+					<Text.Semibold20>
+						{loanPosition.borrowedAsset.name}
+					</Text.Semibold20>
 				</div>
 			</PrimaryCard.Header>
 			<PrimaryCard.Body>
@@ -67,10 +119,15 @@ function MyDebtCard({ token, amount, apy, healthFactor }: MyDebtCardProps) {
 					))}
 				</div>
 				<div className='flex flex-col gap-2 w-full mt-2'>
-					<Btn.Primary>Repay</Btn.Primary>
-					<Btn.Secondary onClick={() => openDrawer()}>
-						Add Collateral
-					</Btn.Secondary>
+					<Btn.Primary onClick={handleRepay}>Repay</Btn.Primary>
+					<div className='grid grid-cols-2 gap-2'>
+						<Btn.Secondary onClick={handleSpend}>
+							Spend
+						</Btn.Secondary>
+						<Btn.Secondary onClick={handleAddCollateral}>
+							Add Collateral
+						</Btn.Secondary>
+					</div>
 				</div>
 			</PrimaryCard.Body>
 		</PrimaryCard>
