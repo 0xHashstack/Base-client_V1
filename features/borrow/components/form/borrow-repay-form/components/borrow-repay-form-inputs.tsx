@@ -10,6 +10,7 @@ import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton/skeleton';
 import { ArrowsClockwise } from '@phosphor-icons/react';
 import { Btn } from '@/components/ui/button';
+import { DECIMALS } from '@/constant/web3/decimal.constant';
 
 /**
  * Component for the borrow repay form inputs
@@ -61,7 +62,10 @@ function BorrowRepayFormInputs() {
 				<div className='flex flex-col'>
 					<Text.Medium14>{selectedToken.symbol}</Text.Medium14>
 					<Text.Regular12 textColor={500}>
-						Borrow balance: {borrowMarket?.userLoan.currentAmount}
+						Borrow balance:{' '}
+						{borrowMarket?.borrowedValue.formatBalance(
+							DECIMALS.BORROW_MARKET
+						)}
 					</Text.Regular12>
 				</div>
 			</div>
@@ -92,7 +96,7 @@ function BorrowRepayFormInputs() {
 		return (
 			<Text.Regular12 textColor={600}>
 				Wallet Balance: {formattedWalletBalance}{' '}
-				{borrowMarket?.asset.symbol || ''}
+				{borrowMarket?.borrowedAsset.symbol || ''}
 			</Text.Regular12>
 		);
 	};
@@ -128,7 +132,7 @@ function BorrowRepayFormInputs() {
 									type='number'
 									value={repayAmount}
 									onChange={handleAmountChange}
-									placeholder={`00.00 ${borrowMarket?.asset.symbol || ''}`}
+									placeholder={`00.00 ${borrowMarket?.borrowedAsset.symbol || ''}`}
 									disabled={isFormDisabled}
 								/>
 							</div>

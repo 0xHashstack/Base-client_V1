@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import IconCard from '@/components/ui/card/icon-card';
 import { Separator } from '@/components/ui/separator';
 import { Text } from '@/components/ui/typography/Text';
+import { DECIMALS } from '@/constant/web3/decimal.constant';
 import { ArrowDown, ArrowUp } from '@phosphor-icons/react';
-
+import '@prototype/bigint.prototype';
 import React, { useMemo } from 'react';
 
 export interface BorrowAprCardProps {
-	borrowApr?: number;
-	collateralApr?: number;
-	netApr: number;
-	changeInAprPercentage?: number;
+	borrowApr?: bigint;
+	collateralApr?: bigint;
+	netApr: bigint;
+	changeInAprPercentage?: bigint;
 }
 
 type DataItem = { label: string; value: string };
@@ -22,21 +22,31 @@ function BorrowAprCard({
 	changeInAprPercentage,
 }: BorrowAprCardProps) {
 	const data = useMemo(() => {
-		const items: Array<[string, number | undefined, string | undefined]> = [
-			['Borrow APR', borrowApr, `${borrowApr?.toFixed(2)}%`],
-			['Collateral APR', collateralApr, `${collateralApr?.toFixed(2)}%`],
-			['Net APR', netApr, `${netApr?.toFixed(2)}%`],
+		const items: Array<[string, bigint | undefined, string | undefined]> = [
+			[
+				'Borrow APR',
+				borrowApr,
+				`${borrowApr?.formatToString(DECIMALS.APR)}%`,
+			],
+			[
+				'Collateral APR',
+				collateralApr,
+				`${collateralApr?.formatToString(DECIMALS.APR)}%`,
+			],
+			['Net APR', netApr, `${netApr?.formatToString(DECIMALS.APR)}%`],
 		];
 
 		return items
 			.filter(
-				(item): item is [string, number, string] =>
+				(
+					item
+				): item is [string, bigint | undefined, string | undefined] =>
 					item[1] !== undefined
 			)
 			.map(
 				([label, _, value]): DataItem => ({
 					label,
-					value,
+					value: value || '',
 				})
 			);
 	}, [borrowApr, collateralApr, netApr]);
@@ -46,7 +56,9 @@ function BorrowAprCard({
 			<div className='flex items-center justify-between gap-2'>
 				<div className='flex flex-col gap-1'>
 					<Text.Regular12 textColor={500}>Net APR</Text.Regular12>
-					<Text.Semibold14>{netApr.toFixed(2)}%</Text.Semibold14>
+					<Text.Semibold14>
+						{netApr.formatToString(DECIMALS.APR)}%
+					</Text.Semibold14>
 				</div>
 				{changeInAprPercentage && (
 					<div className='flex items-center gap-0.5'>
@@ -66,7 +78,10 @@ function BorrowAprCard({
 									'text-green-500'
 								)
 							}>
-							{Math.abs(changeInAprPercentage)}%
+							{Math.abs(
+								changeInAprPercentage.format(DECIMALS.APR)
+							)}
+							%
 						</Text.Semibold12>
 					</div>
 				)}

@@ -20,7 +20,7 @@ import {
 	HoverBorrowHealthCard,
 	HoverBorrowValueCard,
 } from '../card/hover-cards';
-import { SpendCategory } from '@/types/web3/borrow.types';
+
 import BorrowAddCollateralForm from '../form/borrow-add-collateral-form';
 import BorrowSpendForm from '../form/borrow-spend-form';
 import BorrowRepayForm from '../form/borrow-repay-form';
@@ -48,14 +48,16 @@ function MyDebtTable() {
 		(state) => state.isLoadingBorrowMarket
 	);
 
+	const collateralTokens = useTokenStore((state) => state.collateralTokens);
 	// Filter active loans based on status
 	const activeLoans = useMemo(() => {
 		if (!userAllLoans || userAllLoans.length === 0) return [];
 
 		// Filter loans with active status
-		return userAllLoans.filter(
-			(loan) =>
-				Number(loan.usageDetails.status) === LoanUsageStatus.ACTIVE
+		return userAllLoans.filter((loan) =>
+			[LoanUsageStatus.ACTIVE, LoanUsageStatus.SPENT].includes(
+				Number(loan.usageDetails.status)
+			)
 		);
 	}, [userAllLoans]);
 
@@ -151,27 +153,31 @@ function MyDebtTable() {
 					{!isLoadingBorrowMarket &&
 						activeLoans.map((loan) => {
 							// Calculate the borrowed value in USD
-							const currentAmount =
+							const borrowedAmount =
 								loan.borrowedValue.formatBalance(
 									DECIMALS.PRICE
 								);
 
 							// Format the values for display
-							const formattedAmount =
-								loan.borrowedValue.formatBalance(
-									DECIMALS.PRICE
+							const dTokenAmount =
+								loan.debtTokenAmount.formatBalance(
+									loan.borrowedAsset.decimals
 								);
-
-							const formattedApr =
-								loan.rateInfo.borrowRate.formatToString(
-									DECIMALS.APR
-								) + '%';
 
 							// Get the health factor from the loan position
 							const healthFactor =
 								loan.positionHealth.healthFactor.formatToString(
 									DECIMALS.HEALTH_FACTOR
 								);
+
+							const {
+								iconUrl: collateralIconUrl = loan.borrowedAsset
+									.logoURI,
+							} =
+								collateralTokens.find(
+									({ address }) =>
+										address === loan.collateralAsset.addr
+								) || {};
 
 							return (
 								<TableRow
@@ -196,15 +202,16 @@ function MyDebtTable() {
 									</TableCell>
 									<TableCell>
 										<HoverBorrowValueCard
-											borrowAmount={formattedAmount}
+											borrowAmount={borrowedAmount}
 											tokenName={
-												loan.borrowedAsset.name || ''
+												loan.borrowedAsset.symbol || ''
 											}
 											dTokenName={
 												'd' +
-												(loan.borrowedAsset.name || '')
+												(loan.borrowedAsset.symbol ||
+													'')
 											}
-											dTokenIssued={formattedAmount}
+											dTokenIssued={dTokenAmount}
 											pricePerToken={loan.assetPrice.formatBalance(
 												DECIMALS.PRICE
 											)}
@@ -212,7 +219,7 @@ function MyDebtTable() {
 												DECIMALS.PRICE
 											)}
 											dappFees={FEES.DAPP_FEE.toFixed(2)}>
-											<span>${currentAmount}</span>
+											<span>${borrowedAmount}</span>
 										</HoverBorrowValueCard>
 									</TableCell>
 									<TableCell>
@@ -233,43 +240,54 @@ function MyDebtTable() {
 									</TableCell>
 									<TableCell>
 										<HoverBorrowAprCard
-											netApr={parseFloat(formattedApr)}
-											changeInAprPercentage={0}
-											collateralApr={0}
-											borrowApr={parseFloat(
-												formattedApr
-											)}>
-											<span>{formattedApr}</span>
+											netApr={loan.rateInfo.effectiveRate}
+											changeInAprPercentage={
+												loan.rateInfo.rateChange
+											}
+											collateralApr={
+												loan.rateInfo.collateralRate
+											}
+											borrowApr={
+												loan.rateInfo.borrowRate
+											}>
+											<span>
+												{loan.rateInfo.effectiveRate.formatToString(
+													DECIMALS.APR
+												)}
+												%
+											</span>
 										</HoverBorrowAprCard>
 									</TableCell>
 									<TableCell>
-										{loan.collateralAsset.symbol}
+										<div className='flex items-center gap-2'>
+											<ImageWithLoader
+												src={collateralIconUrl}
+												alt={
+													loan.borrowedAsset.name ||
+													''
+												}
+												width={20}
+												height={20}
+												className='rounded-full'
+											/>
+											{loan.collateralAsset.name}
+										</div>
 									</TableCell>
 									<TableCell>
 										<HoverBorrowHealthCard
 											healthScore={healthFactor}
-											actualDebt={parseFloat(
-												formattedAmount
+											actualDebt={loan.positionHealth.currentDebt.formatBalance(
+												DECIMALS.BORROW_MARKET
 											)}
-											collateral={
-												Number(
-													loan.positionHealth
-														.totalCollateralValue
-												) /
-												10 **
-													loan.collateralAsset
-														.decimals
-											}
-											netAssetValue={
-												parseFloat(formattedAmount) *
-												0.5
-											} // Placeholder
-											liquidationPrice={
-												(Number(loan.assetPrice) *
-													0.8) /
-												10 **
-													loan.borrowedAsset.decimals
-											} // Approximate
+											collateral={loan.collateralAsset.collateralAmount.formatBalance(
+												loan.collateralAsset.decimals
+											)}
+											netAssetValue={loan.assetPrice.formatBalance(
+												DECIMALS.PRICE
+											)}
+											liquidationPrice={loan.positionHealth.riskThreshold.formatBalance(
+												DECIMALS.BORROW_MARKET
+											)}
 											debtAssetName={
 												loan.borrowedAsset.symbol || ''
 											}
@@ -278,15 +296,16 @@ function MyDebtTable() {
 												''
 											}
 											currentDebt={{
-												dappName: 'HashStack',
+												dappName:
+													loan.usageDetails
+														.applicationName,
 												spendCategory:
-													SpendCategory.Supply,
-												value: parseFloat(
-													formattedAmount
+													loan.usageDetails.status,
+												value: loan.usageDetails.transactionValue.format(
+													DECIMALS.PRICE
 												),
 												assetName:
-													loan.borrowedAsset.symbol ||
-													'',
+													loan.usageDetails.tokenName,
 											}}>
 											<span>{healthFactor}</span>
 										</HoverBorrowHealthCard>

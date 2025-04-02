@@ -3,18 +3,27 @@ import { Badge } from '@/components/ui/badge';
 import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
 import { Separator } from '@/components/ui/separator';
 import { Text } from '@/components/ui/typography/Text';
-import { CurrentDebt } from '@/types/web3/borrow.types';
+import { LoanUsageStatus } from '@/types/web3/borrow-market.types';
+
 import { currencyFormat } from '@/utils';
 import React, { useMemo } from 'react';
 
+export type CurrentDebt = {
+	dappName: string;
+	dappIcon?: string;
+	spendCategory: LoanUsageStatus;
+	value: number;
+	assetName: string;
+};
+
 export type BorrowHealthCardProps = {
 	healthScore: string;
-	actualDebt?: number;
+	actualDebt: string;
 	debtAssetName?: string;
 	collateralAssetName?: string;
-	collateral?: number;
-	netAssetValue?: number;
-	liquidationPrice?: number;
+	collateral: string;
+	netAssetValue: string;
+	liquidationPrice: string;
 	currentDebt?: CurrentDebt;
 };
 
@@ -75,7 +84,7 @@ function BorrowHealthCard({
 	currentDebt,
 }: BorrowHealthCardProps) {
 	const metrics = useMemo(() => {
-		type MetricData = [string, number | undefined, (val: number) => string];
+		type MetricData = [string, string, (val: string) => string];
 
 		const metricConfigs: MetricData[] = [
 			['Debt Actual', actualDebt, (val) => `${val}${debtAssetName}`],
@@ -84,17 +93,12 @@ function BorrowHealthCard({
 			['Liquidation Price', liquidationPrice, currencyFormat],
 		];
 
-		return metricConfigs
-			.filter(
-				(item): item is [string, number, (val: number) => string] =>
-					item[1] !== undefined
-			)
-			.map(
-				([label, value, formatter]): MetricRow => ({
-					label,
-					value: formatter(value),
-				})
-			);
+		return metricConfigs.map(
+			([label, value, formatter]): MetricRow => ({
+				label,
+				value: formatter(value),
+			})
+		);
 	}, [
 		actualDebt,
 		collateral,
@@ -118,7 +122,7 @@ function BorrowHealthCard({
 				badgeText: 'spend category',
 			},
 			currentDebt.value && {
-				value: currencyFormat(currentDebt.value),
+				value: currentDebt.value,
 				badgeText: 'value',
 			},
 			currentDebt.assetName && {
