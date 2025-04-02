@@ -4,13 +4,13 @@ import { Slider } from '@/components/ui/slider';
 import { SingleSelect } from '@/components/ui/select/single-select';
 import { Text } from '@/components/ui/typography/Text';
 import { useBorrowRepayFormInputs } from '@/features/borrow/hooks/useBorrowRepayFormInputs';
-import { HstkToken } from '@/types/web3/token.types';
 import Image from 'next/image';
 import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton/skeleton';
 import { ArrowsClockwise } from '@phosphor-icons/react';
 import { Btn } from '@/components/ui/button';
 import { DECIMALS } from '@/constant/web3/decimal.constant';
+import { LoanPosition } from '@/types/web3/borrow-market.types';
 
 /**
  * Component for the borrow repay form inputs
@@ -19,7 +19,7 @@ function BorrowRepayFormInputs() {
 	const {
 		sliderPercentage,
 		borrowMarket,
-		borrowTokens,
+		userLoans,
 		handleAmountChange,
 		handleMaxClick,
 		handleSliderChange,
@@ -33,38 +33,40 @@ function BorrowRepayFormInputs() {
 	} = useBorrowRepayFormInputs();
 
 	// Custom render function for token options
-	const renderTokenOption = (option: HstkToken, isSelected: boolean) => (
+	const renderTokenOption = (option: LoanPosition, isSelected: boolean) => (
 		<div
 			className={`flex items-center gap-2 px-3 py-2 ${isSelected ? 'bg-primary/10' : 'hover:bg-muted'}  rounded-lg`}>
 			<Image
-				src={option.iconUrl}
-				alt={option.symbol}
+				src={option.borrowedAsset.logoURI}
+				alt={option.borrowedAsset.symbol}
 				className='rounded-full'
 				width={18}
 				height={18}
 			/>
-			<Text.Regular14>{option.symbol}</Text.Regular14>
+			<Text.Regular14>{option.borrowedAsset.symbol}</Text.Regular14>
 		</div>
 	);
 
 	// Custom render function for selected token
-	const renderTokenValue = (selectedToken: HstkToken | null) => {
+	const renderTokenValue = (selectedToken: LoanPosition | null) => {
 		if (!selectedToken) return null;
 		return (
 			<div className='flex items-start gap-2'>
 				<Image
-					src={selectedToken.iconUrl}
-					alt={selectedToken.symbol}
+					src={selectedToken.borrowedAsset.logoURI}
+					alt={selectedToken.borrowedAsset.symbol}
 					className='rounded-full'
 					width={18}
 					height={18}
 				/>
 				<div className='flex flex-col'>
-					<Text.Medium14>{selectedToken.symbol}</Text.Medium14>
+					<Text.Medium14>
+						{selectedToken.borrowedAsset.symbol}
+					</Text.Medium14>
 					<Text.Regular12 textColor={500}>
-						Borrow balance:{' '}
+						Borrow balance: $
 						{borrowMarket?.borrowedValue.formatBalance(
-							DECIMALS.BORROW_MARKET
+							DECIMALS.PRICE
 						)}
 					</Text.Regular12>
 				</div>
@@ -106,9 +108,9 @@ function BorrowRepayFormInputs() {
 			<Card className='flex flex-col gap-3 px-6 py-4'>
 				<SingleSelect
 					label='Borrow Market'
-					options={borrowTokens}
+					options={userLoans}
 					value={borrowMarket}
-					valueKey='address'
+					valueKey='borrowedAsset.address_'
 					labelKey='symbol'
 					placeholder='Select a market'
 					disabled={isFormDisabled}

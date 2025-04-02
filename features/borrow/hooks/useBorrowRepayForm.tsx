@@ -309,13 +309,14 @@ export function useBorrowRepayForm() {
 	 * Check if the button should be disabled
 	 */
 	const isButtonDisabled = useCallback(() => {
+		const isValidAmount = validateAmount().error === '';
 		return (
-			!amount ||
+			!isValidAmount ||
 			isLoading ||
 			transactionStatus === TransactionStatus.APPROVING ||
 			transactionStatus === TransactionStatus.TRANSACTION_PROCESSING
 		);
-	}, [amount, isLoading, transactionStatus]);
+	}, [isLoading, transactionStatus, validateAmount]);
 
 	/**
 	 * Get validation error message if any

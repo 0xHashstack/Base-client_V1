@@ -4,6 +4,7 @@ import { useBorrowRepayFormStore } from '../store/borrow-repay-form.store';
 import { useWalletToken } from '@/context/wallet-token-provider';
 import '@prototype/bigint.prototype';
 import { DECIMALS } from '@/constant/web3/decimal.constant';
+import { useTokenStore } from '@/store/useTokenStore';
 /**
  * Hook to handle the borrow repay form inputs
  * @returns Form input state and handlers
@@ -15,6 +16,7 @@ export function useBorrowRepayFormInputs() {
 	const fee = useBorrowRepayFormStore((state) => state.fee);
 	const setAmount = useBorrowRepayFormStore((state) => state.setAmount);
 	const setFee = useBorrowRepayFormStore((state) => state.setFee);
+	const userLoans = useTokenStore((state) => state.userAllLoans);
 
 	const repayAmount = useMemo(() => {
 		if (!borrowMarket?.repayFee) return 0;
@@ -103,7 +105,7 @@ export function useBorrowRepayFormInputs() {
 		sliderPercentage,
 		borrowMarket,
 		fee,
-		borrowTokens: [],
+		userLoans,
 		handleAmountChange,
 		handleMaxClick,
 		handleSliderChange,
