@@ -123,6 +123,7 @@ interface ProtocolFees {
 }
 
 export interface LoanPosition {
+	loanId: bigint;
 	borrowedAsset: BorrowAsset;
 	collateralAsset: CollateralInfo;
 	borrowedValue: bigint;

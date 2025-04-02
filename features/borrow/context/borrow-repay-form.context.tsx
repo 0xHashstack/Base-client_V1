@@ -1,11 +1,11 @@
 'use client';
 import React, { ReactNode } from 'react';
 import { BorrowRepayFormProvider } from '../store/borrow-repay-form.store';
-import { MarketLoan } from '@/types/web3/borrow-market.types';
+import { LoanPosition } from '@/types/web3/borrow-market.types';
 
 interface BorrowRepayFormContextProviderProps {
 	children: ReactNode;
-	marketLoan: MarketLoan | null;
+	marketLoan: LoanPosition | null;
 }
 
 /**

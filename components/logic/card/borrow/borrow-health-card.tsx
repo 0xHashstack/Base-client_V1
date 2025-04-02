@@ -8,7 +8,7 @@ import { currencyFormat } from '@/utils';
 import React, { useMemo } from 'react';
 
 export type BorrowHealthCardProps = {
-	healthScore: number;
+	healthScore: string;
 	actualDebt?: number;
 	debtAssetName?: string;
 	collateralAssetName?: string;
@@ -25,10 +25,10 @@ type CurrentDebtRow = {
 	icon?: string;
 };
 
-const HealthDisplay: React.FC<{ score: number }> = ({ score }) => (
+const HealthDisplay: React.FC<{ score: string }> = ({ score }) => (
 	<div className='flex flex-col'>
 		<Text.Regular10 textColor={500}>Health</Text.Regular10>
-		<Text.Semibold14>{score.toFixed(3)}</Text.Semibold14>
+		<Text.Semibold14>{score}</Text.Semibold14>
 	</div>
 );
 

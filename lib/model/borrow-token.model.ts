@@ -185,12 +185,14 @@ export class BorrowTokenModel {
 	getRepayLoanParams({
 		loanId,
 		repayAmount,
+		decimals,
 	}: {
 		loanId: bigint;
 		repayAmount: string;
+		decimals: number;
 	}) {
 		// Convert the amount from human-readable format to wei
-		const repayAmountInWei = this.convertToWei(repayAmount);
+		const repayAmountInWei = parseUnits(repayAmount, decimals);
 
 		return {
 			address: web3DataProvider.diamondAddress,

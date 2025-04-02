@@ -1,4 +1,4 @@
-import { MarketLoan } from '@/types/web3/borrow-market.types';
+import { LoanPosition } from '@/types/web3/borrow-market.types';
 import { createContext, useContext, useRef, useEffect } from 'react';
 import { create, useStore } from 'zustand';
 
@@ -16,7 +16,7 @@ export enum TransactionStatus {
 interface BorrowRepayFormState {
 	amount: string;
 	isLoading: boolean;
-	marketLoan: MarketLoan | null;
+	marketLoan: LoanPosition | null;
 	fee: string;
 	transactionStatus: TransactionStatus;
 

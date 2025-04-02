@@ -16,26 +16,23 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useQueryKeyStore } from '@/store/useQueryKeyStore';
 import { SupplyTokenModel } from '@/lib/model/supply-token.model';
 import '@prototype/bigint.prototype';
-import { DECIMALS } from '@/constant/web3/decimal.constant';
+
 /**
  * Hook to handle the borrow repay form functionality
  * @returns Borrow repay form state and handlers
  */
 export function useBorrowRepayForm() {
 	// Use selectors to get only what we need from the store
-	const amount = useBorrowRepayFormStore((state) => state.amount);
 	const isLoading = useBorrowRepayFormStore((state) => state.isLoading);
 	const marketLoan = useBorrowRepayFormStore((state) => state.marketLoan);
 	const fee = useBorrowRepayFormStore((state) => state.fee);
 	const transactionStatus = useBorrowRepayFormStore(
 		(state) => state.transactionStatus
 	);
-	const setAmount = useBorrowRepayFormStore((state) => state.setAmount);
 	const setMarketLoan = useBorrowRepayFormStore(
 		(state) => state.setMarketLoan
 	);
 	const setIsLoading = useBorrowRepayFormStore((state) => state.setIsLoading);
-	const setFee = useBorrowRepayFormStore((state) => state.setFee);
 	const setTransactionStatus = useBorrowRepayFormStore(
 		(state) => state.setTransactionStatus
 	);
@@ -61,8 +58,8 @@ export function useBorrowRepayForm() {
 	const tokenModel = useMemo(() => {
 		if (!marketLoan) return null;
 		return new SupplyTokenModel(
-			marketLoan.asset.address_ as Web3Address,
-			marketLoan.asset.decimals
+			marketLoan.collateralAsset.addr as Web3Address,
+			marketLoan.collateralAsset.decimals
 		);
 	}, [marketLoan]);
 
@@ -70,16 +67,25 @@ export function useBorrowRepayForm() {
 	const borrowTokenModel = useMemo(() => {
 		if (!marketLoan) return null;
 		return new BorrowTokenModel(
-			marketLoan.asset.address_ as Web3Address,
-			marketLoan.asset.decimals
+			marketLoan.borrowedAsset.address_ as Web3Address,
+			marketLoan.borrowedAsset.decimals
 		);
 	}, [marketLoan]);
+
+	const amount = useMemo(() => {
+		return marketLoan?.repayFee || BigInt(0);
+	}, [marketLoan?.repayFee]);
 
 	/**
 	 * Validate if the amount is valid for repay
 	 */
 	const validateAmount = useCallback(() => {
-		const amountNum = parseFloat(amount || '0');
+		if (!marketLoan)
+			return {
+				valid: false,
+				error: 'Market loan not found',
+			};
+		const amountNum = amount.format(marketLoan.collateralAsset.decimals);
 		const walletBalanceNum = parseFloat(walletBalance);
 
 		if (isNaN(amountNum)) {
@@ -100,7 +106,7 @@ export function useBorrowRepayForm() {
 			valid: true,
 			error: '',
 		};
-	}, [amount, walletBalance]);
+	}, [amount, walletBalance, marketLoan]);
 
 	/**
 	 * Handle token approval for repay
@@ -115,20 +121,19 @@ export function useBorrowRepayForm() {
 
 			// Get the parameters for the approve transaction
 			const approveParams = tokenModel.getApproveParams({
-				amount,
+				amount: amount.toString(),
 			});
 
 			// Call the approve function on the token contract
 			const txHash = await writeContractAsync({
 				...approveParams,
-				address: approveParams.address as Web3Address,
 			});
 
 			if (txHash) {
 				// Set transaction in the store for monitoring
 				setTransaction({
 					hash: txHash,
-					successToastMessage: `Approved ${marketLoan.asset.symbol} for repay`,
+					successToastMessage: `Approved ${marketLoan.collateralAsset.symbol} for repay`,
 					onSuccess: () => {
 						setTransactionStatus(TransactionStatus.APPROVED);
 					},
@@ -137,18 +142,20 @@ export function useBorrowRepayForm() {
 							TransactionStatus.TRANSACTION_FAILED
 						);
 						toast.error(
-							`Failed to approve ${marketLoan.asset.symbol}`
+							`Failed to approve ${marketLoan.collateralAsset.symbol}`
 						);
 					},
 				});
 
 				// Show initial info toast
-				toast.info(`Approving ${marketLoan.asset.symbol} tokens...`);
+				toast.info(
+					`Approving ${marketLoan.collateralAsset.symbol} tokens...`
+				);
 			}
 		} catch (error) {
 			console.error('Error approving tokens:', error);
 			toast.error(
-				`Failed to approve ${marketLoan.asset.symbol}. Please try again.`
+				`Failed to approve ${marketLoan.collateralAsset.symbol}. Please try again.`
 			);
 			setTransactionStatus(TransactionStatus.TRANSACTION_FAILED);
 		}
@@ -161,27 +168,6 @@ export function useBorrowRepayForm() {
 		writeContractAsync,
 		setTransaction,
 	]);
-
-	/**
-	 * Check if the amount is a full repayment
-	 */
-	const isFullRepayment = useCallback(() => {
-		if (!marketLoan || !amount) return false;
-
-		// Get the outstanding debt amount
-		// Convert bigint to string then to float for comparison
-		const outstandingDebt =
-			parseFloat(marketLoan.userLoan.repayAmount.toString()) /
-			10 ** marketLoan.asset.decimals;
-		const repayAmount = parseFloat(amount);
-
-		// Consider it a full repayment if the amount is equal to or greater than the debt
-		// or if it's very close (within 0.1% to account for potential rounding issues)
-		return (
-			repayAmount >= outstandingDebt ||
-			(outstandingDebt - repayAmount) / outstandingDebt < 0.001
-		);
-	}, [marketLoan, amount]);
 
 	/**
 	 * Handle repay submission
@@ -217,26 +203,13 @@ export function useBorrowRepayForm() {
 			setTransactionStatus(TransactionStatus.TRANSACTION_PROCESSING);
 			setIsLoading(true);
 
-			// Determine if this is a full repayment
-			const fullRepayment = isFullRepayment();
-
 			// Get appropriate repay parameters based on repayment type
-			let repayParams;
-			if (fullRepayment) {
-				// Use zero repay loan for full repayments
-				repayParams = borrowTokenModel.getRepayLoanParams({
-					loanId: marketLoan.userLoan.loanId,
-					repayAmount: marketLoan.userLoan.repayAmount
-						.format(DECIMALS.BORROW_MARKET)
-						.toString(),
-				});
-			} else {
-				// Use regular repay loan for partial repayments
-				repayParams = borrowTokenModel.getRepayLoanParams({
-					loanId: marketLoan.userLoan.loanId,
-					repayAmount: amount,
-				});
-			}
+
+			const repayParams = borrowTokenModel.getRepayLoanParams({
+				loanId: marketLoan.loanId,
+				repayAmount: marketLoan.repayFee.toString(),
+				decimals: marketLoan.collateralAsset.decimals,
+			});
 
 			// Call the repay function on the diamond contract
 			const txHash = await writeContractAsync({
@@ -248,10 +221,7 @@ export function useBorrowRepayForm() {
 				// Set transaction in the store for monitoring
 				setTransaction({
 					hash: txHash,
-					successToastMessage:
-						fullRepayment ?
-							`Successfully repaid full loan of ${marketLoan.asset.symbol}`
-						:	`Successfully repaid ${amount} ${marketLoan.asset.symbol}`,
+					successToastMessage: `Successfully repaid ${amount} ${marketLoan?.borrowedAsset?.symbol}`,
 					onSuccess: () => {
 						// Invalidate the borrow market data query
 						queryClient.invalidateQueries({
@@ -276,16 +246,14 @@ export function useBorrowRepayForm() {
 						);
 						setIsLoading(false);
 						toast.error(
-							`Failed to repay ${marketLoan.asset.symbol}`
+							`Failed to repay ${marketLoan?.borrowedAsset?.symbol}`
 						);
 					},
 				});
 
 				// Show initial info toast
 				toast.info(
-					fullRepayment ?
-						`Repaying full loan of ${marketLoan.asset.symbol}...`
-					:	`Repaying ${amount} ${marketLoan.asset.symbol}...`
+					`Repaying ${amount} ${marketLoan?.borrowedAsset?.symbol}...`
 				);
 			}
 		} catch (error) {
@@ -313,19 +281,7 @@ export function useBorrowRepayForm() {
 		queryClient,
 		borrowMarketDataQueryKey,
 		borrowMarketOverviewQueryKey,
-		isFullRepayment,
 	]);
-
-	/**
-	 * Calculate fee whenever amount changes
-	 */
-	const calculateFee = useCallback(() => {
-		if (!amount || !marketLoan) return;
-
-		// Simple fee calculation (0.5% of amount)
-		const feeAmount = parseFloat(amount) * 0.005;
-		setFee(feeAmount.toFixed(4));
-	}, [amount, marketLoan, setFee]);
 
 	/**
 	 * Get the button text based on the current transaction status
@@ -335,9 +291,9 @@ export function useBorrowRepayForm() {
 
 		switch (transactionStatus) {
 			case TransactionStatus.APPROVING:
-				return `Approving ${marketLoan.asset.symbol}...`;
+				return `Approving ${marketLoan.borrowedAsset.symbol}...`;
 			case TransactionStatus.APPROVED:
-				return `Approved! Repay ${marketLoan.asset.symbol}`;
+				return `Approved! Repay ${marketLoan.borrowedAsset.symbol}`;
 			case TransactionStatus.TRANSACTION_PROCESSING:
 				return 'Processing...';
 			case TransactionStatus.TRANSACTION_FAILED:
@@ -345,7 +301,7 @@ export function useBorrowRepayForm() {
 			case TransactionStatus.TRANSACTION_SUCCESS:
 				return 'Success!';
 			default:
-				return `Repay ${marketLoan.asset.symbol}`;
+				return `Repay Loan`;
 		}
 	}, [marketLoan, transactionStatus]);
 
@@ -378,14 +334,12 @@ export function useBorrowRepayForm() {
 		walletBalance,
 		formattedWalletBalance,
 		handleRepay,
-		calculateFee,
 		getButtonText,
 		isButtonDisabled,
 		validateAmount,
 		getValidationError,
 
 		// Actions
-		setAmount,
 		setMarketLoan,
 		setTransactionStatus,
 		reset,

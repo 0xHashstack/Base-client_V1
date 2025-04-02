@@ -17,13 +17,12 @@ export function useBorrowRepayFormInputs() {
 	const setFee = useBorrowRepayFormStore((state) => state.setFee);
 
 	const repayAmount = useMemo(() => {
-		if (!borrowMarket?.userLoan) return 0;
+		if (!borrowMarket?.repayFee) return 0;
 		return (
-			borrowMarket.userLoan?.repayAmount
-				?.format(DECIMALS.BORROW_MARKET)
-				.toFixed(3) || '0.00'
+			borrowMarket.repayFee?.format(DECIMALS.BORROW_MARKET).toFixed(3) ||
+			'0.00'
 		);
-	}, [borrowMarket?.userLoan]);
+	}, [borrowMarket?.repayFee]);
 
 	const {
 		data: walletBalance,

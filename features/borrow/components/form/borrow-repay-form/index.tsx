@@ -10,13 +10,13 @@ import BorrowRepayFormInputs from './components/borrow-repay-form-inputs';
 import BorrowRepayPriceBreakdownCard from './components/borrow-repay-price-breakdown-card';
 import { Card } from '@/components/ui/card';
 import BorrowRepayDetailsCard from './components/borrow-repay-details-card';
-import { MarketLoan } from '@/types/web3/borrow-market.types';
+import { LoanPosition } from '@/types/web3/borrow-market.types';
 import { useBorrowRepayFormStore } from '../../../store/borrow-repay-form.store';
 import { WalletTokenProvider } from '@/context/wallet-token-provider';
 import { Web3Address } from '@/types/web3';
 
 interface BorrowRepayFormProps {
-	marketLoan: MarketLoan;
+	marketLoan: LoanPosition;
 }
 
 /**
@@ -38,8 +38,10 @@ function BorrowRepayFormWithTokenProvider() {
 
 	return (
 		<WalletTokenProvider
-			tokenAddress={token?.asset.address_ as Web3Address | undefined}
-			decimals={token?.asset.decimals}>
+			tokenAddress={
+				token?.collateralAsset.addr as Web3Address | undefined
+			}
+			decimals={token?.collateralAsset.decimals}>
 			<BorrowRepayFormContent />
 		</WalletTokenProvider>
 	);

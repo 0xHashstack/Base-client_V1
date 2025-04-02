@@ -26,7 +26,10 @@ import BorrowSpendForm from '../form/borrow-spend-form';
 import BorrowRepayForm from '../form/borrow-repay-form';
 import React, { useCallback, useMemo } from 'react';
 import { useTokenStore } from '@/store/useTokenStore';
-import { MarketLoan } from '@/types/web3/borrow-market.types';
+import {
+	LoanPosition,
+	LoanUsageStatus,
+} from '@/types/web3/borrow-market.types';
 import If from '@/components/common/If';
 import '@prototype/bigint.prototype';
 import { CollateralToken, HstkToken } from '@/types/web3/token.types';
@@ -39,47 +42,52 @@ import { FEES } from '@/constant/web3/fees.constant';
  */
 function MyDebtTable() {
 	const { openDrawer, setDrawerContent } = useBorrowDrawer();
-	const { borrowMarketData, isLoadingBorrowMarket } = useTokenStore();
+	// Using selector pattern for Zustand stores as per project preference
+	const userAllLoans = useTokenStore((state) => state.userAllLoans);
+	const isLoadingBorrowMarket = useTokenStore(
+		(state) => state.isLoadingBorrowMarket
+	);
 
-	// Filter active loans (amount > 0)
-	const activeLoanMarkets = useMemo(() => {
-		if (!borrowMarketData) return [];
-		// Filter loans with non-zero amounts
-		const loanMarket = borrowMarketData.filter(
-			({ userLoan }) => userLoan.loanId !== BigInt(0)
+	// Filter active loans based on status
+	const activeLoans = useMemo(() => {
+		if (!userAllLoans || userAllLoans.length === 0) return [];
+
+		// Filter loans with active status
+		return userAllLoans.filter(
+			(loan) =>
+				Number(loan.usageDetails.status) === LoanUsageStatus.ACTIVE
 		);
+	}, [userAllLoans]);
 
-		// Map the loans to their corresponding market data
-		return loanMarket;
-	}, [borrowMarketData]);
-
-	// Convert MarketLoan to HstkToken for form components
-	const convertToHstkToken = (market: MarketLoan): HstkToken => ({
-		name: market.asset.name,
-		symbol: market.asset.symbol,
-		address: market.asset.address_,
-		decimals: market.asset.decimals,
-		iconUrl: market.asset.logoURI,
+	// Convert LoanPosition to HstkToken for form components
+	const convertToHstkToken = (loan: LoanPosition): HstkToken => ({
+		name: loan.borrowedAsset.name,
+		symbol: loan.borrowedAsset.symbol,
+		address: loan.borrowedAsset.address_,
+		decimals: loan.borrowedAsset.decimals,
+		iconUrl: loan.borrowedAsset.logoURI,
 		isNew: false,
 		isPaused: false,
 	});
 
-	// Convert MarketLoan to CollateralToken for form components
-	const convertToCollateralToken = (market: MarketLoan): CollateralToken => ({
-		name: market.asset.name,
-		symbol: market.asset.symbol,
-		address: market.asset.address_,
-		decimals: market.asset.decimals,
-		iconUrl: market.asset.logoURI,
-		availableCollateral: 100, // Placeholder value
+	// Convert LoanPosition to CollateralToken for form components
+	const convertToCollateralToken = (loan: LoanPosition): CollateralToken => ({
+		name: loan.collateralAsset.name,
+		symbol: loan.collateralAsset.symbol,
+		address: loan.collateralAsset.addr,
+		decimals: loan.collateralAsset.decimals,
+		iconUrl: '', // CollateralInfo doesn't have logoURI
+		availableCollateral: Number(
+			loan.collateralAsset.collateralAmount.toString()
+		),
 	});
 
 	// Handle adding collateral
 	const handleAddCollateral = useCallback(
-		(market: MarketLoan) => {
+		(loan: LoanPosition) => {
 			setDrawerContent(
 				<BorrowAddCollateralForm
-					token={convertToCollateralToken(market)}
+					token={convertToCollateralToken(loan)}
 				/>
 			);
 			openDrawer();
@@ -89,9 +97,9 @@ function MyDebtTable() {
 
 	// Handle spending borrowed assets
 	const handleSpend = useCallback(
-		(market: MarketLoan) => {
+		(loan: LoanPosition) => {
 			setDrawerContent(
-				<BorrowSpendForm initialMarket={convertToHstkToken(market)} />
+				<BorrowSpendForm initialMarket={convertToHstkToken(loan)} />
 			);
 			openDrawer();
 		},
@@ -100,8 +108,8 @@ function MyDebtTable() {
 
 	// Handle repaying debt
 	const handleRepay = useCallback(
-		(market: MarketLoan) => {
-			setDrawerContent(<BorrowRepayForm marketLoan={market} />);
+		(loan: LoanPosition) => {
+			setDrawerContent(<BorrowRepayForm marketLoan={loan} />);
 			openDrawer();
 		},
 		[setDrawerContent, openDrawer]
@@ -133,64 +141,74 @@ function MyDebtTable() {
 						/>
 					</If>
 
-					{!isLoadingBorrowMarket &&
-						activeLoanMarkets.length === 0 && (
-							<TableNoData
-								message='No debt positions found'
-								colSpan={6}
-							/>
-						)}
+					{!isLoadingBorrowMarket && activeLoans.length === 0 && (
+						<TableNoData
+							message='No debt positions found'
+							colSpan={6}
+						/>
+					)}
 
 					{!isLoadingBorrowMarket &&
-						activeLoanMarkets.map((market) => {
+						activeLoans.map((loan) => {
 							// Calculate the borrowed value in USD
-							const { userLoan } = market;
-
 							const currentAmount =
-								userLoan.currentAmount.formatBalance(
+								loan.borrowedValue.formatBalance(
 									DECIMALS.PRICE
 								);
 
 							// Format the values for display
 							const formattedAmount =
-								userLoan.amount.formatBalance(DECIMALS.PRICE);
+								loan.borrowedValue.formatBalance(
+									DECIMALS.PRICE
+								);
 
 							const formattedApr =
-								market.borrowApr.formatToString(DECIMALS.APR) +
-								'%';
+								loan.rateInfo.borrowRate.formatToString(
+									DECIMALS.APR
+								) + '%';
 
-							// Health factor calculation (placeholder - replace with actual calculation)
-							const healthFactor = 3.34; // This should be calculated based on collateral value vs debt
+							// Get the health factor from the loan position
+							const healthFactor =
+								loan.positionHealth.healthFactor.formatToString(
+									DECIMALS.HEALTH_FACTOR
+								);
 
 							return (
 								<TableRow
-									key={`${userLoan.loanId}-${market.address_}`}>
+									key={`${loan.borrowedAsset.address_}-${loan.usageDetails.status}`}>
 									<TableCell className='font-medium'>
 										<div className='flex items-center gap-3'>
 											<ImageWithLoader
 												src={
-													market?.asset.logoURI || ''
+													loan.borrowedAsset
+														.logoURI || ''
 												}
-												alt={market?.asset.name || ''}
+												alt={
+													loan.borrowedAsset.name ||
+													''
+												}
 												width={20}
 												height={20}
 												className='rounded-full'
 											/>
-											{market?.asset.name}
+											{loan.borrowedAsset.name}
 										</div>
 									</TableCell>
 									<TableCell>
 										<HoverBorrowValueCard
 											borrowAmount={formattedAmount}
-											tokenName={market?.asset.name || ''}
+											tokenName={
+												loan.borrowedAsset.name || ''
+											}
 											dTokenName={
-												'd' + (market?.asset.name || '')
+												'd' +
+												(loan.borrowedAsset.name || '')
 											}
 											dTokenIssued={formattedAmount}
-											pricePerToken={market.asset.priceUSD.formatBalance(
+											pricePerToken={loan.assetPrice.formatBalance(
 												DECIMALS.PRICE
 											)}
-											tokenPrice={market.asset.priceUSD.formatBalance(
+											tokenPrice={loan.assetPrice.formatBalance(
 												DECIMALS.PRICE
 											)}
 											dappFees={FEES.DAPP_FEE.toFixed(2)}>
@@ -201,15 +219,13 @@ function MyDebtTable() {
 										<div className='flex gap-2 items-center'>
 											<Btn.Outline
 												onClick={() =>
-													market &&
-													handleRepay(market)
+													handleRepay(loan)
 												}>
 												Repay
 											</Btn.Outline>
 											<Btn.Secondary
 												onClick={() =>
-													market &&
-													handleSpend(market)
+													handleSpend(loan)
 												}>
 												Spend
 											</Btn.Secondary>
@@ -227,7 +243,7 @@ function MyDebtTable() {
 										</HoverBorrowAprCard>
 									</TableCell>
 									<TableCell>
-										{market?.asset.symbol}
+										{loan.collateralAsset.symbol}
 									</TableCell>
 									<TableCell>
 										<HoverBorrowHealthCard
@@ -236,23 +252,30 @@ function MyDebtTable() {
 												formattedAmount
 											)}
 											collateral={
-												parseFloat(formattedAmount) *
-												1.5
-											} // Placeholder
+												Number(
+													loan.positionHealth
+														.totalCollateralValue
+												) /
+												10 **
+													loan.collateralAsset
+														.decimals
+											}
 											netAssetValue={
 												parseFloat(formattedAmount) *
 												0.5
 											} // Placeholder
 											liquidationPrice={
-												Number(
-													market?.asset.priceUSD || 0
-												) * 0.8
-											} // Placeholder
+												(Number(loan.assetPrice) *
+													0.8) /
+												10 **
+													loan.borrowedAsset.decimals
+											} // Approximate
 											debtAssetName={
-												market?.asset.symbol || ''
+												loan.borrowedAsset.symbol || ''
 											}
 											collateralAssetName={
-												market?.asset.symbol || ''
+												loan.collateralAsset.symbol ||
+												''
 											}
 											currentDebt={{
 												dappName: 'HashStack',
@@ -262,18 +285,16 @@ function MyDebtTable() {
 													formattedAmount
 												),
 												assetName:
-													market?.asset.symbol || '',
+													loan.borrowedAsset.symbol ||
+													'',
 											}}>
-											<span>
-												{healthFactor.toFixed(2)}
-											</span>
+											<span>{healthFactor}</span>
 										</HoverBorrowHealthCard>
 									</TableCell>
 									<TableCell>
 										<Btn.Secondary
 											onClick={() =>
-												market &&
-												handleAddCollateral(market)
+												handleAddCollateral(loan)
 											}>
 											Add Collateral
 										</Btn.Secondary>
