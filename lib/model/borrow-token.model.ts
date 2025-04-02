@@ -266,6 +266,38 @@ export class BorrowTokenModel {
 	}
 
 	/**
+	 * Get the parameters for adding collateral to a loan based on BorrowCollateral type
+	 * @param loanId The ID of the loan to add collateral to
+	 * @param collateral The collateral to add to the loan
+	 * @param collateralAmount The amount of collateral to add in human-readable format
+	 * @returns Parameters for useWriteContract
+	 */
+	getAddCollateralFromBorrowCollateral({
+		loanId,
+		collateral,
+		collateralAmount,
+	}: {
+		loanId: bigint;
+		collateral: BorrowMarketCollateral;
+		collateralAmount: string;
+	}) {
+		if (collateral.isRToken) {
+			return this.getAddRTokenCollateralParams({
+				loanId,
+				rToken: collateral.address,
+				rTokenAmount: collateralAmount,
+				rTokenDecimals: collateral.decimals,
+			});
+		}
+		return this.getAddCollateralParams({
+			loanId,
+			collateralAsset: collateral.address,
+			collateralAmount,
+			collateralDecimals: collateral.decimals,
+		});
+	}
+
+	/**
 	 * Get the parameters for interacting with APY
 	 * @param params The parameters for the interaction
 	 * @returns Parameters for useWriteContract

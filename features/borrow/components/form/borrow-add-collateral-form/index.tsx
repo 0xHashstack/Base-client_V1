@@ -9,7 +9,10 @@ import AddCollateralFormInputs from './components/add-collateral-form-inputs';
 import AddCollateralPriceBreakdownCard from './components/add-collateral-price-breakdown-card';
 import { Card } from '@/components/ui/card';
 import { LoanPosition } from '@/types/web3/borrow-market.types';
-import { useBorrowAddCollateralFormStore } from '../../../store/borrow-add-collateral-form.store';
+import {
+	useBorrowAddCollateralFormStore,
+	TransactionStatus,
+} from '../../../store/borrow-add-collateral-form.store';
 import { WalletTokenProvider } from '@/context/wallet-token-provider';
 import { Web3Address } from '@/types/web3';
 
@@ -53,9 +56,16 @@ function BorrowAddCollateralFormWithTokenProvider() {
  * The actual content of the add collateral form that uses the store
  */
 function BorrowAddCollateralFormContent() {
-	// Get handlers from the hook
-	const { handleAddCollateral, userLoan, amount, closeDrawer, isLoading } =
-		useBorrowAddCollateralForm();
+	// Get handlers and state from the hook
+	const {
+		handleAddCollateral,
+		userLoan,
+		closeDrawer,
+		getButtonText,
+		isButtonDisabled,
+		getValidationError,
+		transactionStatus,
+	} = useBorrowAddCollateralForm();
 
 	// If loanPosition is not set, don't render anything
 	if (!userLoan) return null;
@@ -79,12 +89,25 @@ function BorrowAddCollateralFormContent() {
 				</div>
 			</SideDrawer.Body>
 			<SideDrawer.Footer>
+				{getValidationError() && (
+					<div className='mb-2 py-2 px-3 bg-badge-error border text-badge-error rounded-md'>
+						<p className='text-sm'>{getValidationError()}</p>
+					</div>
+				)}
 				<ConnectedBtn.Primary
 					onClick={handleAddCollateral}
-					disabled={!amount || isLoading}
+					disabled={isButtonDisabled}
 					showConnectButton
-					parentWidth>
-					{isLoading ? 'Processing...' : `Add  Collateral`}
+					parentWidth
+					className={
+						(
+							transactionStatus ===
+							TransactionStatus.TRANSACTION_FAILED
+						) ?
+							'bg-destructive'
+						:	''
+					}>
+					{getButtonText()}
 				</ConnectedBtn.Primary>
 			</SideDrawer.Footer>
 		</>
