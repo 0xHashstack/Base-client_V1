@@ -3,4 +3,5 @@ export const DECIMALS = {
 	BORROW_MARKET: 18,
 	SUPPLY_MARKET: 18,
 	PRICE: 26,
+	LIQUIDITY: 18,
 };

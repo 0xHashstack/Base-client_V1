@@ -3,7 +3,7 @@ import PrimaryCard from '@/components/ui/card/primary-card';
 import { Text } from '@/components/ui/typography/Text';
 import { cn } from '@/lib/utils';
 import { HstkToken } from '@/types/web3/token.types';
-import { currencyFormat, noop } from '@/utils';
+import { noop } from '@/utils';
 import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
 import React, { useMemo } from 'react';
 
@@ -34,7 +34,7 @@ function MyPositionCard({
 			[
 				{
 					title: 'Value',
-					value: currencyFormat(value),
+					value: '$' + value,
 					rawValue: value,
 				},
 				{

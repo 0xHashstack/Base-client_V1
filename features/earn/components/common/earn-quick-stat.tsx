@@ -4,6 +4,7 @@ import React from 'react';
 import '@prototype/bigint.prototype';
 import useCustomRouter from '@/hooks/useCustomRouter';
 import { LOCAL_ROUTE } from '@/constant/routes/routes.constant';
+import { DECIMALS } from '@/constant/web3/decimal.constant';
 function EarnQuickStat() {
 	const { supplyMarketQuickOverview, isLoadingSupplyMarketOverview } =
 		useTokenStore();
@@ -17,7 +18,9 @@ function EarnQuickStat() {
 				title='Market Deposit'
 				value={
 					'$' +
-					supplyMarketQuickOverview.marketDeposit.formatBalance(18)
+					supplyMarketQuickOverview.marketDeposit.formatBalance(
+						DECIMALS.PRICE
+					)
 				}
 				isLoading={isLoadingSupplyMarketOverview}
 				onClick={pushToProtocolInsights}
@@ -27,7 +30,9 @@ function EarnQuickStat() {
 			<StatCard
 				title='Market APR'
 				value={
-					supplyMarketQuickOverview.marketApr.formatBalance(18) + '%'
+					supplyMarketQuickOverview.marketApr.formatBalance(
+						DECIMALS.APR
+					) + '%'
 				}
 				isLoading={isLoadingSupplyMarketOverview}
 				valueClassName='text-success'

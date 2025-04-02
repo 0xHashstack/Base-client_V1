@@ -4,6 +4,7 @@ import React from 'react';
 import '@prototype/bigint.prototype';
 import { LOCAL_ROUTE } from '@/constant/routes/routes.constant';
 import useCustomRouter from '@/hooks/useCustomRouter';
+import { DECIMALS } from '@/constant/web3/decimal.constant';
 
 function MyPositionQuickStat() {
 	const { userSupplyQuickOverview, isLoadingSupplyMarket } = useTokenStore();
@@ -18,7 +19,7 @@ function MyPositionQuickStat() {
 				value={
 					'$' +
 					userSupplyQuickOverview.totalSuppliedValueUsd.formatBalance(
-						18
+						DECIMALS.PRICE
 					)
 				}
 				isLoading={isLoadingSupplyMarket}
@@ -29,8 +30,9 @@ function MyPositionQuickStat() {
 			<StatCard
 				title='Total APR'
 				value={
-					userSupplyQuickOverview.weightedNetApy.formatBalance(18) +
-					'%'
+					userSupplyQuickOverview.weightedNetApy.formatBalance(
+						DECIMALS.APR
+					) + '%'
 				}
 				isLoading={isLoadingSupplyMarket}
 				valueClassName='text-success'

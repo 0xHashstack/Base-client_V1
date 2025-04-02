@@ -24,6 +24,7 @@ import '@prototype/bigint.prototype';
 import If from '@/components/common/If';
 import AddTokenToWallet from '@/components/actions/cta/add-token-to-wallet';
 import { HoverSupplyValueCard } from '../card/hover-cards';
+import { DECIMALS } from '@/constant/web3/decimal.constant';
 
 function MyPositionsTable() {
 	const { openDrawer, setDrawerContent } = useEarnDrawer();
@@ -150,15 +151,14 @@ function MyPositionsTable() {
 												<span>
 													$
 													{position.marketValue.formatBalance(
-														position.supplyAsset
-															.decimals
+														DECIMALS.PRICE
 													)}
 												</span>
 											</HoverSupplyValueCard>
 										</TableCell>
 										<TableCell>
 											{position.effectiveYield.formatToString(
-												position.supplyAsset.decimals
+												DECIMALS.APR
 											)}
 											%
 										</TableCell>

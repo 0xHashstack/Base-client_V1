@@ -13,48 +13,45 @@ export interface SupplyValueCardProps {
 type DataItem = { label: string; value: string };
 
 function SupplyValueCard({ supplyData }: SupplyValueCardProps) {
+	console.log({ supplyData });
 	const data = useMemo(() => {
-		const suppliedAmount = Number(
-			supplyData.suppliedAmount.formatBalance(
-				supplyData.supplyAsset.decimals
-			)
-		);
-		const receiptTokens = Number(
-			supplyData.receiptTokens.formatBalance(DECIMALS.SUPPLY_MARKET)
-		);
-		const supplyAssetPrice = Number(
-			supplyData.supplyAsset.priceUSD.formatBalance(
-				supplyData.supplyAsset.decimals
-			)
-		);
-		const underlyingAssetPrice = Number(
-			supplyData.underlyingAsset.priceUSD.formatBalance(
-				supplyData.underlyingAsset.decimals
-			)
+		const suppliedAmount = supplyData.suppliedAmount.formatBalance(
+			DECIMALS.PRICE
 		);
 
-		const items: Array<[string, number | undefined, string | undefined]> = [
-			['Deposit amount', suppliedAmount, `$${suppliedAmount.toFixed(3)}`],
+		const receiptTokens = supplyData.receiptTokens.formatBalance(
+			DECIMALS.SUPPLY_MARKET
+		);
+
+		const supplyAssetPrice = supplyData.supplyAsset.priceUSD.formatBalance(
+			DECIMALS.PRICE
+		);
+
+		const underlyingAssetPrice =
+			supplyData.underlyingAsset.priceUSD.formatBalance(DECIMALS.PRICE);
+
+		const items: Array<[string, string | undefined, string | undefined]> = [
+			['Deposit amount', suppliedAmount, `$${suppliedAmount}`],
 			[
 				`${supplyData.supplyAsset.symbol} issued`,
 				receiptTokens,
-				receiptTokens.toFixed(3),
+				receiptTokens,
 			],
 			[
 				`1 ${supplyData.supplyAsset.symbol}`,
 				supplyAssetPrice,
-				`$${supplyAssetPrice.toFixed(3)}`,
+				`$${supplyAssetPrice}`,
 			],
 			[
 				`1 ${supplyData.underlyingAsset.symbol}`,
 				underlyingAssetPrice,
-				`$${underlyingAssetPrice.toFixed(3)}`,
+				`$${underlyingAssetPrice}`,
 			],
 		];
 
 		return items
 			.filter(
-				(item): item is [string, number, string] =>
+				(item): item is [string, string, string] =>
 					item[1] !== undefined
 			)
 			.map(
@@ -70,7 +67,7 @@ function SupplyValueCard({ supplyData }: SupplyValueCardProps) {
 			<div className='flex items-start justify-between gap-2'>
 				<div className='flex flex-col gap-1'>
 					<Text.Regular12 textColor={500}>Value</Text.Regular12>
-					<Text.Semibold14>{`${Number(supplyData.marketValue.formatBalance(supplyData.supplyAsset.decimals)).toFixed(3)}`}</Text.Semibold14>
+					<Text.Semibold14>{`$${supplyData.marketValue.formatBalance(DECIMALS.PRICE)}`}</Text.Semibold14>
 				</div>
 				<ImageCard
 					imageUrl={supplyData.underlyingAsset.logoURI}

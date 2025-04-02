@@ -12,6 +12,7 @@ import If from '@/components/common/If';
 import { Text } from '@/components/ui/typography/Text';
 import { Skeleton } from '@/components/ui/skeleton/skeleton';
 import SupplyWithdrawForm from '../form/supply-withdraw-form';
+import { DECIMALS } from '@/constant/web3/decimal.constant';
 
 function MyPositionCardStack() {
 	const { openDrawer, setDrawerContent } = useEarnDrawer();
@@ -93,10 +94,10 @@ function MyPositionCardStack() {
 								key={position.supplyAsset.address_}
 								token={token}
 								value={position.marketValue.formatBalance(
-									position.supplyAsset.decimals
+									DECIMALS.PRICE
 								)}
 								APR={position.effectiveYield.formatToString(
-									position.supplyAsset.decimals
+									DECIMALS.APR
 								)}
 								onAddClick={() =>
 									handleOpenSupplyForm(position)

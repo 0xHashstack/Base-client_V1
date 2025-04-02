@@ -47,10 +47,10 @@ function EarnSupplyCard({
 	const formattedPrice =
 		'$' + market.asset.priceUSD.formatBalance(DECIMALS.PRICE);
 	const formattedLiquidity = market.state.totalSupply.formatBalance(
-		market.asset.decimals
+		DECIMALS.LIQUIDITY
 	);
 	const formattedNetApy =
-		market.state.annualApy.formatToString(market.asset.decimals) + '%';
+		market.state.annualApy.formatToString(DECIMALS.APR) + '%';
 	const formattedWalletBalance =
 		market.walletBalance.formatBalance(market.asset.decimals) +
 		' ' +

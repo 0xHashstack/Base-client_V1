@@ -104,12 +104,12 @@ function EarnTable() {
 											</TableCell>
 											<TableCell>
 												{market.state.totalSupply.formatBalance(
-													market.asset.decimals
+													DECIMALS.LIQUIDITY
 												)}
 											</TableCell>
 											<TableCell>
 												{market.state.annualApy.formatToString(
-													market.asset.decimals
+													DECIMALS.APR
 												)}
 												%
 											</TableCell>
