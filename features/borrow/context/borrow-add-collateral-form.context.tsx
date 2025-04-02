@@ -1,11 +1,11 @@
 'use client';
 import React, { ReactNode } from 'react';
 import { BorrowAddCollateralFormProvider } from '../store/borrow-add-collateral-form.store';
-import { CollateralToken } from '@/types/web3';
+import { LoanPosition } from '@/types/web3/borrow-market.types';
 
 interface BorrowAddCollateralFormContextProviderProps {
 	children: ReactNode;
-	token: CollateralToken | null;
+	loanPosition: LoanPosition | null;
 }
 
 /**
@@ -13,14 +13,11 @@ interface BorrowAddCollateralFormContextProviderProps {
  */
 export function BorrowAddCollateralFormContextProvider({
 	children,
-	token,
+	loanPosition,
 }: BorrowAddCollateralFormContextProviderProps) {
 	return (
-		<BorrowAddCollateralFormProvider initialToken={token}>
+		<BorrowAddCollateralFormProvider initialLoanPosition={loanPosition}>
 			{children}
 		</BorrowAddCollateralFormProvider>
 	);
 }
-
-// Re-export the useBorrowAddCollateralFormStore for convenience
-export { useBorrowAddCollateralFormStore } from '../store/borrow-add-collateral-form.store';

@@ -8,18 +8,20 @@ import { useBorrowAddCollateralForm } from '../../../hooks/useBorrowAddCollatera
 import AddCollateralFormInputs from './components/add-collateral-form-inputs';
 import AddCollateralPriceBreakdownCard from './components/add-collateral-price-breakdown-card';
 import { Card } from '@/components/ui/card';
-import { CollateralToken } from '@/types/web3';
+import { LoanPosition } from '@/types/web3/borrow-market.types';
 
 interface BorrowAddCollateralFormProps {
-	token: CollateralToken;
+	loanPosition: LoanPosition;
 }
 
 /**
  * Form component for adding collateral to a borrow position
  */
-function BorrowAddCollateralForm({ token }: BorrowAddCollateralFormProps) {
+function BorrowAddCollateralForm({
+	loanPosition,
+}: BorrowAddCollateralFormProps) {
 	return (
-		<BorrowAddCollateralFormContextProvider token={token}>
+		<BorrowAddCollateralFormContextProvider loanPosition={loanPosition}>
 			<BorrowAddCollateralFormContent />
 		</BorrowAddCollateralFormContextProvider>
 	);
@@ -33,7 +35,7 @@ function BorrowAddCollateralFormContent() {
 	const { handleAddCollateral, token, amount, closeDrawer, isLoading } =
 		useBorrowAddCollateralForm();
 
-	// If token is not set, don't render anything
+	// If loanPosition is not set, don't render anything
 	if (!token) return null;
 
 	return (

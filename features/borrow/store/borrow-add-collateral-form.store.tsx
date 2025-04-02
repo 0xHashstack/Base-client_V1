@@ -1,4 +1,4 @@
-import { CollateralToken } from '@/types/web3';
+import { LoanPosition } from '@/types/web3/borrow-market.types';
 import { createContext, useContext, useRef, useEffect } from 'react';
 import { create, useStore } from 'zustand';
 
@@ -6,41 +6,49 @@ import { create, useStore } from 'zustand';
 interface BorrowAddCollateralFormState {
 	amount: string;
 	isLoading: boolean;
-	token: CollateralToken | null;
+	loanPosition: LoanPosition | null;
 
 	// Actions
 	setAmount: (amount: string) => void;
 	setMaxAmount: () => void;
-	setToken: (token: BorrowAddCollateralFormState['token']) => void;
+	setLoanPosition: (
+		loanPosition: BorrowAddCollateralFormState['loanPosition']
+	) => void;
 	setIsLoading: (isLoading: boolean) => void;
 	reset: () => void;
-	resetStore: (newToken?: BorrowAddCollateralFormState['token']) => void;
+	resetStore: (
+		newLoanPosition?: BorrowAddCollateralFormState['loanPosition']
+	) => void;
 }
 
 const initialState = {
 	amount: '',
 	isLoading: false,
-	token: null,
+	loanPosition: null,
 };
 
 // Create a Zustand store
 const createBorrowAddCollateralFormStore = (
-	initialToken: BorrowAddCollateralFormState['token'] = null
+	initialLoanPosition: BorrowAddCollateralFormState['loanPosition'] = null
 ) =>
 	create<BorrowAddCollateralFormState>((set) => ({
 		...initialState,
-		token: initialToken,
+		loanPosition: initialLoanPosition,
 		setAmount: (amount) => set({ amount }),
 		setMaxAmount: () => {
 			set({ amount: '1000' }); // This would be replaced with actual balance logic
 		},
-		setToken: (token) => set({ token }),
+		setLoanPosition: (loanPosition) => set({ loanPosition }),
 		setIsLoading: (isLoading) => set({ isLoading }),
-		reset: () => set({ ...initialState, token: initialToken }),
-		resetStore: (newToken) =>
+		reset: () =>
+			set({ ...initialState, loanPosition: initialLoanPosition }),
+		resetStore: (newLoanPosition) =>
 			set({
 				...initialState,
-				token: newToken !== undefined ? newToken : initialToken,
+				loanPosition:
+					newLoanPosition !== undefined ? newLoanPosition : (
+						initialLoanPosition
+					),
 			}),
 	}));
 
@@ -52,12 +60,12 @@ const BorrowAddCollateralFormStoreContext = createContext<ReturnType<
 // Provider component
 interface BorrowAddCollateralFormProviderProps {
 	children: React.ReactNode;
-	initialToken: BorrowAddCollateralFormState['token'];
+	initialLoanPosition: BorrowAddCollateralFormState['loanPosition'];
 }
 
 export const BorrowAddCollateralFormProvider = ({
 	children,
-	initialToken,
+	initialLoanPosition,
 }: BorrowAddCollateralFormProviderProps) => {
 	const storeRef = useRef<ReturnType<
 		typeof createBorrowAddCollateralFormStore
@@ -65,16 +73,17 @@ export const BorrowAddCollateralFormProvider = ({
 
 	// Create the store if it doesn't exist
 	if (!storeRef.current) {
-		storeRef.current = createBorrowAddCollateralFormStore(initialToken);
+		storeRef.current =
+			createBorrowAddCollateralFormStore(initialLoanPosition);
 	}
 
 	// Update the token when it changes
 	useEffect(() => {
 		if (storeRef.current) {
 			// Reset the form with the new token
-			storeRef.current.getState().resetStore(initialToken);
+			storeRef.current.getState().resetStore(initialLoanPosition);
 		}
-	}, [initialToken]);
+	}, [initialLoanPosition]);
 
 	return (
 		<BorrowAddCollateralFormStoreContext.Provider value={storeRef.current}>
