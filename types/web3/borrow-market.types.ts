@@ -74,13 +74,75 @@ export interface MarketLoan {
 	userLoan: UserLoan;
 }
 
+interface CollateralInfo {
+	name: string;
+	decimals: number;
+	symbol: string;
+	addr: string;
+	collateralAmount: bigint;
+}
+
+interface RateInfo {
+	borrowRate: bigint;
+	collateralRate: bigint;
+	effectiveRate: bigint;
+	rateChange: bigint;
+}
+
+interface PositionHealth {
+	healthFactor: bigint;
+	currentDebt: bigint;
+	totalCollateralValue: bigint;
+	riskThreshold: bigint;
+}
+
+export enum LoanUsageStatus {
+	ACTIVE = 0,
+	SPENT = 1,
+	REPAID = 2,
+	LIQUIDATED = 3,
+}
+
+interface UsageDetails {
+	status: LoanUsageStatus;
+	applicationName: string;
+	applicationIcon: string;
+	transactionValue: bigint;
+	tokenName: string;
+}
+
+interface ProtocolFees {
+	depositRequestFee: bigint;
+	withdrawDepositFee: bigint;
+	loanRequestFee: bigint;
+	loanRepayFee: bigint;
+	l3InteractionFee: bigint;
+	revertL3InteractionFee: bigint;
+	stakingFee: bigint;
+	unstakingFee: bigint;
+}
+
+export interface LoanPosition {
+	borrowedAsset: BorrowAsset;
+	collateralAsset: CollateralInfo;
+	borrowedValue: bigint;
+	debtTokenAmount: bigint;
+	exchangeRate: bigint;
+	assetPrice: bigint;
+	protocolFees: ProtocolFees;
+	rateInfo: RateInfo;
+	positionHealth: PositionHealth;
+	usageDetails: UsageDetails;
+	repayFee: bigint;
+}
+
 /**
  * Complete user borrow data
  */
 
 export type UserBorrowData = [
 	{
-		borrowPositions: UserLoan[];
+		borrowPositions: LoanPosition[];
 		totalBorrowApr: bigint;
 		totalBorrowedValue: bigint;
 	},

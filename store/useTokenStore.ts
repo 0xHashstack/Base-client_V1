@@ -12,7 +12,7 @@ import {
 	MarketLoan,
 	UserBorrowData,
 	BorrowMarketCollateral,
-	UserLoan,
+	LoanPosition,
 } from '@/types/web3/borrow-market.types';
 import { create } from 'zustand';
 import { userSupplyTransformToMarketCollateral } from '@/utils/web3/supply/supply-market.utils';
@@ -30,7 +30,7 @@ interface TokenState {
 
 	// Borrow market data
 	borrowMarketData: MarketLoan[];
-	userAllLoans: UserLoan[];
+	userAllLoans: LoanPosition[];
 	userBorrowQuickOverview: UserBorrowQuickOverview;
 	borrowMarketQuickOverview: BorrowMarketQuickOverview;
 
