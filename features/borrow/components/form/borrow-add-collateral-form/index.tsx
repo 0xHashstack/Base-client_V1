@@ -9,10 +9,7 @@ import AddCollateralFormInputs from './components/add-collateral-form-inputs';
 import AddCollateralPriceBreakdownCard from './components/add-collateral-price-breakdown-card';
 import { Card } from '@/components/ui/card';
 import { LoanPosition } from '@/types/web3/borrow-market.types';
-import {
-	useBorrowAddCollateralFormStore,
-	TransactionStatus,
-} from '../../../store/borrow-add-collateral-form.store';
+import { useBorrowAddCollateralFormStore } from '../../../store/borrow-add-collateral-form.store';
 import { WalletTokenProvider } from '@/context/wallet-token-provider';
 import { Web3Address } from '@/types/web3';
 
@@ -62,7 +59,6 @@ function BorrowAddCollateralFormContent() {
 		getButtonText,
 		isButtonDisabled,
 		getValidationError,
-		transactionStatus,
 	} = useBorrowAddCollateralForm();
 
 	// If loanPosition is not set, don't render anything
@@ -96,15 +92,7 @@ function BorrowAddCollateralFormContent() {
 					onClick={handleAddCollateral}
 					disabled={isButtonDisabled}
 					showConnectButton
-					parentWidth
-					className={
-						(
-							transactionStatus ===
-							TransactionStatus.TRANSACTION_FAILED
-						) ?
-							'bg-destructive'
-						:	''
-					}>
+					parentWidth>
 					{getButtonText()}
 				</ConnectedBtn.Primary>
 			</SideDrawer.Footer>

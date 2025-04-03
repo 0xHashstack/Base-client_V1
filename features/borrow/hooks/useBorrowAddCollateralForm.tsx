@@ -15,7 +15,6 @@ import { useCurrentTransactionStore } from '@/store/useCurrentTransactionStore';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 import { useQueryKeyStore } from '@/store/useQueryKeyStore';
-import { useTokenStore } from '@/store/useTokenStore';
 
 /**
  * Type for validation result
@@ -63,10 +62,7 @@ export function useBorrowAddCollateralForm() {
 	// Get drawer context functions
 	const { closeDrawer } = useBorrowDrawer();
 
-	// Get borrow market collateral from token store
-	const borrowMarketCollaterals = useTokenStore(
-		(state) => state.borrowMarketCollateral
-	);
+	// We're now using collateralAsset directly from the store
 
 	// Setup for API calls
 	const { writeContractAsync } = useWriteContract();
@@ -117,27 +113,23 @@ export function useBorrowAddCollateralForm() {
 	}, [amount, formattedWalletBalance]);
 
 	/**
-	 * Find the collateral asset in borrowMarketCollaterals
+	 * Get the collateral asset directly from the store
 	 */
-	const collateralAsset = useMemo(() => {
-		if (!userLoan || !borrowMarketCollaterals.length) return null;
-
-		return borrowMarketCollaterals.find(
-			(collateral) => collateral.address === userLoan.collateralAsset.addr
-		);
-	}, [userLoan, borrowMarketCollaterals]);
+	const collateralAsset = useBorrowAddCollateralFormStore(
+		(state) => state.collateralAsset
+	);
 
 	/**
 	 * Create token model instances for the collateral asset
 	 */
 	const collateralTokenModel = useMemo(() => {
-		if (!userLoan) return null;
+		if (!collateralAsset) return null;
 		// Use SupplyTokenModel for the collateral token (for approvals)
 		return new SupplyTokenModel(
-			userLoan.collateralAsset.addr as Web3Address,
-			userLoan.collateralAsset.decimals
+			collateralAsset.address as Web3Address,
+			collateralAsset.decimals
 		);
-	}, [userLoan]);
+	}, [collateralAsset]);
 
 	const borrowTokenModel = useMemo(() => {
 		if (!userLoan) return null;
@@ -177,7 +169,7 @@ export function useBorrowAddCollateralForm() {
 				// Set transaction in the store for monitoring
 				setTransaction({
 					hash: txHash,
-					successToastMessage: `Approved ${userLoan.collateralAsset.symbol} for collateral`,
+					successToastMessage: `Approved ${collateralAsset.symbol} for collateral`,
 					onSuccess: () => {
 						setTransactionStatus(TransactionStatus.APPROVED);
 					},
@@ -186,20 +178,18 @@ export function useBorrowAddCollateralForm() {
 							TransactionStatus.TRANSACTION_FAILED
 						);
 						toast.error(
-							`Failed to approve ${userLoan.collateralAsset.symbol}`
+							`Failed to approve ${collateralAsset.symbol}`
 						);
 					},
 				});
 
 				// Show initial info toast
-				toast.info(
-					`Approving ${userLoan.collateralAsset.symbol} tokens...`
-				);
+				toast.info(`Approving ${collateralAsset.symbol} tokens...`);
 			}
 		} catch (error) {
 			console.error('Error approving tokens:', error);
 			toast.error(
-				`Failed to approve ${userLoan.collateralAsset.symbol}. Please try again.`
+				`Failed to approve ${collateralAsset.symbol}. Please try again.`
 			);
 			setTransactionStatus(TransactionStatus.TRANSACTION_FAILED);
 		}
@@ -265,7 +255,7 @@ export function useBorrowAddCollateralForm() {
 				// Set transaction in the store for monitoring
 				setTransaction({
 					hash: txHash,
-					successToastMessage: `Successfully added ${amount} ${userLoan.collateralAsset.symbol} as collateral`,
+					successToastMessage: `Successfully added ${amount} ${collateralAsset.symbol} as collateral`,
 					onSuccess: () => {
 						// Invalidate the borrow market data query if available
 						if (borrowMarketDataQueryKey) {
@@ -294,20 +284,20 @@ export function useBorrowAddCollateralForm() {
 						);
 						setIsLoading(false);
 						toast.error(
-							`Failed to add ${userLoan.collateralAsset.symbol} collateral`
+							`Failed to add ${collateralAsset.symbol} collateral`
 						);
 					},
 				});
 
 				// Show initial info toast
 				toast.info(
-					`Adding ${amount} ${userLoan.collateralAsset.symbol} as collateral...`
+					`Adding ${amount} ${collateralAsset.symbol} as collateral...`
 				);
 			}
 		} catch (error) {
 			console.error('Error adding collateral:', error);
 			toast.error(
-				`Failed to add ${userLoan.collateralAsset.symbol} collateral. Please try again.`
+				`Failed to add ${collateralAsset.symbol} collateral. Please try again.`
 			);
 			setTransactionStatus(TransactionStatus.TRANSACTION_FAILED);
 			setIsLoading(false);
