@@ -73,8 +73,8 @@ export function useBorrowRepayForm() {
 	}, [marketLoan]);
 
 	const amount = useMemo(() => {
-		return marketLoan?.repayFee || BigInt(0);
-	}, [marketLoan?.repayFee]);
+		return marketLoan?.repayFees || BigInt(0);
+	}, [marketLoan?.repayFees]);
 
 	/**
 	 * Validate if the amount is valid for repay
@@ -207,7 +207,7 @@ export function useBorrowRepayForm() {
 
 			const repayParams = borrowTokenModel.getRepayLoanParams({
 				loanId: marketLoan.loanId,
-				repayAmount: marketLoan.repayFee.toString(),
+				repayAmount: marketLoan.repayFees.toString(),
 				decimals: marketLoan.collateralAsset.decimals,
 			});
 

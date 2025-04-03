@@ -134,7 +134,7 @@ export interface LoanPosition {
 	rateInfo: RateInfo;
 	positionHealth: PositionHealth;
 	usageDetails: UsageDetails;
-	repayFee: bigint;
+	repayFees: bigint;
 }
 
 /**
