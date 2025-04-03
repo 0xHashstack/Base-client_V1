@@ -1,8 +1,12 @@
 'use client';
 import { useCallback, useMemo } from 'react';
-import { useBorrowAddCollateralFormStore } from '../store/borrow-add-collateral-form.store';
+import {
+	TransactionStatus,
+	useBorrowAddCollateralFormStore,
+} from '../store/borrow-add-collateral-form.store';
 import { useTokenStore } from '@/store/useTokenStore';
 import { useWalletToken } from '@/context/wallet-token-provider';
+import { BorrowMarketCollateral } from '@/types/web3/borrow-market.types';
 
 /**
  * Hook to handle the borrow add collateral form inputs
@@ -18,12 +22,34 @@ export function useBorrowAddCollateralFormInputs() {
 		(state) => state.setAmount
 	);
 
-	// We don't need to select from available tokens since we're using the loan's collateral
-	// but we'll keep this for compatibility
-	const userAllLoans = useTokenStore((state) => state.userAllLoans);
-	const borrowMarketCollaterals = useTokenStore(
+	const transactionStatus = useBorrowAddCollateralFormStore(
+		(state) => state.transactionStatus
+	);
+
+	const collateralAsset = useBorrowAddCollateralFormStore(
+		(state) => state.collateralAsset
+	);
+	const setCollateralAsset = useBorrowAddCollateralFormStore(
+		(state) => state.setCollateralAsset
+	);
+
+	const collateralOptions = useTokenStore(
 		(state) => state.borrowMarketCollateral
 	);
+
+	const filteredCollateralOptions = useMemo(() => {
+		const mainCollateralToken = collateralOptions.find(
+			(collateral) =>
+				collateral.address === userLoan?.collateralAsset.addr
+		);
+		if (!mainCollateralToken) return [];
+		const underlyingToken = collateralOptions.find(
+			(collateral) =>
+				collateral.address === mainCollateralToken.underlyingAddress
+		);
+		if (!underlyingToken) return [mainCollateralToken];
+		return [mainCollateralToken, underlyingToken];
+	}, [collateralOptions, userLoan?.collateralAsset.addr]);
 
 	const {
 		data: walletBalance,
@@ -51,8 +77,12 @@ export function useBorrowAddCollateralFormInputs() {
 
 	// Check if form inputs should be disabled
 	const isFormDisabled = useMemo(() => {
-		return walletBalanceError || MAX_AMOUNT <= 0;
-	}, [walletBalanceError, MAX_AMOUNT]);
+		return (
+			walletBalanceError ||
+			MAX_AMOUNT <= 0 ||
+			transactionStatus !== TransactionStatus.IDLE
+		);
+	}, [walletBalanceError, MAX_AMOUNT, transactionStatus]);
 
 	// Handle amount change
 	const handleAmountChange = useCallback(
@@ -94,16 +124,16 @@ export function useBorrowAddCollateralFormInputs() {
 	);
 
 	// Handle token change - this is now disabled since we're using the loan's collateral
-	const handleTokenChange = () => {
-		// This function is kept for compatibility but should not be used
-		// as we're using the loan's collateral directly
+	const handleTokenChange = (
+		collateralAsset: BorrowMarketCollateral | null
+	) => {
+		setCollateralAsset(collateralAsset);
 	};
 
 	return {
 		amount,
 		sliderPercentage,
 		userLoan,
-		userAllLoans,
 		handleAmountChange,
 		handleMaxClick,
 		handleSliderChange,
@@ -113,7 +143,8 @@ export function useBorrowAddCollateralFormInputs() {
 		refetchWalletBalance,
 		walletBalance,
 		isFormDisabled,
-		borrowMarketCollaterals,
 		formattedWalletBalance,
+		collateralAsset,
+		filteredCollateralOptions,
 	};
 }

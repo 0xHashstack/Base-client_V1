@@ -28,6 +28,7 @@ export const userSupplyTransformToMarketCollateral = (
 				logoURI: underlyingAsset.logoURI,
 				isRToken: true,
 				priceUSD: supplyAsset.priceUSD,
+				underlyingAddress: underlyingAsset.address_,
 			};
 		}
 	);

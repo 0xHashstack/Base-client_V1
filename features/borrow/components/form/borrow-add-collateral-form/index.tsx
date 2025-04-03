@@ -37,16 +37,14 @@ function BorrowAddCollateralForm({
  * Wrapper component that provides wallet token context
  */
 function BorrowAddCollateralFormWithTokenProvider() {
-	const userLoan = useBorrowAddCollateralFormStore(
-		(state) => state.loanPosition
+	const collateralAsset = useBorrowAddCollateralFormStore(
+		(state) => state.collateralAsset
 	);
 
 	return (
 		<WalletTokenProvider
-			tokenAddress={
-				userLoan?.collateralAsset.addr as Web3Address | undefined
-			}
-			decimals={userLoan?.collateralAsset.decimals}>
+			tokenAddress={collateralAsset?.address as Web3Address | undefined}
+			decimals={collateralAsset?.decimals}>
 			<BorrowAddCollateralFormContent />
 		</WalletTokenProvider>
 	);

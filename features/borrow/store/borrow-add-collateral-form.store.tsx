@@ -1,4 +1,8 @@
-import { LoanPosition } from '@/types/web3/borrow-market.types';
+import { useTokenStore } from '@/store/useTokenStore';
+import {
+	BorrowMarketCollateral,
+	LoanPosition,
+} from '@/types/web3/borrow-market.types';
 import { createContext, useContext, useRef, useEffect } from 'react';
 import { create, useStore } from 'zustand';
 
@@ -18,6 +22,7 @@ interface BorrowAddCollateralFormState {
 	isLoading: boolean;
 	loanPosition: LoanPosition | null;
 	transactionStatus: TransactionStatus;
+	collateralAsset: BorrowMarketCollateral | null;
 
 	// Actions
 	setAmount: (amount: string) => void;
@@ -27,6 +32,9 @@ interface BorrowAddCollateralFormState {
 	) => void;
 	setIsLoading: (isLoading: boolean) => void;
 	setTransactionStatus: (status: TransactionStatus) => void;
+	setCollateralAsset: (
+		collateralAsset: BorrowAddCollateralFormState['collateralAsset']
+	) => void;
 	reset: () => void;
 	resetStore: (
 		newLoanPosition?: BorrowAddCollateralFormState['loanPosition']
@@ -38,6 +46,7 @@ const initialState = {
 	isLoading: false,
 	loanPosition: null,
 	transactionStatus: TransactionStatus.IDLE,
+	collateralAsset: null,
 };
 
 // Create a Zustand store
@@ -47,6 +56,14 @@ const createBorrowAddCollateralFormStore = (
 	create<BorrowAddCollateralFormState>((set) => ({
 		...initialState,
 		loanPosition: initialLoanPosition,
+		collateralAsset:
+			useTokenStore
+				.getState()
+				.borrowMarketCollateral.find(
+					(collateral) =>
+						collateral.address ===
+						initialLoanPosition?.collateralAsset.addr
+				) || null,
 		setAmount: (amount) => set({ amount }),
 		setMaxAmount: () => {
 			set({ amount: '1000' }); // This would be replaced with actual balance logic
@@ -55,15 +72,35 @@ const createBorrowAddCollateralFormStore = (
 		setIsLoading: (isLoading) => set({ isLoading }),
 		setTransactionStatus: (status) => set({ transactionStatus: status }),
 		reset: () =>
-			set({ ...initialState, loanPosition: initialLoanPosition }),
-		resetStore: (newLoanPosition) =>
 			set({
 				...initialState,
-				loanPosition:
-					newLoanPosition !== undefined ? newLoanPosition : (
-						initialLoanPosition
+				loanPosition: initialLoanPosition,
+				collateralAsset: useTokenStore
+					.getState()
+					.borrowMarketCollateral.find(
+						(collateral) =>
+							collateral.address ===
+							initialLoanPosition?.collateralAsset.addr
 					),
 			}),
+		resetStore: (newLoanPosition) => {
+			const loanPosition =
+				newLoanPosition !== undefined ? newLoanPosition : (
+					initialLoanPosition
+				);
+			set({
+				...initialState,
+				loanPosition,
+				collateralAsset: useTokenStore
+					.getState()
+					.borrowMarketCollateral.find(
+						(collateral) =>
+							collateral.address ===
+							loanPosition?.collateralAsset.addr
+					),
+			});
+		},
+		setCollateralAsset: (collateralAsset) => set({ collateralAsset }),
 	}));
 
 // Create a React context for the store

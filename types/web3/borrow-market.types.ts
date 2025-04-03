@@ -78,7 +78,7 @@ interface CollateralInfo {
 	name: string;
 	decimals: number;
 	symbol: string;
-	addr: string;
+	addr: Web3Address;
 	collateralAmount: bigint;
 }
 
@@ -215,4 +215,6 @@ export interface BorrowMarketCollateral {
 	isRToken: boolean;
 	/** priceUSD */
 	priceUSD: bigint;
+	/** parent address */
+	underlyingAddress?: Web3Address;
 }

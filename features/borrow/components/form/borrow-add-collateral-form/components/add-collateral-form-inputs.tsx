@@ -9,7 +9,7 @@ import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton/skeleton';
 import { ArrowsClockwise } from '@phosphor-icons/react';
 import { Btn } from '@/components/ui/button';
-import { LoanPosition } from '@/types/web3/borrow-market.types';
+import { BorrowMarketCollateral } from '@/types/web3/borrow-market.types';
 
 /**
  * Component for the add collateral form inputs
@@ -19,7 +19,7 @@ function AddCollateralFormInputs() {
 		amount,
 		sliderPercentage,
 		userLoan,
-		userAllLoans,
+		filteredCollateralOptions,
 		handleAmountChange,
 		handleMaxClick,
 		handleSliderChange,
@@ -29,49 +29,41 @@ function AddCollateralFormInputs() {
 		walletBalanceLoading,
 		walletBalanceError,
 		isFormDisabled,
-		borrowMarketCollaterals,
+		collateralAsset,
 	} = useBorrowAddCollateralFormInputs();
 
 	// Custom render function for token options
-	const renderTokenOption = (option: LoanPosition, isSelected: boolean) => {
-		const collateralToken = borrowMarketCollaterals.find(
-			(collateral) => collateral.address === option.collateralAsset.addr
-		);
-
+	const renderTokenOption = (
+		option: BorrowMarketCollateral,
+		isSelected: boolean
+	) => {
 		return (
 			<div
 				className={`flex items-center gap-2 px-3 py-2 ${isSelected ? 'bg-primary/10' : 'hover:bg-muted'} rounded-lg`}>
 				<Image
-					src={collateralToken?.logoURI || ''}
-					alt={option.collateralAsset.name}
+					src={option?.logoURI || ''}
+					alt={option.name}
 					className='rounded-full'
 					width={18}
 					height={18}
 				/>
-				<Text.Regular14>{option.collateralAsset.name}</Text.Regular14>
+				<Text.Regular14>{option.name}</Text.Regular14>
 			</div>
 		);
 	};
 
 	// Custom render function for selected token
-	const renderTokenValue = (selectedToken: LoanPosition | null) => {
-		const collateralToken = borrowMarketCollaterals.find(
-			(collateral) =>
-				collateral.address === selectedToken?.collateralAsset.addr
-		);
-
+	const renderTokenValue = (selectedToken: BorrowMarketCollateral | null) => {
 		return (
 			<div className='flex items-center gap-2'>
 				<Image
-					src={collateralToken?.logoURI || ''}
-					alt={selectedToken?.collateralAsset.name || ''}
+					src={selectedToken?.logoURI || ''}
+					alt={selectedToken?.name || ''}
 					className='rounded-full'
 					width={18}
 					height={18}
 				/>
-				<Text.Medium14>
-					{selectedToken?.collateralAsset.name || ''}
-				</Text.Medium14>
+				<Text.Medium14>{selectedToken?.name || ''}</Text.Medium14>
 			</div>
 		);
 	};
@@ -110,17 +102,19 @@ function AddCollateralFormInputs() {
 			<Card className='flex flex-col gap-3 px-6 py-4'>
 				<SingleSelect
 					label='Collateral Asset'
-					options={userAllLoans}
-					value={userLoan}
+					options={filteredCollateralOptions}
+					value={collateralAsset}
 					valueKey='address'
 					labelKey='symbol'
 					placeholder='Select a token'
 					renderOption={renderTokenOption}
 					renderValue={renderTokenValue}
-					onChange={() => handleTokenChange()}
+					onChange={(_, collateralAsset) =>
+						handleTokenChange(collateralAsset)
+					}
 					className='border-none p-0 shadow-none ring-0'
 					dropdownClassName='select-primary-displacement'
-					disabled={true} // Disable token selection since we're using the loan's collateral
+					disabled={isFormDisabled} // Disable token selection since we're using the loan's collateral
 				/>
 			</Card>
 			<Card className='flex flex-col gap-6 p-6'>
