@@ -204,7 +204,6 @@ export function useBorrowRepayForm() {
 			setIsLoading(true);
 
 			// Get appropriate repay parameters based on repayment type
-
 			const repayParams = borrowTokenModel.getRepayLoanParams({
 				loanId: marketLoan.loanId,
 				repayAmount: marketLoan.repayFees.toString(),
