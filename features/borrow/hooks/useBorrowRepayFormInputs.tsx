@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { useBorrowRepayFormStore } from '../store/borrow-repay-form.store';
 import { useWalletToken } from '@/context/wallet-token-provider';
 import '@prototype/bigint.prototype';
-import { DECIMALS } from '@/constant/web3/decimal.constant';
 import { useTokenStore } from '@/store/useTokenStore';
 /**
  * Hook to handle the borrow repay form inputs
@@ -20,11 +19,17 @@ export function useBorrowRepayFormInputs() {
 
 	const repayAmount = useMemo(() => {
 		if (!borrowMarket?.repayFees) return 0;
-		return (
-			borrowMarket.repayFees?.format(DECIMALS.BORROW_MARKET).toFixed(3) ||
-			'0.00'
+		console.log(
+			borrowMarket.repayFees,
+			borrowMarket.borrowedAsset.decimals,
+			borrowMarket.repayFees?.format(borrowMarket.borrowedAsset.decimals)
 		);
-	}, [borrowMarket?.repayFees]);
+		return (
+			borrowMarket.repayFees
+				?.format(borrowMarket.borrowedAsset.decimals)
+				.toFixed(3) || '0.00'
+		);
+	}, [borrowMarket?.repayFees, borrowMarket?.borrowedAsset?.decimals]);
 
 	const {
 		data: walletBalance,

@@ -39,9 +39,9 @@ function BorrowRepayFormWithTokenProvider() {
 	return (
 		<WalletTokenProvider
 			tokenAddress={
-				token?.collateralAsset.addr as Web3Address | undefined
+				token?.borrowedAsset.address_ as Web3Address | undefined
 			}
-			decimals={token?.collateralAsset.decimals}>
+			decimals={token?.borrowedAsset.decimals}>
 			<BorrowRepayFormContent />
 		</WalletTokenProvider>
 	);

@@ -58,8 +58,8 @@ export function useBorrowRepayForm() {
 	const tokenModel = useMemo(() => {
 		if (!marketLoan) return null;
 		return new SupplyTokenModel(
-			marketLoan.collateralAsset.addr as Web3Address,
-			marketLoan.collateralAsset.decimals
+			marketLoan.borrowedAsset.address_ as Web3Address,
+			marketLoan.borrowedAsset.decimals
 		);
 	}, [marketLoan]);
 
@@ -85,7 +85,7 @@ export function useBorrowRepayForm() {
 				valid: false,
 				error: 'Market loan not found',
 			};
-		const amountNum = amount.format(marketLoan.collateralAsset.decimals);
+		const amountNum = amount.format(marketLoan.borrowedAsset.decimals);
 		const walletBalanceNum = parseFloat(walletBalance);
 
 		if (isNaN(amountNum)) {
@@ -118,7 +118,7 @@ export function useBorrowRepayForm() {
 		if (!marketLoan || !tokenModel || !walletAddress) return;
 		try {
 			setTransactionStatus(TransactionStatus.APPROVING);
-
+			debugger;
 			// Get the parameters for the approve transaction
 			const approveParams = tokenModel.getApproveParams({
 				amount: amount.toString(),
@@ -133,7 +133,7 @@ export function useBorrowRepayForm() {
 				// Set transaction in the store for monitoring
 				setTransaction({
 					hash: txHash,
-					successToastMessage: `Approved ${marketLoan.collateralAsset.symbol} for repay`,
+					successToastMessage: `Approved ${marketLoan.borrowedAsset.symbol} for repay`,
 					onSuccess: () => {
 						setTransactionStatus(TransactionStatus.APPROVED);
 					},
@@ -142,20 +142,20 @@ export function useBorrowRepayForm() {
 							TransactionStatus.TRANSACTION_FAILED
 						);
 						toast.error(
-							`Failed to approve ${marketLoan.collateralAsset.symbol}`
+							`Failed to approve ${marketLoan.borrowedAsset.symbol}`
 						);
 					},
 				});
 
 				// Show initial info toast
 				toast.info(
-					`Approving ${marketLoan.collateralAsset.symbol} tokens...`
+					`Approving ${marketLoan.borrowedAsset.symbol} tokens...`
 				);
 			}
 		} catch (error) {
 			console.error('Error approving tokens:', error);
 			toast.error(
-				`Failed to approve ${marketLoan.collateralAsset.symbol}. Please try again.`
+				`Failed to approve ${marketLoan.borrowedAsset.symbol}. Please try again.`
 			);
 			setTransactionStatus(TransactionStatus.TRANSACTION_FAILED);
 		}
@@ -202,12 +202,13 @@ export function useBorrowRepayForm() {
 		try {
 			setTransactionStatus(TransactionStatus.TRANSACTION_PROCESSING);
 			setIsLoading(true);
+			debugger;
 
 			// Get appropriate repay parameters based on repayment type
 			const repayParams = borrowTokenModel.getRepayLoanParams({
 				loanId: marketLoan.loanId,
 				repayAmount: marketLoan.repayFees.toString(),
-				decimals: marketLoan.collateralAsset.decimals,
+				decimals: marketLoan.borrowedAsset.decimals,
 			});
 
 			// Call the repay function on the diamond contract
