@@ -91,6 +91,7 @@ const EarnDataFetcher: React.FC = () => {
 			!isLoadingSupplyMarket &&
 			!isSupplyMarketError
 		) {
+			console.log('Supply market data:', supplyMarketData);
 			setSupplyMarketData(supplyMarketData as unknown as UserSupplyData);
 		}
 	}, [

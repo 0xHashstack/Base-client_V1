@@ -1,2 +1,3 @@
-1. super customizable
-2. really simple to use and neat ui
+1. dapp fee - 0
+2. network fee - wagmi gas fee
+3. withdrae fee - 0
