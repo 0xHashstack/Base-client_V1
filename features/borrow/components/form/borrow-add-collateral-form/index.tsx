@@ -12,6 +12,7 @@ import { LoanPosition } from '@/types/web3/borrow-market.types';
 import { useBorrowAddCollateralFormStore } from '../../../store/borrow-add-collateral-form.store';
 import { WalletTokenProvider } from '@/context/wallet-token-provider';
 import { Web3Address } from '@/types/web3';
+import ValidationError from '@/components/ui/validation-error';
 
 interface BorrowAddCollateralFormProps {
 	loanPosition: LoanPosition;
@@ -84,9 +85,7 @@ function BorrowAddCollateralFormContent() {
 			</SideDrawer.Body>
 			<SideDrawer.Footer>
 				{getValidationError() && (
-					<div className='mb-2 py-2 px-3 bg-badge-error border text-badge-error rounded-md'>
-						<p className='text-sm'>{getValidationError()}</p>
-					</div>
+					<ValidationError error={getValidationError()} />
 				)}
 				<ConnectedBtn.Primary
 					onClick={handleAddCollateral}

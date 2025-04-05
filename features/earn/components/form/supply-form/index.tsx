@@ -16,6 +16,7 @@ import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { SupplyMarketData } from '@/types/web3/supply-market.types';
 import { WalletTokenProvider } from '@/context/wallet-token-provider';
+import ValidationError from '@/components/ui/validation-error';
 
 interface SupplyFormProps {
 	market: SupplyMarketData;
@@ -92,17 +93,12 @@ function SupplyFormContent() {
 			</SideDrawer.Body>
 			<SideDrawer.Footer>
 				{amount && !isAmountValid && (
-					<div className='mb-2 py-2 px-3 bg-badge-error border text-badge-error  rounded-md'>
-						<p className='text-sm text'>
-							{validationError}
-							{validationError === 'Insufficient balance' && (
-								<span className='block text-xs mt-1'>
-									Available: {walletBalance}{' '}
-									{market.asset.symbol}
-								</span>
-							)}
-						</p>
-					</div>
+					<ValidationError
+						error={validationError}
+						availableText={validationError === 'Insufficient balance' ? 'Available' : undefined}
+						availableValue={validationError === 'Insufficient balance' ? walletBalance : undefined}
+						availableSymbol={validationError === 'Insufficient balance' ? market.asset.symbol : undefined}
+					/>
 				)}
 				<ConnectedBtn.Primary
 					onClick={handleSupply}

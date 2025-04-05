@@ -11,6 +11,7 @@ import { Card } from '@/components/ui/card';
 import { MarketLoan } from '@/types/web3/borrow-market.types';
 import { useBorrowFormStore } from '../../../store/borrow-form.store';
 import { WalletTokenProvider } from '@/context/wallet-token-provider';
+import ValidationError from '@/components/ui/validation-error';
 
 interface BorrowFormProps {
 	borrowMarket: MarketLoan;
@@ -87,30 +88,19 @@ function BorrowFormContent() {
 			</SideDrawer.Body>
 			<SideDrawer.Footer>
 				{amount && !collateralValid && (
-					<div className='mb-2 py-2 px-3 bg-badge-error border text-badge-error rounded-md'>
-						<p className='text-sm'>
-							{collateralError}
-							{collateralError === 'Insufficient balance' && (
-								<span className='block text-xs mt-1'>
-									Available: {formattedWalletBalance}
-								</span>
-							)}
-						</p>
-					</div>
+					<ValidationError
+						error={collateralError}
+						availableText={collateralError === 'Insufficient balance' ? 'Available' : undefined}
+						availableValue={collateralError === 'Insufficient balance' ? formattedWalletBalance : undefined}
+					/>
 				)}
 				{borrowAmount && !borrowValid && (
-					<div className='mb-2 py-2 px-3 bg-badge-error border text-badge-error rounded-md'>
-						<p className='text-sm'>
-							{borrowError}
-							{borrowError ===
-								'Exceeds maximum borrowable amount' && (
-								<span className='block text-xs mt-1'>
-									Max borrowable: {maxBorrowAmount.toFixed(4)}{' '}
-									{borrowMarket?.asset.symbol}
-								</span>
-							)}
-						</p>
-					</div>
+					<ValidationError
+						error={borrowError}
+						availableText={borrowError === 'Exceeds maximum borrowable amount' ? 'Max borrowable' : undefined}
+						availableValue={borrowError === 'Exceeds maximum borrowable amount' ? maxBorrowAmount.toFixed(4) : undefined}
+						availableSymbol={borrowError === 'Exceeds maximum borrowable amount' ? borrowMarket?.asset.symbol : undefined}
+					/>
 				)}
 				<ConnectedBtn.Primary
 					onClick={handleBorrow}

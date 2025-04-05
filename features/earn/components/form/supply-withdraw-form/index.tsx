@@ -11,6 +11,7 @@ import WithdrawFormPriceBreakdownCard from './components/withdraw-form-price-bre
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { SupplyPosition } from '@/types/web3/supply-market.types';
+import ValidationError from '@/components/ui/validation-error';
 
 interface SupplyWithdrawFormProps {
 	position: SupplyPosition;
@@ -73,21 +74,14 @@ function SupplyWithdrawFormContent() {
 			</SideDrawer.Body>
 			<SideDrawer.Footer>
 				{amount && !isAmountValid && (
-					<div className='mb-2 py-2 px-3 bg-red-50 border border-red-200 rounded-md'>
-						<p className='text-sm text-red-600'>
-							{validationError}
-							{validationError ===
-								'Insufficient available balance' && (
-								<span className='block text-xs mt-1'>
-									Available:{' '}
-									{position.receiptTokens.formatBalance(
-										position.underlyingAsset.decimals
-									)}{' '}
-									{position.underlyingAsset.symbol}
-								</span>
-							)}
-						</p>
-					</div>
+					<ValidationError
+						error={validationError}
+						availableText={validationError === 'Insufficient available balance' ? 'Available' : undefined}
+						availableValue={validationError === 'Insufficient available balance' ? 
+							position.receiptTokens.formatBalance(position.underlyingAsset.decimals) : undefined}
+						availableSymbol={validationError === 'Insufficient available balance' ? 
+							position.underlyingAsset.symbol : undefined}
+					/>
 				)}
 				<ConnectedBtn.Primary
 					onClick={handleWithdraw}

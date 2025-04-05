@@ -14,6 +14,7 @@ import { LoanPosition } from '@/types/web3/borrow-market.types';
 import { useBorrowRepayFormStore } from '../../../store/borrow-repay-form.store';
 import { WalletTokenProvider } from '@/context/wallet-token-provider';
 import { Web3Address } from '@/types/web3';
+import ValidationError from '@/components/ui/validation-error';
 
 interface BorrowRepayFormProps {
 	marketLoan: LoanPosition;
@@ -87,9 +88,7 @@ function BorrowRepayFormContent() {
 			</SideDrawer.Body>
 			<SideDrawer.Footer>
 				{getValidationError() && (
-					<div className='mb-2 py-2 px-3 bg-badge-error border text-badge-error rounded-md'>
-						<p className='text-sm'>{getValidationError()}</p>
-					</div>
+					<ValidationError error={getValidationError()} />
 				)}
 				<ConnectedBtn.Primary
 					onClick={handleRepay}
