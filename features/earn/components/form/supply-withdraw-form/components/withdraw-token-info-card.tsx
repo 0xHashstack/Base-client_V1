@@ -1,54 +1,30 @@
 import { Text } from '@/components/ui/typography/Text';
-import { useSupplyWithdrawForm } from '../../../../hooks/useSupplyWithdrawForm';
 import React from 'react';
-import { SupplyPosition } from '@/types/web3/supply-market.types';
+import { useSupplyWithdrawFormStore } from '@/features/earn/store/supply-withdraw-form.store';
 
-/**
- * Props for the WithdrawTokenInfoCard component
- */
-interface WithdrawTokenInfoCardProps {
-	/**
-	 * Optional token to override the one from the store
-	 */
-	tokenOverride?: SupplyPosition | null;
-	/**
-	 * Exchange rate between token and rToken
-	 * @default 100
-	 */
-	exchangeRate?: number;
-	/**
-	 * CSS class name for the card
-	 */
-	className?: string;
-}
-
-/**
- * Component that displays token exchange information in a card
- */
-const WithdrawTokenInfoCard: React.FC<WithdrawTokenInfoCardProps> = ({
-	tokenOverride,
-	exchangeRate = 100,
-}) => {
+const WithdrawTokenInfoCard: React.FC = () => {
 	// Get token from store or use override if provided
-	const { position: storePosition } = useSupplyWithdrawForm();
-	const position = tokenOverride ?? storePosition;
+	const supplyPosition = useSupplyWithdrawFormStore(
+		(state) => state.supplyPosition
+	);
+	const amount = useSupplyWithdrawFormStore((state) => state.amount);
 
 	return (
 		<div className='flex flex-col gap-3'>
 			<div className='flex flex-1 items-center justify-between'>
 				<Text.Regular12>
-					1 r{position?.underlyingAsset.symbol}
+					1 {supplyPosition?.supplyAsset.symbol}
 				</Text.Regular12>
 				<Text.Regular12>
-					{exchangeRate} {position?.underlyingAsset.symbol}
+					1 {supplyPosition?.supplyAsset.symbol}
 				</Text.Regular12>
 			</div>
 			<div className='flex items-center justify-between'>
 				<Text.Regular12>
-					r{position?.underlyingAsset.symbol} minted(est)
+					{supplyPosition?.supplyAsset.symbol} minted(est)
 				</Text.Regular12>
 				<Text.Regular12>
-					{exchangeRate} {position?.underlyingAsset.symbol}
+					{amount || 0} {supplyPosition?.supplyAsset.symbol}
 				</Text.Regular12>
 			</div>
 		</div>
