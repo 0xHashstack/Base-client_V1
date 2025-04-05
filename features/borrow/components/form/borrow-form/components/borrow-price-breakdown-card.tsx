@@ -1,45 +1,45 @@
 import { Text } from '@/components/ui/typography/Text';
-import { useBorrowForm } from '../../../../hooks/useBorrowForm';
+
 import React from 'react';
+import { useBorrowFormStore } from '@/features/borrow/store/borrow-form.store';
+import GasFeeText from '@/components/utility/GasFeeText';
+import { DECIMALS } from '@/constant/web3/decimal.constant';
+import If from '@/components/common/If';
 
 /**
  * Component that displays the price breakdown for borrowing
  */
 function BorrowPriceBreakdownCard() {
-	const { amount, borrowMarket } = useBorrowForm();
-
-	// Calculate values based on amount and token
-	const numericAmount = parseFloat(amount) || 0;
-	const tokenPrice =
-		borrowMarket?.asset.symbol === 'ETH' ? 3000
-		: borrowMarket?.asset.symbol === 'USDC' ? 1
-		: 60000;
-	const usdValue = numericAmount * (tokenPrice || 0);
-
-	// Calculate interest rate (example: 5% APR)
-	const interestRate = 5;
-	const annualInterest = usdValue * (interestRate / 100);
+	const { amount, collateralMarket, borrowMarket } = useBorrowFormStore(
+		(state) => state
+	);
 
 	return (
 		<div className='flex flex-col gap-3'>
 			<div className='flex items-center justify-between'>
 				<Text.Regular12>Collateral</Text.Regular12>
 				<Text.Regular12>
-					{numericAmount.toFixed(4)}{' '}
-					{borrowMarket?.asset.symbol || ''}
+					<If isTrue={!collateralMarket}>
+						<span>-</span>
+						<span>
+							{amount || 0} {collateralMarket?.symbol}
+						</span>
+					</If>
 				</Text.Regular12>
 			</div>
 			<div className='flex items-center justify-between'>
 				<Text.Regular12>Borrow APR</Text.Regular12>
-				<Text.Regular12>{interestRate}%</Text.Regular12>
+				<Text.Regular12>
+					{borrowMarket?.borrowApr?.formatToString(DECIMALS.APR)}%
+				</Text.Regular12>
 			</div>
 			<div className='flex items-center justify-between'>
 				<Text.Regular12>Health factor</Text.Regular12>
 				<Text.Regular12>1.5</Text.Regular12>
 			</div>
 			<div className='flex items-center justify-between'>
-				<Text.Regular12>Annual interest</Text.Regular12>
-				<Text.Regular12>${annualInterest.toFixed(2)}</Text.Regular12>
+				<Text.Regular12>Gas fees</Text.Regular12>
+				<GasFeeText />
 			</div>
 		</div>
 	);
