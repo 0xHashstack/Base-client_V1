@@ -1,4 +1,4 @@
-import { CollateralToken, HstkToken } from '@/types/web3/token.types';
+import { HstkToken } from '@/types/web3/token.types';
 import {
 	SupplyMarketData,
 	SupplyMarketQuickOverview,
@@ -35,12 +35,7 @@ interface TokenState {
 	borrowMarketQuickOverview: BorrowMarketQuickOverview;
 
 	// Token data
-	collateralTokens: CollateralToken[];
-	collateralTokensMap: Record<string, CollateralToken>;
-	borrowMarketTokens: HstkToken[];
-	borrowMarketTokensMap: Record<string, HstkToken>;
 	borrowTokens: HstkToken[];
-	borrowTokensMap: Record<string, HstkToken>;
 
 	// Loading states
 	isLoadingSupplyMarket: boolean;
@@ -92,12 +87,7 @@ const staticState: TokenState = (() => {
 		},
 
 		// Token data
-		collateralTokens: [],
-		collateralTokensMap: {},
-		borrowMarketTokens: [],
-		borrowMarketTokensMap: {},
 		borrowTokens: [],
-		borrowTokensMap: {},
 
 		// Loading states
 		isLoadingSupplyMarket: true,

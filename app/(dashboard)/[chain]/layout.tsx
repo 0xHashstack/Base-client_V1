@@ -4,6 +4,7 @@ import { SUPPORTED_CHAINS } from '@/constant/config';
 import { SupportedChain } from '@/store/useWeb3.store';
 import { DappUserProvider } from '@/context/user-data.context';
 import { TransactionStatusListener } from '@/components/transaction/transaction-status-listener';
+import GasFeeFetcher from '@/components/utility/GasFeeFetcher';
 
 async function layout({
 	children,
@@ -22,6 +23,7 @@ async function layout({
 	return (
 		<DappUserProvider>
 			<TransactionStatusListener />
+			<GasFeeFetcher />
 			{children}
 		</DappUserProvider>
 	);

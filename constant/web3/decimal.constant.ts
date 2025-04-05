@@ -6,4 +6,5 @@ export const DECIMALS = {
 	LIQUIDITY: 18,
 	UTILIZATION: 2,
 	HEALTH_FACTOR: 3,
+	GAS: 18,
 };
