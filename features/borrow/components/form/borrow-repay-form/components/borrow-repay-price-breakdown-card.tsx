@@ -1,46 +1,47 @@
 import { Text } from '@/components/ui/typography/Text';
-import { useBorrowRepayForm } from '../../../../hooks/useBorrowRepayForm';
+
 import React from 'react';
+import { useBorrowRepayFormStore } from '@/features/borrow/store/borrow-repay-form.store';
+import GasFeeText from '@/components/utility/GasFeeText';
+import { DECIMALS } from '@/constant/web3/decimal.constant';
+import { formatToReadableValue } from '@/utils/web3';
 
 /**
  * Component that displays the price breakdown for repaying
  */
 function BorrowRepayPriceBreakdownCard() {
-	const { marketLoan, fee } = useBorrowRepayForm();
+	const { marketLoan } = useBorrowRepayFormStore((state) => state);
 
-	// Calculate values based on amount and token
-	const numericAmount = parseFloat('0') || 0;
-	const tokenPrice =
-		marketLoan?.borrowedAsset.symbol === 'ETH' ? 3000
-		: marketLoan?.borrowedAsset.symbol === 'USDC' ? 1
-		: 60000;
-	const usdValue = numericAmount * (tokenPrice || 0);
+	const valueInUSD =
+		!marketLoan ? 0 : (
+			marketLoan.repayFees?.format(marketLoan.borrowedAsset.decimals) *
+			marketLoan.borrowedAsset.priceUSD.format(DECIMALS.PRICE)
+		);
 
 	return (
 		<div className='flex flex-col gap-3'>
 			<div className='flex items-center justify-between'>
 				<Text.Regular12>Repay Amount</Text.Regular12>
 				<Text.Regular12>
-					{numericAmount.toFixed(4)}{' '}
-					{marketLoan?.borrowedAsset.symbol || ''}
+					{marketLoan?.repayFees?.formatBalance(
+						marketLoan?.borrowedAsset.decimals
+					)}{' '}
+					{marketLoan?.borrowedAsset.symbol}
 				</Text.Regular12>
 			</div>
 			<div className='flex items-center justify-between'>
 				<Text.Regular12>USD Value</Text.Regular12>
-				<Text.Regular12>${usdValue.toFixed(2)}</Text.Regular12>
-			</div>
-			<div className='flex items-center justify-between'>
-				<Text.Regular12>Fee</Text.Regular12>
 				<Text.Regular12>
-					{fee} {marketLoan?.borrowedAsset.symbol || ''}
+					${formatToReadableValue(valueInUSD)}
 				</Text.Regular12>
 			</div>
 			<div className='flex items-center justify-between'>
-				<Text.Regular12>Total</Text.Regular12>
-				<Text.Regular12>
-					{(numericAmount + parseFloat(fee)).toFixed(4)}{' '}
-					{marketLoan?.borrowedAsset.symbol || ''}
-				</Text.Regular12>
+				<Text.Regular12>Gas Fee</Text.Regular12>
+				<GasFeeText />
+			</div>
+			<div className='flex items-center justify-between'>
+				<Text.Regular12>Total Fee</Text.Regular12>
+				<GasFeeText />
 			</div>
 		</div>
 	);

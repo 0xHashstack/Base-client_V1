@@ -60,7 +60,6 @@ function BorrowRepayFormContent() {
 		getButtonText,
 		isButtonDisabled,
 		getValidationError,
-		formattedWalletBalance,
 	} = useBorrowRepayForm();
 
 	// If token is not set, don't render anything
@@ -83,19 +82,6 @@ function BorrowRepayFormContent() {
 
 					<Card className='flex flex-col gap-3 p-6 bg-card-bold'>
 						<BorrowRepayPriceBreakdownCard />
-
-						{/* Wallet balance */}
-						<div className='flex justify-between text-sm text-muted-foreground'>
-							<span>Wallet Balance</span>
-							<span>{formattedWalletBalance}</span>
-						</div>
-
-						{/* Validation error */}
-						{getValidationError() && (
-							<div className='text-sm text-destructive'>
-								{getValidationError()}
-							</div>
-						)}
 					</Card>
 				</div>
 			</SideDrawer.Body>

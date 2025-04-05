@@ -17,7 +17,6 @@ interface BorrowRepayFormState {
 	amount: string;
 	isLoading: boolean;
 	marketLoan: LoanPosition | null;
-	fee: string;
 	transactionStatus: TransactionStatus;
 
 	// Actions
@@ -25,7 +24,7 @@ interface BorrowRepayFormState {
 	setMaxAmount: () => void;
 	setMarketLoan: (marketLoan: BorrowRepayFormState['marketLoan']) => void;
 	setIsLoading: (isLoading: boolean) => void;
-	setFee: (fee: string) => void;
+
 	setTransactionStatus: (status: TransactionStatus) => void;
 	reset: () => void;
 	resetStore: (newMarketLoan?: BorrowRepayFormState['marketLoan']) => void;
@@ -35,7 +34,7 @@ const initialState = {
 	amount: '',
 	isLoading: false,
 	marketLoan: null,
-	fee: '0.00',
+
 	transactionStatus: TransactionStatus.IDLE,
 };
 
@@ -52,7 +51,6 @@ const createBorrowRepayFormStore = (
 		},
 		setMarketLoan: (marketLoan) => set({ marketLoan }),
 		setIsLoading: (isLoading) => set({ isLoading }),
-		setFee: (fee) => set({ fee }),
 		setTransactionStatus: (status) => set({ transactionStatus: status }),
 		reset: () => set({ ...initialState, marketLoan: initialMarket }),
 		resetStore: (marketLoan) =>

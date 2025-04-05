@@ -12,9 +12,7 @@ export function useBorrowRepayFormInputs() {
 	// Use selectors to get only what we need from the store
 	const amount = useBorrowRepayFormStore((state) => state.amount);
 	const borrowMarket = useBorrowRepayFormStore((state) => state.marketLoan);
-	const fee = useBorrowRepayFormStore((state) => state.fee);
 	const setAmount = useBorrowRepayFormStore((state) => state.setAmount);
-	const setFee = useBorrowRepayFormStore((state) => state.setFee);
 	const userLoans = useTokenStore((state) => state.userAllLoans);
 
 	const repayAmount = useMemo(() => {
@@ -104,17 +102,13 @@ export function useBorrowRepayFormInputs() {
 	// Calculate fee whenever amount changes
 	useEffect(() => {
 		if (!amount || !borrowMarket) return;
-
-		// Simple fee calculation (0.5% of amount)
-		const feeAmount = parseFloat(amount) * 0.005;
-		setFee(feeAmount.toFixed(4));
-	}, [amount, borrowMarket, setFee]);
+	}, [amount, borrowMarket]);
 
 	return {
 		amount,
 		sliderPercentage,
 		borrowMarket,
-		fee,
+
 		userLoans,
 		handleAmountChange,
 		handleMaxClick,
