@@ -2,11 +2,12 @@ import { L3Dapp } from '@/types/web3/dapp.types';
 
 export const L3_DAPP: L3Dapp[] = [
 	{
-		name: 'Uniswap',
-		key: 'uniswap',
+		name: 'Aave',
+		symbol: 'aave',
+		logoURI: 'https://cryptologos.cc/logos/aave-aave-logo.png',
 		pools: [
 			{
-				key: 'uniswap-v3',
+				key: 'aave-v3',
 				name: 'STRK/ETH',
 			},
 		],

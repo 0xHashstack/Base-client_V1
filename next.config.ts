@@ -12,6 +12,9 @@ const nextConfig: NextConfig = {
 			{
 				hostname: 'tokens.example.com',
 			},
+			{
+				hostname: 'cryptologos.cc',
+			},
 		],
 	},
 };

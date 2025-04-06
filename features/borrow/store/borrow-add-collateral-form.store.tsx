@@ -100,7 +100,8 @@ const createBorrowAddCollateralFormStore = (
 					),
 			});
 		},
-		setCollateralAsset: (collateralAsset) => set({ collateralAsset }),
+		setCollateralAsset: (collateralAsset) =>
+			set({ collateralAsset, amount: '' }),
 	}));
 
 // Create a React context for the store

@@ -1,5 +1,6 @@
 'use client';
 import { LoanPosition } from '@/types/web3/borrow-market.types';
+import { L3Dapp, L3DappPool } from '@/types/web3/dapp.types';
 import { createContext, ReactNode, useContext, useEffect, useRef } from 'react';
 import { createStore, StoreApi, useStore } from 'zustand';
 
@@ -10,6 +11,8 @@ const initialState = {
 	market: null as LoanPosition | null,
 	isLoading: false,
 	activeTab: 'liquidity' as 'liquidity' | 'swap',
+	selectedDapp: null as L3Dapp | null,
+	selectedPool: null as L3DappPool | null,
 };
 
 /**
@@ -20,11 +23,15 @@ export interface BorrowSpendFormState {
 	market: LoanPosition | null;
 	isLoading: boolean;
 	activeTab: 'liquidity' | 'swap';
+	selectedDapp: L3Dapp | null;
+	selectedPool: L3DappPool | null;
 
 	// Actions
 	setMarket: (market: LoanPosition | null) => void;
 	setIsLoading: (isLoading: boolean) => void;
 	setActiveTab: (tab: 'liquidity' | 'swap') => void;
+	setSelectedDapp: (dapp: L3Dapp | null) => void;
+	setSelectedPool: (pool: L3DappPool | null) => void;
 	reset: () => void;
 	resetStore: (newMarket?: LoanPosition | null) => void;
 }
@@ -42,9 +49,13 @@ export const createBorrowSpendFormStore = (
 	return createStore<BorrowSpendFormState>((set) => ({
 		...initialState,
 		market: initialToken,
-		setMarket: (market) => set({ market }),
+		setMarket: (market) =>
+			set({ market, selectedDapp: null, selectedPool: null }),
 		setIsLoading: (isLoading) => set({ isLoading }),
 		setActiveTab: (activeTab) => set({ activeTab }),
+		setSelectedDapp: (dapp) =>
+			set({ selectedDapp: dapp, selectedPool: null }),
+		setSelectedPool: (pool) => set({ selectedPool: pool }),
 		reset: () => set({ ...initialState, market: initialToken }),
 		resetStore: (newMarket) =>
 			set({

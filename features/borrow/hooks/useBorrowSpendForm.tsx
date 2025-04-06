@@ -2,8 +2,8 @@
 import { useCallback } from 'react';
 import { useBorrowSpendFormStore } from '../store/borrow-spend-form.store';
 import { useTokenStore } from '@/store/useTokenStore';
-import { HstkToken } from '@/types/web3/token.types';
 import { useBorrowDrawer } from '../context/borrow-drawer.context';
+import { LoanPosition } from '@/types/web3/borrow-market.types';
 
 /**
  * Hook to handle the borrow spend form functionality
@@ -29,7 +29,7 @@ export function useBorrowSpendForm() {
 	 * Handle market change
 	 */
 	const handleMarketChange = useCallback(
-		(market: HstkToken) => {
+		(market: LoanPosition) => {
 			setMarket(market);
 		},
 		[setMarket]
@@ -54,7 +54,7 @@ export function useBorrowSpendForm() {
 		try {
 			setIsLoading(true);
 			// In a real implementation, this would call the contract to provide liquidity
-			console.log(`Providing liquidity for ${market.symbol}`);
+			console.log(`Providing liquidity`);
 
 			// Simulate API call
 			await new Promise((resolve) => setTimeout(resolve, 1500));

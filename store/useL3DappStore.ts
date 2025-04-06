@@ -21,7 +21,7 @@ const staticState: L3DappState = (() => {
 		dapps,
 		dappsMap: dapps.reduce(
 			(map, dapp) => {
-				map[dapp.key] = dapp;
+				map[dapp.symbol] = dapp;
 				return map;
 			},
 			{} as Record<string, L3Dapp>
@@ -41,7 +41,7 @@ export const useL3DappStore = create<L3DappState>((set) => ({
 			dapps,
 			dappsMap: dapps.reduce(
 				(map, dapp) => {
-					map[dapp.key] = dapp;
+					map[dapp.symbol] = dapp;
 					return map;
 				},
 				{} as Record<string, L3Dapp>

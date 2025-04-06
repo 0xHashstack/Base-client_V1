@@ -101,6 +101,7 @@ function LiquidityProvisioningTab() {
 					renderOption={renderDappOption}
 					renderValue={renderSelectedDapp}
 					className='border-none p-0 shadow-none ring-0'
+					dropdownClassName='select-primary-displacement'
 				/>
 			</Card>
 
@@ -117,6 +118,7 @@ function LiquidityProvisioningTab() {
 					renderValue={renderSelectedPool}
 					className='border-none p-0 shadow-none ring-0'
 					disabled={!selectedDapp}
+					dropdownClassName='select-primary-displacement'
 				/>
 			</Card>
 

@@ -1,7 +1,8 @@
 export type L3Dapp = {
 	name: string;
-	key: string;
+	symbol: string;
 	pools: L3DappPool[];
+	logoURI: string;
 };
 
 export type L3DappPool = {
