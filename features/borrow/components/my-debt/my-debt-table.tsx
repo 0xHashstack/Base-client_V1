@@ -32,7 +32,6 @@ import {
 } from '@/types/web3/borrow-market.types';
 import If from '@/components/common/If';
 import '@prototype/bigint.prototype';
-import { HstkToken } from '@/types/web3/token.types';
 import { DECIMALS } from '@/constant/web3/decimal.constant';
 import { FEES } from '@/constant/web3/fees.constant';
 
@@ -63,17 +62,6 @@ function MyDebtTable() {
 		);
 	}, [userAllLoans]);
 
-	// Convert LoanPosition to HstkToken for form components
-	const convertToHstkToken = (loan: LoanPosition): HstkToken => ({
-		name: loan.borrowedAsset.name,
-		symbol: loan.borrowedAsset.symbol,
-		address: loan.borrowedAsset.address_,
-		decimals: loan.borrowedAsset.decimals,
-		iconUrl: loan.borrowedAsset.logoURI,
-		isNew: false,
-		isPaused: false,
-	});
-
 	// Handle adding collateral
 	const handleAddCollateral = useCallback(
 		(loan: LoanPosition) => {
@@ -86,9 +74,7 @@ function MyDebtTable() {
 	// Handle spending borrowed assets
 	const handleSpend = useCallback(
 		(loan: LoanPosition) => {
-			setDrawerContent(
-				<BorrowSpendForm initialMarket={convertToHstkToken(loan)} />
-			);
+			setDrawerContent(<BorrowSpendForm marketLoan={loan} />);
 			openDrawer();
 		},
 		[setDrawerContent, openDrawer]
@@ -216,12 +202,25 @@ function MyDebtTable() {
 												}>
 												Repay
 											</Btn.Outline>
-											<Btn.Secondary
-												onClick={() =>
-													handleSpend(loan)
+											<If
+												isTrue={
+													Number(
+														loan.usageDetails.status
+													) === LoanUsageStatus.SPENT
 												}>
-												Spend
-											</Btn.Secondary>
+												<Btn.Secondary
+													onClick={() =>
+														handleSpend(loan)
+													}>
+													Swap To Debt
+												</Btn.Secondary>
+												<Btn.Secondary
+													onClick={() =>
+														handleSpend(loan)
+													}>
+													Spend
+												</Btn.Secondary>
+											</If>
 										</div>
 									</TableCell>
 									<TableCell>

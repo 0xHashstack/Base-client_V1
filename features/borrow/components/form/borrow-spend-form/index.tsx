@@ -5,20 +5,20 @@ import { Btn, ConnectedBtn } from '@/components/ui/button';
 import SideDrawer from '@/components/drawer/side-drawer';
 import { BorrowSpendFormContextProvider } from '../../../context/borrow-spend-form.context';
 import { useBorrowSpendForm } from '../../../hooks/useBorrowSpendForm';
-import { HstkToken } from '@/types/web3/token.types';
 import BorrowSpendFormInputs from './components/borrow-spend-form-inputs';
 import BorrowSpendTabs from './components/borrow-spend-tabs';
+import { LoanPosition } from '@/types/web3/borrow-market.types';
 
 interface BorrowSpendFormProps {
-	initialMarket?: HstkToken;
+	marketLoan?: LoanPosition;
 }
 
 /**
  * Form component for borrow spending options
  */
-function BorrowSpendForm({ initialMarket }: BorrowSpendFormProps) {
+function BorrowSpendForm({ marketLoan: initialMarket }: BorrowSpendFormProps) {
 	return (
-		<BorrowSpendFormContextProvider initialMarket={initialMarket}>
+		<BorrowSpendFormContextProvider marketLoan={initialMarket}>
 			<BorrowSpendFormContent />
 		</BorrowSpendFormContextProvider>
 	);

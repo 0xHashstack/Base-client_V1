@@ -1,11 +1,11 @@
 'use client';
 import React, { ReactNode } from 'react';
 import { BorrowSpendFormProvider } from '../store/borrow-spend-form.store';
-import { HstkToken } from '@/types/web3/token.types';
+import { LoanPosition } from '@/types/web3/borrow-market.types';
 
 interface BorrowSpendFormContextProviderProps {
 	children: ReactNode;
-	initialMarket?: HstkToken | null;
+	marketLoan?: LoanPosition | null;
 }
 
 /**
@@ -13,7 +13,7 @@ interface BorrowSpendFormContextProviderProps {
  */
 export function BorrowSpendFormContextProvider({
 	children,
-	initialMarket = null,
+	marketLoan: initialMarket = null,
 }: BorrowSpendFormContextProviderProps) {
 	return (
 		<BorrowSpendFormProvider initialMarket={initialMarket}>

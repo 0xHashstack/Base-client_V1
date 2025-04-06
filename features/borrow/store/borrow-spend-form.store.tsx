@@ -1,5 +1,5 @@
 'use client';
-import { HstkToken } from '@/types/web3/token.types';
+import { LoanPosition } from '@/types/web3/borrow-market.types';
 import { createContext, ReactNode, useContext, useEffect, useRef } from 'react';
 import { createStore, StoreApi, useStore } from 'zustand';
 
@@ -7,7 +7,7 @@ import { createStore, StoreApi, useStore } from 'zustand';
  * Initial state for the borrow spend form
  */
 const initialState = {
-	market: null as HstkToken | null,
+	market: null as LoanPosition | null,
 	isLoading: false,
 	activeTab: 'liquidity' as 'liquidity' | 'swap',
 };
@@ -17,16 +17,16 @@ const initialState = {
  */
 export interface BorrowSpendFormState {
 	// State
-	market: HstkToken | null;
+	market: LoanPosition | null;
 	isLoading: boolean;
 	activeTab: 'liquidity' | 'swap';
 
 	// Actions
-	setMarket: (market: HstkToken | null) => void;
+	setMarket: (market: LoanPosition | null) => void;
 	setIsLoading: (isLoading: boolean) => void;
 	setActiveTab: (tab: 'liquidity' | 'swap') => void;
 	reset: () => void;
-	resetStore: (newMarket?: HstkToken | null) => void;
+	resetStore: (newMarket?: LoanPosition | null) => void;
 }
 
 /**
@@ -35,7 +35,7 @@ export interface BorrowSpendFormState {
  * @returns Store instance
  */
 export const createBorrowSpendFormStore = (
-	initialMarket: HstkToken | null = null
+	initialMarket: LoanPosition | null = null
 ) => {
 	const initialToken = initialMarket;
 
@@ -65,7 +65,7 @@ export const BorrowSpendFormStoreContext =
  */
 export interface BorrowSpendFormProviderProps {
 	children: ReactNode;
-	initialMarket?: HstkToken | null;
+	initialMarket?: LoanPosition | null;
 }
 
 /**

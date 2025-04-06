@@ -32,7 +32,7 @@ function MyDebtCardStack() {
 				<Text.Medium20>My Debt Positions</Text.Medium20>
 				<BorrowQuickStat />
 			</div>
-			
+
 			<If isTrue={isLoadingBorrowMarket}>
 				<div className='flex flex-col gap-4'>
 					{[...Array(3)].map((_, index) => (

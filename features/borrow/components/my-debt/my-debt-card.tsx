@@ -4,13 +4,16 @@ import PrimaryCard from '@/components/ui/card/primary-card';
 import { Text } from '@/components/ui/typography/Text';
 import { ImageWithLoader } from '@/components/ui/image/image-with-loader';
 import React, { useMemo, useCallback } from 'react';
-import { LoanPosition } from '@/types/web3/borrow-market.types';
+import {
+	LoanPosition,
+	LoanUsageStatus,
+} from '@/types/web3/borrow-market.types';
 import { DECIMALS } from '@/constant/web3/decimal.constant';
 import BorrowAddCollateralForm from '../form/borrow-add-collateral-form';
 import BorrowSpendForm from '../form/borrow-spend-form';
 import BorrowRepayForm from '../form/borrow-repay-form';
-import { HstkToken } from '@/types/web3/token.types';
 import '@prototype/bigint.prototype';
+import If from '@/components/common/If';
 
 interface MyDebtCardProps {
 	loanPosition: LoanPosition;
@@ -18,19 +21,6 @@ interface MyDebtCardProps {
 
 function MyDebtCard({ loanPosition }: MyDebtCardProps) {
 	const { openDrawer, setDrawerContent } = useBorrowDrawer();
-	// Convert LoanPosition to HstkToken for form components
-	const convertToHstkToken = useCallback(
-		(loan: LoanPosition): HstkToken => ({
-			name: loan.borrowedAsset.name,
-			symbol: loan.borrowedAsset.symbol,
-			address: loan.borrowedAsset.address_,
-			decimals: loan.borrowedAsset.decimals,
-			iconUrl: loan.borrowedAsset.logoURI,
-			isNew: false,
-			isPaused: false,
-		}),
-		[]
-	);
 
 	// Calculate values from loan position
 	const borrowedAmount = loanPosition.borrowedValue.formatBalance(
@@ -54,11 +44,9 @@ function MyDebtCard({ loanPosition }: MyDebtCardProps) {
 
 	// Handle spending borrowed assets
 	const handleSpend = useCallback(() => {
-		setDrawerContent(
-			<BorrowSpendForm initialMarket={convertToHstkToken(loanPosition)} />
-		);
+		setDrawerContent(<BorrowSpendForm marketLoan={loanPosition} />);
 		openDrawer();
-	}, [loanPosition, convertToHstkToken, setDrawerContent, openDrawer]);
+	}, [loanPosition, setDrawerContent, openDrawer]);
 
 	// Handle repaying debt
 	const handleRepay = useCallback(() => {
@@ -121,9 +109,18 @@ function MyDebtCard({ loanPosition }: MyDebtCardProps) {
 				<div className='flex flex-col gap-2 w-full mt-2'>
 					<Btn.Primary onClick={handleRepay}>Repay</Btn.Primary>
 					<div className='grid grid-cols-2 gap-2'>
-						<Btn.Secondary onClick={handleSpend}>
-							Spend
-						</Btn.Secondary>
+						<If
+							isTrue={
+								Number(loanPosition.usageDetails.status) ===
+								LoanUsageStatus.SPENT
+							}>
+							<Btn.Secondary onClick={handleSpend}>
+								Swap To Debt
+							</Btn.Secondary>
+							<Btn.Secondary onClick={handleSpend}>
+								Spend
+							</Btn.Secondary>
+						</If>
 						<Btn.Secondary onClick={handleAddCollateral}>
 							Add Collateral
 						</Btn.Secondary>
