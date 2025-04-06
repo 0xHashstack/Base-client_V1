@@ -1,19 +1,26 @@
 'use client';
-import React, { useState } from 'react';
+import React from 'react';
+import Image from 'next/image';
 import { Card } from '@/components/ui/card';
 import { Text } from '@/components/ui/typography/Text';
 import { Select } from '@/components/ui/select';
-import { useBorrowSpendForm } from '../../../../hooks/useBorrowSpendForm';
 import SlidingTab from '@/components/ui/tabs/sliding-tab';
 import { useL3DappStore } from '@/store/useL3DappStore';
 import { L3Dapp, L3DappPool } from '@/types/web3/dapp.types';
 import { Barricade } from '@phosphor-icons/react';
+import {
+	useBorrowSpendFormStore,
+	BorrowSpendFormState,
+} from '../../../../store/borrow-spend-form.store';
+import GasFeeText from '@/components/utility/GasFeeText';
 
 /**
  * Component for the borrow spend tabs (Liquidity Provisioning and Swap)
  */
 export default function BorrowSpendTabs() {
-	const { activeTab, handleTabChange } = useBorrowSpendForm();
+	const { activeTab, setActiveTab } = useBorrowSpendFormStore(
+		(state) => state
+	);
 
 	return (
 		<>
@@ -24,7 +31,7 @@ export default function BorrowSpendTabs() {
 					{ id: 'swap', label: 'Swap' },
 				]}
 				activeTab={activeTab}
-				onChange={handleTabChange}
+				onChange={setActiveTab}
 			/>
 
 			{/* Tab Content */}
@@ -42,14 +49,32 @@ export default function BorrowSpendTabs() {
  */
 function LiquidityProvisioningTab() {
 	const { dapps } = useL3DappStore();
-	const [selectedDapp, setSelectedDapp] = useState<L3Dapp | null>(null);
-	const [selectedPool, setSelectedPool] = useState<L3DappPool | null>(null);
+	// Use the store values instead of local state
+	const selectedDapp = useBorrowSpendFormStore(
+		(state: BorrowSpendFormState) => state.selectedDapp
+	);
+	const selectedPool = useBorrowSpendFormStore(
+		(state: BorrowSpendFormState) => state.selectedPool
+	);
+	const setSelectedDapp = useBorrowSpendFormStore(
+		(state: BorrowSpendFormState) => state.setSelectedDapp
+	);
+	const setSelectedPool = useBorrowSpendFormStore(
+		(state: BorrowSpendFormState) => state.setSelectedPool
+	);
 
 	// Render functions for dapp select
 	const renderDappOption = (option: L3Dapp, isSelected: boolean) => {
 		return (
 			<div
 				className={`flex items-center gap-2 px-3 py-2 ${isSelected ? 'bg-primary/10' : 'hover:bg-muted'} rounded-lg`}>
+				<Image
+					src={option.logoURI}
+					alt={option.name}
+					className='rounded-full'
+					width={18}
+					height={18}
+				/>
 				<Text.Regular14>{option.name}</Text.Regular14>
 			</div>
 		);
@@ -59,6 +84,13 @@ function LiquidityProvisioningTab() {
 		if (!option) return 'Select Dapp';
 		return (
 			<div className='flex items-start gap-2'>
+				<Image
+					src={option.logoURI}
+					alt={option.name}
+					className='rounded-full'
+					width={18}
+					height={18}
+				/>
 				<div className='flex flex-col'>
 					<Text.Medium14>{option.name}</Text.Medium14>
 				</div>
@@ -95,7 +127,7 @@ function LiquidityProvisioningTab() {
 					label='Select Dapp'
 					options={dapps}
 					value={selectedDapp}
-					valueKey='key'
+					valueKey='symbol'
 					labelKey='name'
 					onChange={(_, option) => setSelectedDapp(option)}
 					renderOption={renderDappOption}
@@ -127,8 +159,8 @@ function LiquidityProvisioningTab() {
 			<Card className='p-4 bg-card-bold'>
 				<div className='flex flex-col gap-3'>
 					<div className='flex items-center justify-between'>
-						<Text.Regular12>Fees</Text.Regular12>
-						<Text.Regular12>0.3%</Text.Regular12>
+						<Text.Regular12>Network Fee</Text.Regular12>
+						<GasFeeText />
 					</div>
 					<div className='flex items-center justify-between'>
 						<Text.Regular12>APR</Text.Regular12>

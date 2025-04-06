@@ -5,14 +5,25 @@ import { createContext, ReactNode, useContext, useEffect, useRef } from 'react';
 import { createStore, StoreApi, useStore } from 'zustand';
 
 /**
+ * Define transaction status enum
+ */
+export enum TransactionStatus {
+	IDLE = 'idle',
+	TRANSACTION_PROCESSING = 'transactionProcessing',
+	TRANSACTION_FAILED = 'transactionFailed',
+	TRANSACTION_SUCCESS = 'transactionSuccess',
+}
+
+/**
  * Initial state for the borrow spend form
  */
 const initialState = {
 	market: null as LoanPosition | null,
-	isLoading: false,
 	activeTab: 'liquidity' as 'liquidity' | 'swap',
 	selectedDapp: null as L3Dapp | null,
 	selectedPool: null as L3DappPool | null,
+	transactionStatus: TransactionStatus.IDLE,
+	validationError: '',
 };
 
 /**
@@ -21,17 +32,19 @@ const initialState = {
 export interface BorrowSpendFormState {
 	// State
 	market: LoanPosition | null;
-	isLoading: boolean;
 	activeTab: 'liquidity' | 'swap';
 	selectedDapp: L3Dapp | null;
 	selectedPool: L3DappPool | null;
+	transactionStatus: TransactionStatus;
+	validationError: string;
 
 	// Actions
 	setMarket: (market: LoanPosition | null) => void;
-	setIsLoading: (isLoading: boolean) => void;
 	setActiveTab: (tab: 'liquidity' | 'swap') => void;
 	setSelectedDapp: (dapp: L3Dapp | null) => void;
 	setSelectedPool: (pool: L3DappPool | null) => void;
+	setTransactionStatus: (status: TransactionStatus) => void;
+	setValidationError: (error: string) => void;
 	reset: () => void;
 	resetStore: (newMarket?: LoanPosition | null) => void;
 }
@@ -51,11 +64,12 @@ export const createBorrowSpendFormStore = (
 		market: initialToken,
 		setMarket: (market) =>
 			set({ market, selectedDapp: null, selectedPool: null }),
-		setIsLoading: (isLoading) => set({ isLoading }),
 		setActiveTab: (activeTab) => set({ activeTab }),
 		setSelectedDapp: (dapp) =>
 			set({ selectedDapp: dapp, selectedPool: null }),
 		setSelectedPool: (pool) => set({ selectedPool: pool }),
+		setTransactionStatus: (transactionStatus) => set({ transactionStatus }),
+		setValidationError: (validationError) => set({ validationError }),
 		reset: () => set({ ...initialState, market: initialToken }),
 		resetStore: (newMarket) =>
 			set({
