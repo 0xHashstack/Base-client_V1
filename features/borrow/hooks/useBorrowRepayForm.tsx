@@ -50,8 +50,10 @@ export function useBorrowRepayForm() {
 	const { address: walletAddress } = useDappUser();
 
 	// Get wallet token balance
-	const { formatted: walletBalance, formatted: formattedWalletBalance } =
-		useWalletToken();
+	const {
+		formatted: walletBalance,
+		formattedNumber: formattedWalletBalance,
+	} = useWalletToken();
 
 	// Create a token model instance when the market changes
 	const tokenModel = useMemo(() => {
@@ -85,7 +87,7 @@ export function useBorrowRepayForm() {
 				error: 'Market loan not found',
 			};
 		const amountNum = amount.format(marketLoan.borrowedAsset.decimals);
-		const walletBalanceNum = parseFloat(walletBalance);
+		const walletBalanceNum = formattedWalletBalance;
 
 		if (isNaN(amountNum)) {
 			return {
@@ -105,7 +107,7 @@ export function useBorrowRepayForm() {
 			valid: true,
 			error: '',
 		};
-	}, [amount, walletBalance, marketLoan]);
+	}, [amount, formattedWalletBalance, marketLoan]);
 
 	/**
 	 * Handle token approval for repay

@@ -54,7 +54,7 @@ export function useBorrowAddCollateralForm() {
 	);
 
 	// Get values needed for validation from the store
-	const { formatted: formattedWalletBalance } = useWalletToken();
+	const { formattedNumber: formattedWalletBalanceNumber } = useWalletToken();
 
 	// Get the current wallet address
 	const { address: walletAddress } = useDappUser();
@@ -83,7 +83,7 @@ export function useBorrowAddCollateralForm() {
 		}
 
 		const amountNum = parseFloat(amount);
-		const walletBalanceNum = parseFloat(formattedWalletBalance || '0');
+		const walletBalanceNum = formattedWalletBalanceNumber;
 
 		if (isNaN(amountNum)) {
 			return {
@@ -110,7 +110,7 @@ export function useBorrowAddCollateralForm() {
 			valid: true,
 			error: '',
 		};
-	}, [amount, formattedWalletBalance]);
+	}, [amount, formattedWalletBalanceNumber]);
 
 	/**
 	 * Get the collateral asset directly from the store
