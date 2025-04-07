@@ -84,10 +84,8 @@ export function useSupplyWithdrawForm() {
 		}
 
 		const amountNum = parseFloat(amount);
-		const availableBalanceNum = parseFloat(
-			position.receiptTokens.formatBalance(
-				position.underlyingAsset.decimals
-			)
+		const availableBalanceNum = position.receiptTokens.format(
+			position.underlyingAsset.decimals
 		);
 
 		if (isNaN(amountNum)) {

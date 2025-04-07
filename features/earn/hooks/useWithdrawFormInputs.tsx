@@ -32,10 +32,8 @@ export function useWithdrawFormInputs() {
 
 	// Get formatted available balance (supplied amount)
 	const formattedAvailableBalance = useMemo(() => {
-		if (!position) return '0';
-		return position.receiptTokens.formatBalance(
-			position.underlyingAsset.decimals
-		);
+		if (!position) return 0;
+		return position.receiptTokens.format(position.underlyingAsset.decimals);
 	}, [position]);
 
 	// Maximum amount for the slider (from supplied amount)
@@ -46,12 +44,19 @@ export function useWithdrawFormInputs() {
 			!formattedAvailableBalance
 		)
 			return 0;
-		return parseFloat(formattedAvailableBalance);
+		return formattedAvailableBalance;
 	}, [
 		formattedAvailableBalance,
 		availableBalanceLoading,
 		availableBalanceError,
 	]);
+
+	const formattedReadableMaxAmount = useMemo(() => {
+		if (!position) return '0';
+		return position.receiptTokens.formatBalance(
+			position.underlyingAsset.decimals
+		);
+	}, [position]);
 
 	// Convert amount string to number for slider
 	const amountValue = useMemo(() => {
@@ -87,14 +92,8 @@ export function useWithdrawFormInputs() {
 	const handleMaxClick = useCallback(() => {
 		if (availableBalanceLoading || availableBalanceError || MAX_AMOUNT <= 0)
 			return;
-		setAmount(parseFloat(formattedAvailableBalance).toFixed(3));
-	}, [
-		setAmount,
-		formattedAvailableBalance,
-		availableBalanceLoading,
-		availableBalanceError,
-		MAX_AMOUNT,
-	]);
+		setAmount(MAX_AMOUNT.toFixed(3));
+	}, [setAmount, availableBalanceLoading, availableBalanceError, MAX_AMOUNT]);
 
 	/**
 	 * Handle slider change
@@ -150,5 +149,6 @@ export function useWithdrawFormInputs() {
 		handleTokenChange,
 		formattedAvailableBalance,
 		isFormDisabled,
+		formattedReadableMaxAmount,
 	};
 }

@@ -23,7 +23,7 @@ function WithdrawFormInputs() {
 		handleSliderChange,
 		handleTokenChange,
 
-		formattedAvailableBalance,
+		formattedReadableMaxAmount,
 		isFormDisabled,
 	} = useWithdrawFormInputs();
 
@@ -65,7 +65,7 @@ function WithdrawFormInputs() {
 	const renderAvailableBalance = () => {
 		return (
 			<Text.Regular12 textColor={600}>
-				Available Balance: {formattedAvailableBalance}{' '}
+				Available Balance: {formattedReadableMaxAmount}{' '}
 				{position?.supplyAsset.symbol}
 			</Text.Regular12>
 		);
