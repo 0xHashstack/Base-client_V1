@@ -1,5 +1,4 @@
 'use client';
-import React, { useMemo } from 'react';
 import { Text } from '@/components/ui/typography/Text';
 import { Btn, ConnectedBtn } from '@/components/ui/button';
 import SideDrawer from '@/components/drawer/side-drawer';
@@ -8,7 +7,6 @@ import { useBorrowSpendForm } from '../../../hooks/useBorrowSpendForm';
 import BorrowSpendFormInputs from './components/borrow-spend-form-inputs';
 import BorrowSpendTabs from './components/borrow-spend-tabs';
 import { LoanPosition } from '@/types/web3/borrow-market.types';
-import ValidationError from '@/components/ui/validation-error';
 
 interface BorrowSpendFormProps {
 	marketLoan?: LoanPosition;
@@ -35,13 +33,7 @@ function BorrowSpendFormContent() {
 		buttonText,
 		handleLiquidityProvision,
 		closeDrawer,
-		getValidationError,
 	} = useBorrowSpendForm();
-
-	// Validate form and get error messages if any
-	const validationError = useMemo(() => {
-		return getValidationError();
-	}, [getValidationError]);
 
 	return (
 		<>
@@ -60,7 +52,6 @@ function BorrowSpendFormContent() {
 				</div>
 			</SideDrawer.Body>
 			<SideDrawer.Footer>
-				{validationError && <ValidationError error={validationError} />}
 				<ConnectedBtn.Primary
 					onClick={handleLiquidityProvision}
 					disabled={isButtonDisabled}
