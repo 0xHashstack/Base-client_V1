@@ -25,7 +25,6 @@ export function useBorrowRepayForm() {
 	// Use selectors to get only what we need from the store
 	const isLoading = useBorrowRepayFormStore((state) => state.isLoading);
 	const marketLoan = useBorrowRepayFormStore((state) => state.marketLoan);
-	const fee = useBorrowRepayFormStore((state) => state.fee);
 	const transactionStatus = useBorrowRepayFormStore(
 		(state) => state.transactionStatus
 	);
@@ -330,7 +329,6 @@ export function useBorrowRepayForm() {
 		amount,
 		isLoading,
 		marketLoan,
-		fee,
 		transactionStatus,
 		walletBalance,
 		formattedWalletBalance,
