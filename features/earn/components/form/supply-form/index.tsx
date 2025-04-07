@@ -95,9 +95,21 @@ function SupplyFormContent() {
 				{amount && !isAmountValid && (
 					<ValidationError
 						error={validationError}
-						availableText={validationError === 'Insufficient balance' ? 'Available' : undefined}
-						availableValue={validationError === 'Insufficient balance' ? walletBalance : undefined}
-						availableSymbol={validationError === 'Insufficient balance' ? market.asset.symbol : undefined}
+						availableText={
+							validationError === 'Insufficient balance' ?
+								'Available'
+							:	undefined
+						}
+						availableValue={
+							validationError === 'Insufficient balance' ?
+								walletBalance
+							:	undefined
+						}
+						availableSymbol={
+							validationError === 'Insufficient balance' ?
+								market.asset.symbol
+							:	undefined
+						}
 					/>
 				)}
 				<ConnectedBtn.Primary

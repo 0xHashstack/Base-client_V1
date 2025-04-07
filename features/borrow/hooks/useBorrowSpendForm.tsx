@@ -291,8 +291,11 @@ export function useBorrowSpendForm() {
 
 	// Determine button text based on transaction status
 	const buttonText = useMemo(() => {
+		if (transactionStatus === TransactionStatus.TRANSACTION_PROCESSING) {
+			return 'Processing...';
+		}
 		return 'Spend';
-	}, []);
+	}, [transactionStatus]);
 
 	const getValidationError = useCallback(() => {
 		return validateForm().error;

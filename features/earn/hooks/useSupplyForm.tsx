@@ -44,8 +44,10 @@ export function useSupplyForm() {
 	// Get the current wallet address
 	const { address: walletAddress } = useDappUser();
 
-	const { formatted: walletBalance, formatted: formattedWalletBalance } =
-		useWalletToken();
+	const {
+		formatted: walletBalance,
+		formattedNumber: formattedWalletBalance,
+	} = useWalletToken();
 	const queryClient = useQueryClient();
 
 	// Create a token model instance when the market changes
@@ -126,7 +128,7 @@ export function useSupplyForm() {
 		}
 
 		const amountNum = parseFloat(amount);
-		const walletBalanceNum = parseFloat(walletBalance);
+		const walletBalanceNum = formattedWalletBalance;
 
 		if (isNaN(amountNum)) {
 			return {
@@ -153,7 +155,7 @@ export function useSupplyForm() {
 			valid: true,
 			error: '',
 		};
-	}, [amount, walletBalance]);
+	}, [amount, formattedWalletBalance]);
 
 	/**
 	 * Handle supply submission
