@@ -51,9 +51,9 @@ function BorrowSwapToDebtFormContent() {
 					<Card className='p-6 bg-card-bold'>
 						<div className='flex flex-col gap-4'>
 							<div>
-								<Text.Regular14 className='text-gray-500 mb-2'>
+								<Text.Regular12 className='text-gray-500 mb-2'>
 									Select Token
-								</Text.Regular14>
+								</Text.Regular12>
 								{/* <TokenSelector
 									selectedToken={selectedToken}
 									onSelect={(token) =>
@@ -72,41 +72,39 @@ function BorrowSwapToDebtFormContent() {
 					{/* Loan details card */}
 					<Card className='p-6 bg-card-bold'>
 						<div className='flex flex-col gap-3'>
-							<Text.Medium16>Loan Details</Text.Medium16>
-
 							<div className='flex justify-between'>
-								<Text.Regular14 className='text-gray-500'>
+								<Text.Regular12 className='text-gray-500'>
 									Current Debt
-								</Text.Regular14>
-								<Text.Regular14>
+								</Text.Regular12>
+								<Text.Regular12>
 									{marketLoan.positionHealth.healthFactor.formatToString(
 										DECIMALS.HEALTH_FACTOR
 									)}{' '}
 									{marketLoan.borrowedAsset.symbol}
-								</Text.Regular14>
+								</Text.Regular12>
 							</div>
 
 							<div className='flex justify-between'>
-								<Text.Regular14 className='text-gray-500'>
+								<Text.Regular12 className='text-gray-500'>
 									Health Factor
-								</Text.Regular14>
-								<Text.Regular14>
+								</Text.Regular12>
+								<Text.Regular12>
 									{marketLoan.positionHealth.healthFactor.formatToString(
 										DECIMALS.HEALTH_FACTOR
 									)}{' '}
-								</Text.Regular14>
+								</Text.Regular12>
 							</div>
 
 							<div className='flex justify-between'>
-								<Text.Regular14 className='text-gray-500'>
+								<Text.Regular12 className='text-gray-500'>
 									Collateral
-								</Text.Regular14>
-								<Text.Regular14>
+								</Text.Regular12>
+								<Text.Regular12>
 									{marketLoan.collateralAsset.collateralAmount.formatBalance(
 										marketLoan.collateralAsset.decimals
 									)}{' '}
 									{marketLoan.collateralAsset.symbol}
-								</Text.Regular14>
+								</Text.Regular12>
 							</div>
 						</div>
 					</Card>
@@ -115,15 +113,13 @@ function BorrowSwapToDebtFormContent() {
 
 					<Card className='p-6 bg-card-bold'>
 						<div className='flex flex-col gap-3'>
-							<Text.Medium16>Price Breakdown</Text.Medium16>
-
 							<div className='flex justify-between'>
-								<Text.Regular14 className='text-gray-500'>
+								<Text.Regular12 className='text-gray-500'>
 									Estimated Debt Increase
-								</Text.Regular14>
-								<Text.Regular14>
+								</Text.Regular12>
+								<Text.Regular12>
 									{amount} {marketLoan.borrowedAsset.symbol}
-								</Text.Regular14>
+								</Text.Regular12>
 							</div>
 						</div>
 					</Card>

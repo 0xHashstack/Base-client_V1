@@ -18,13 +18,13 @@ const SupplyFormAPR: React.FC = () => {
 				</Text.Regular12>
 			</div>
 			<div className='flex items-center justify-between'>
-				<Text.Regular12 textColor={500}>Supply APR</Text.Regular12>
+				<Text.Regular12 textColor={600}>Supply APR</Text.Regular12>
 				<Text.Regular12>
 					{market?.state?.annualApy.formatToString(DECIMALS.APR)}%
 				</Text.Regular12>
 			</div>
 			<div className='flex items-center justify-between'>
-				<Text.Regular12 textColor={500}>HSTK Rewards</Text.Regular12>
+				<Text.Regular12 textColor={600}>HSTK Rewards</Text.Regular12>
 				<Text.Regular12>{0}%</Text.Regular12>
 			</div>
 		</div>

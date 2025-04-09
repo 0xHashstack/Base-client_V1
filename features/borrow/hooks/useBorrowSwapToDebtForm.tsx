@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import { useCallback, useMemo } from 'react';
 import {
@@ -34,7 +35,6 @@ export function useBorrowSwapToDebtForm() {
 	);
 
 	// Actions
-	const setAmount = useBorrowSwapToDebtFormStore((state) => state.setAmount);
 	const setMarketLoan = useBorrowSwapToDebtFormStore(
 		(state) => state.setMarketLoan
 	);
@@ -215,7 +215,6 @@ export function useBorrowSwapToDebtForm() {
 		validationError,
 
 		// Actions
-		setAmount,
 		setMarketLoan,
 		setTransactionStatus,
 		setValidationError,

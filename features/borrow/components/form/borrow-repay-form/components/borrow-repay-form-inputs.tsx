@@ -63,7 +63,7 @@ function BorrowRepayFormInputs() {
 					<Text.Medium14>
 						{selectedToken.borrowedAsset.symbol}
 					</Text.Medium14>
-					<Text.Regular12 textColor={500}>
+					<Text.Regular12 textColor={600}>
 						Borrow balance: $
 						{borrowMarket?.borrowedValue.formatBalance(
 							DECIMALS.PRICE
@@ -123,7 +123,7 @@ function BorrowRepayFormInputs() {
 			</Card>
 			<Card className='flex flex-col gap-6 p-6'>
 				<div className='flex flex-col gap-4'>
-					<Text.Regular12 textColor={500}>
+					<Text.Regular12 textColor={600}>
 						Repay Amount
 					</Text.Regular12>
 					<div className='flex w-full flex-col items-end'>

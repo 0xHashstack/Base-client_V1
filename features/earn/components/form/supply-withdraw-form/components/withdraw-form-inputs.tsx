@@ -89,7 +89,7 @@ function WithdrawFormInputs() {
 			</Card>
 			<Card className='flex flex-col gap-6 p-6'>
 				<div className='flex flex-col gap-4'>
-					<Text.Regular12 textColor={500}>Amount</Text.Regular12>
+					<Text.Regular12 textColor={600}>Amount</Text.Regular12>
 					<div className='flex w-full flex-col items-end'>
 						<div className='flex items-center gap-1 justify-between w-full'>
 							<div className='flex-1'>

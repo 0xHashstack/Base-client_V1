@@ -6,8 +6,6 @@ import { Web3Address } from '@/types/web3';
 // Define transaction status enum
 export enum TransactionStatus {
 	IDLE = 'idle',
-	APPROVING = 'approving',
-	APPROVED = 'approved',
 	TRANSACTION_PROCESSING = 'transactionProcessing',
 	TRANSACTION_FAILED = 'transactionFailed',
 	TRANSACTION_SUCCESS = 'transactionSuccess',

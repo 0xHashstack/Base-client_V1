@@ -65,7 +65,7 @@ function SupplyValueCard({ supplyData }: SupplyValueCardProps) {
 		<div className='flex flex-col gap-4'>
 			<div className='flex items-start justify-between gap-2'>
 				<div className='flex flex-col gap-1'>
-					<Text.Regular12 textColor={500}>Value</Text.Regular12>
+					<Text.Regular12 textColor={600}>Value</Text.Regular12>
 					<Text.Semibold14>{`$${supplyData.marketValue.formatBalance(DECIMALS.PRICE)}`}</Text.Semibold14>
 				</div>
 				<ImageCard

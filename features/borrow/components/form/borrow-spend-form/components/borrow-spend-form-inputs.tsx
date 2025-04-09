@@ -58,7 +58,7 @@ export default function BorrowSpendFormInputs() {
 					<Text.Medium14>
 						{selectedLoan.borrowedAsset.symbol}
 					</Text.Medium14>
-					<Text.Regular12 textColor={500}>
+					<Text.Regular12 textColor={600}>
 						Borrow balance: {borrowedAmount} d
 						{selectedLoan.borrowedAsset.symbol}
 					</Text.Regular12>

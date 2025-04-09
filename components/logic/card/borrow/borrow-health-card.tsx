@@ -36,7 +36,7 @@ type CurrentDebtRow = {
 
 const HealthDisplay: React.FC<{ score: string }> = ({ score }) => (
 	<div className='flex flex-col'>
-		<Text.Regular10 textColor={500}>Health</Text.Regular10>
+		<Text.Regular10 textColor={600}>Health</Text.Regular10>
 		<Text.Semibold14>{score}</Text.Semibold14>
 	</div>
 );

@@ -120,7 +120,7 @@ function AddCollateralFormInputs() {
 			<Card className='flex flex-col gap-6 p-6'>
 				<div className='flex flex-col gap-4'>
 					<div className='flex justify-between items-center'>
-						<Text.Regular12 textColor={500}>Amount</Text.Regular12>
+						<Text.Regular12 textColor={600}>Amount</Text.Regular12>
 					</div>
 					<div className='flex w-full flex-col items-end'>
 						<div className='flex items-center gap-1 justify-between w-full'>

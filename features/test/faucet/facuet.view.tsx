@@ -62,7 +62,7 @@ function FaucetView() {
 			<div className='flex flex-col gap-6'>
 				<div className='flex flex-col gap-2'>
 					<Text.Medium20>Testnet Faucet</Text.Medium20>
-					<Text.Regular14 textColor={500}>
+					<Text.Regular14 textColor={600}>
 						Get testnet tokens to use in the HashStack DeFi
 						application.
 					</Text.Regular14>

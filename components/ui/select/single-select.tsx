@@ -148,14 +148,14 @@ const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps<any>>(
 
 			if (selectedOption) {
 				return (
-					<Text.Regular14 textColor={500}>
+					<Text.Regular14 textColor={600}>
 						{String(getNestedValue(selectedOption, labelKey) || '')}
 					</Text.Regular14>
 				);
 			}
 
 			return (
-				<Text.Regular14 textColor={500}>{placeholder}</Text.Regular14>
+				<Text.Regular14 textColor={600}>{placeholder}</Text.Regular14>
 			);
 		};
 
@@ -164,7 +164,7 @@ const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps<any>>(
 				className='flex flex-col gap-2'
 				ref={selectRef}>
 				{label && (
-					<Text.Regular12 textColor={500}>{label}</Text.Regular12>
+					<Text.Regular12 textColor={600}>{label}</Text.Regular12>
 				)}
 
 				<div

@@ -13,6 +13,7 @@ import { Text } from '@/components/ui/typography/Text';
 import { Skeleton } from '@/components/ui/skeleton/skeleton';
 import SupplyWithdrawForm from '../form/supply-withdraw-form';
 import { DECIMALS } from '@/constant/web3/decimal.constant';
+import PrimaryCard from '@/components/ui/card/primary-card';
 
 function MyPositionCardStack() {
 	const { openDrawer, setDrawerContent } = useEarnDrawer();
@@ -75,7 +76,13 @@ function MyPositionCardStack() {
 				</div>
 			</If>
 			{!isLoadingSupplyMarket && userSupplyPositions.length === 0 && (
-				<div className='text-center py-4'>No positions found</div>
+				<PrimaryCard className='flex ai-center justify-center p-10'>
+					<Text.Regular16
+						textColor={600}
+						className='text-center'>
+						You don’t have any positions yet
+					</Text.Regular16>
+				</PrimaryCard>
 			)}
 			{!isLoadingSupplyMarket && userSupplyPositions.length > 0 && (
 				<>

@@ -26,7 +26,7 @@ const TableNoData: React.FC<TableNoDataProps> = ({
 					<div className='rounded-full bg-muted p-3 text-primary-600'>
 						<Empty size={36} />
 					</div>
-					<Text.Medium16 textColor={500}>{message}</Text.Medium16>
+					<Text.Medium16 textColor={600}>{message}</Text.Medium16>
 				</div>
 			</td>
 		</tr>

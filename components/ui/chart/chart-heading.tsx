@@ -13,7 +13,7 @@ function ChartHeading({
 }) {
 	return (
 		<div className='flex flex-col'>
-			<Text.Medium14 textColor={500}>{title}</Text.Medium14>
+			<Text.Medium14 textColor={600}>{title}</Text.Medium14>
 			{isLoading ?
 				<Skeleton className='h-6 mt-1 w-40 rounded-md' />
 			:	<Text.Semibold20>{value}</Text.Semibold20>}

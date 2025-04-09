@@ -8,7 +8,6 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-	TableNoData,
 	TableLoader,
 } from '@/components/ui/table/index';
 import { Btn } from '@/components/ui/button';
@@ -25,6 +24,7 @@ import If from '@/components/common/If';
 import AddTokenToWallet from '@/components/actions/cta/add-token-to-wallet';
 import { HoverSupplyValueCard } from '../card/hover-cards';
 import { DECIMALS } from '@/constant/web3/decimal.constant';
+import PrimaryCard from '@/components/ui/card/primary-card';
 
 function MyPositionsTable() {
 	const { openDrawer, setDrawerContent } = useEarnDrawer();
@@ -81,25 +81,31 @@ function MyPositionsTable() {
 				<Text.Medium20>My Positions</Text.Medium20>
 				<MyPositionQuickStat />
 			</div>
-			<Table isPrimary>
-				<TableHeader>
-					<TableRow>
-						<TableHead className='w-1/3'>Market</TableHead>
-						<TableHead className='w-1/3'>Value</TableHead>
-						<TableHead className='w-1/3'>APR</TableHead>
-						<TableHead className='w-[200px]'></TableHead>
-					</TableRow>
-				</TableHeader>
-				<TableBody>
-					<If isTrue={isLoadingSupplyMarket}>
-						<TableLoader
-							rowCount={3}
-							colCount={4}
-						/>
-						<If isTrue={userSupplyPositions.length === 0}>
-							<TableNoData
-								message='No positions found'
-								colSpan={4}
+			<If
+				isTrue={
+					!isLoadingSupplyMarket && userSupplyPositions.length === 0
+				}>
+				<PrimaryCard className='flex ai-center justify-center p-6'>
+					<Text.Regular16
+						textColor={600}
+						className='text-center'>
+						You don’t have any positions yet
+					</Text.Regular16>
+				</PrimaryCard>
+				<Table isPrimary>
+					<TableHeader>
+						<TableRow>
+							<TableHead className='w-1/3'>Market</TableHead>
+							<TableHead className='w-1/3'>Value</TableHead>
+							<TableHead className='w-1/3'>APR</TableHead>
+							<TableHead className='w-[200px]'></TableHead>
+						</TableRow>
+					</TableHeader>
+					<TableBody>
+						<If isTrue={isLoadingSupplyMarket}>
+							<TableLoader
+								rowCount={3}
+								colCount={4}
 							/>
 							<>
 								{userSupplyPositions.map((position) => (
@@ -186,9 +192,9 @@ function MyPositionsTable() {
 								))}
 							</>
 						</If>
-					</If>
-				</TableBody>
-			</Table>
+					</TableBody>
+				</Table>
+			</If>
 		</div>
 	);
 }

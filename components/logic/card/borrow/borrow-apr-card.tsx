@@ -55,7 +55,7 @@ function BorrowAprCard({
 		<div className='flex flex-col gap-4'>
 			<div className='flex items-center justify-between gap-2'>
 				<div className='flex flex-col gap-1'>
-					<Text.Regular12 textColor={500}>Net APR</Text.Regular12>
+					<Text.Regular12 textColor={600}>Net APR</Text.Regular12>
 					<Text.Semibold14>
 						{netApr.formatToString(DECIMALS.APR)}%
 					</Text.Semibold14>

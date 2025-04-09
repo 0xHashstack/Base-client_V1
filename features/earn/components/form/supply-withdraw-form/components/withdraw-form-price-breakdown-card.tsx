@@ -11,11 +11,11 @@ const WithdrawFormPriceBreakdownCard: React.FC = () => {
 				<GasFeeText />
 			</div>
 			<div className='flex flex-1 items-center justify-between'>
-				<Text.Regular12 textColor={500}>Network fees</Text.Regular12>
+				<Text.Regular12 textColor={600}>Network fees</Text.Regular12>
 				<GasFeeText />
 			</div>
 			<div className='flex flex-1 items-center justify-between'>
-				<Text.Regular12 textColor={500}>Withdraw Fees</Text.Regular12>
+				<Text.Regular12 textColor={600}>Withdraw Fees</Text.Regular12>
 				<Text.Regular12>{0}</Text.Regular12>
 			</div>
 		</div>

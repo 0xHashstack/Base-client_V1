@@ -210,11 +210,6 @@ export function useBorrowFormInputs() {
 			);
 			const normalizedBorrowPrice = borrowPrice.format(DECIMALS.PRICE);
 
-			console.log({
-				normalizedCollateralPrice,
-				normalizedBorrowPrice,
-			});
-
 			const priceRatio =
 				normalizedCollateralPrice / normalizedBorrowPrice;
 

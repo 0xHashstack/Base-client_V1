@@ -115,7 +115,7 @@ function BorrowFormInputs() {
 					/>
 					<Text.Medium14>{selectedToken.asset.symbol}</Text.Medium14>
 				</div>
-				<Text.Regular12 textColor={500}>
+				<Text.Regular12 textColor={600}>
 					Available Reserve: {availableReserve}{' '}
 					{borrowMarket?.asset.symbol || ''}
 				</Text.Regular12>
@@ -174,7 +174,7 @@ function BorrowFormInputs() {
 			{/* Borrow Amount Input */}
 			<Card className='flex flex-col gap-6 p-6'>
 				<div className='flex flex-col gap-4'>
-					<Text.Regular12 textColor={500}>
+					<Text.Regular12 textColor={600}>
 						Borrow Amount
 					</Text.Regular12>
 					<div className='flex w-full flex-col items-end'>
@@ -239,7 +239,7 @@ function BorrowFormInputs() {
 
 			<Card className='flex flex-col gap-6 p-6'>
 				<div className='flex flex-col gap-4'>
-					<Text.Regular12 textColor={500}>Amount</Text.Regular12>
+					<Text.Regular12 textColor={600}>Amount</Text.Regular12>
 					<div className='flex w-full flex-col items-end'>
 						<div className='flex items-center gap-1 justify-between w-full'>
 							<div className='flex-1'>

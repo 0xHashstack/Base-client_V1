@@ -12,11 +12,11 @@ const SupplyFormPriceBreakdownCard = () => {
 				<GasFeeText />
 			</div>
 			<div className='flex flex-1 items-center justify-between'>
-				<Text.Regular12 textColor={500}>Network fees</Text.Regular12>
+				<Text.Regular12 textColor={600}>Network fees</Text.Regular12>
 				<GasFeeText />
 			</div>
 			<div className='flex flex-1 items-center justify-between'>
-				<Text.Regular12 textColor={500}>Dapp Fees</Text.Regular12>
+				<Text.Regular12 textColor={600}>Dapp Fees</Text.Regular12>
 				<Text.Regular12>{FEES.DAPP_FEE}</Text.Regular12>
 			</div>
 		</div>
