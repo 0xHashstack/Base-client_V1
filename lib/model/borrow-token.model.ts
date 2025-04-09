@@ -390,4 +390,34 @@ export class BorrowTokenModel {
 			args: [revertSpendParams],
 		};
 	}
+
+	/**
+	 * Get the parameters for swapping tokens to debt
+	 * @param loanId The ID of the loan to swap to debt
+	 * @param amount The amount to swap in human-readable format
+	 * @param tokenAddress The address of the token to swap
+	 * @param decimals The decimals of the token
+	 * @returns Parameters for useWriteContract
+	 */
+	getSwapToDebtParams({
+		loanId,
+		amount,
+		tokenAddress,
+		decimals,
+	}: {
+		loanId: bigint;
+		amount: string;
+		tokenAddress: Web3Address;
+		decimals: number;
+	}) {
+		// Convert the amount based on token decimals
+		const amountInWei = parseUnits(amount, decimals);
+
+		return {
+			address: web3DataProvider.diamondAddress,
+			abi: this.getDiamondAbi(),
+			functionName: 'swapToDebt',
+			args: [loanId, tokenAddress, amountInWei],
+		};
+	}
 }

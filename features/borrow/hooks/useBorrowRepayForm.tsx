@@ -43,8 +43,11 @@ export function useBorrowRepayForm() {
 
 	// Get query client and query keys for invalidation
 	const queryClient = useQueryClient();
-	const { borrowMarketDataQueryKey, borrowMarketOverviewQueryKey } =
-		useQueryKeyStore();
+	const {
+		borrowMarketDataQueryKey,
+		borrowMarketOverviewQueryKey,
+		walletBalanceQueryKey,
+	} = useQueryKeyStore();
 
 	// Get the current wallet address
 	const { address: walletAddress } = useDappUser();
@@ -231,6 +234,9 @@ export function useBorrowRepayForm() {
 						// Invalidate the borrow market overview query
 						queryClient.invalidateQueries({
 							queryKey: borrowMarketOverviewQueryKey,
+						});
+						queryClient.invalidateQueries({
+							queryKey: walletBalanceQueryKey,
 						});
 						// Set status to success
 						setTransactionStatus(

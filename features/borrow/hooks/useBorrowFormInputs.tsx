@@ -13,7 +13,6 @@ import {
 import { useWalletToken } from '@/context/wallet-token-provider';
 import '@prototype/bigint.prototype';
 import { DECIMALS } from '@/constant/web3/decimal.constant';
-import { formatUnits } from 'viem';
 
 // Validation logic has been moved to useBorrowForm
 
@@ -206,12 +205,16 @@ export function useBorrowFormInputs() {
 
 			// Calculate the price ratio (convert bigint to number for calculation)
 			// Adjust for different token decimals when calculating the price ratio
-			const normalizedCollateralPrice = Number(
-				formatUnits(collateralPrice, DECIMALS.PRICE)
+			const normalizedCollateralPrice = collateralPrice.format(
+				DECIMALS.PRICE
 			);
-			const normalizedBorrowPrice = Number(
-				formatUnits(borrowPrice, DECIMALS.PRICE)
-			);
+			const normalizedBorrowPrice = borrowPrice.format(DECIMALS.PRICE);
+
+			console.log({
+				normalizedCollateralPrice,
+				normalizedBorrowPrice,
+			});
+
 			const priceRatio =
 				normalizedCollateralPrice / normalizedBorrowPrice;
 

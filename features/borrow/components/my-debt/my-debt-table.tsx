@@ -24,6 +24,7 @@ import {
 import BorrowAddCollateralForm from '../form/borrow-add-collateral-form';
 import BorrowSpendForm from '../form/borrow-spend-form';
 import BorrowRepayForm from '../form/borrow-repay-form';
+import BorrowSwapToDebtForm from '../form/borrow-swap-to-debt-form';
 import React, { useCallback, useMemo } from 'react';
 import { useTokenStore } from '@/store/useTokenStore';
 import {
@@ -75,6 +76,15 @@ function MyDebtTable() {
 	const handleSpend = useCallback(
 		(loan: LoanPosition) => {
 			setDrawerContent(<BorrowSpendForm marketLoan={loan} />);
+			openDrawer();
+		},
+		[setDrawerContent, openDrawer]
+	);
+
+	// Handle swap to debt
+	const handleSwapToDebt = useCallback(
+		(loan: LoanPosition) => {
+			setDrawerContent(<BorrowSwapToDebtForm marketLoan={loan} />);
 			openDrawer();
 		},
 		[setDrawerContent, openDrawer]
@@ -197,6 +207,11 @@ function MyDebtTable() {
 									<TableCell>
 										<div className='flex gap-2 items-center'>
 											<Btn.Outline
+												disabled={
+													Number(
+														loan.usageDetails.status
+													) === LoanUsageStatus.SPENT
+												}
 												onClick={() =>
 													handleRepay(loan)
 												}>
@@ -206,11 +221,11 @@ function MyDebtTable() {
 												isTrue={
 													Number(
 														loan.usageDetails.status
-													) === LoanUsageStatus.SPENT
+													) !== LoanUsageStatus.SPENT
 												}>
 												<Btn.Secondary
 													onClick={() =>
-														handleSpend(loan)
+														handleSwapToDebt(loan)
 													}>
 													Swap To Debt
 												</Btn.Secondary>

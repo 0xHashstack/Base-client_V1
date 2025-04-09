@@ -73,7 +73,7 @@ const createBorrowFormStore = (initialBorrowMarket: MarketLoan | null = null) =>
 		reset: () =>
 			set({
 				...initialState,
-				borrowMarket: initialBorrowMarket,
+				borrowMarket: null,
 			}),
 		resetStore: (newBorrowMarket) =>
 			set({

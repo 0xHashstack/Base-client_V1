@@ -77,8 +77,11 @@ export function useBorrowSpendForm() {
 	const { writeContractAsync } = useWriteContract();
 	const { setTransaction } = useCurrentTransactionStore();
 	const queryClient = useQueryClient();
-	const { borrowMarketDataQueryKey, borrowMarketOverviewQueryKey } =
-		useQueryKeyStore();
+	const {
+		borrowMarketDataQueryKey,
+		borrowMarketOverviewQueryKey,
+		walletBalanceQueryKey,
+	} = useQueryKeyStore();
 
 	/**
 	 * Create token model instance when the market changes
@@ -227,6 +230,9 @@ export function useBorrowSpendForm() {
 								queryKey: borrowMarketDataQueryKey,
 							});
 						}
+						queryClient.invalidateQueries({
+							queryKey: walletBalanceQueryKey,
+						});
 						// Invalidate the borrow market overview query if available
 						if (borrowMarketOverviewQueryKey) {
 							queryClient.invalidateQueries({

@@ -44,6 +44,9 @@ export function useBorrowAddCollateralForm() {
 		(state) => state.setIsLoading
 	);
 	const reset = useBorrowAddCollateralFormStore((state) => state.reset);
+	const resetStore = useBorrowAddCollateralFormStore(
+		(state) => state.resetStore
+	);
 
 	// Get transaction status from the store
 	const transactionStatus = useBorrowAddCollateralFormStore(
@@ -68,8 +71,11 @@ export function useBorrowAddCollateralForm() {
 	const { writeContractAsync } = useWriteContract();
 	const { setTransaction } = useCurrentTransactionStore();
 	const queryClient = useQueryClient();
-	const { borrowMarketDataQueryKey, borrowMarketOverviewQueryKey } =
-		useQueryKeyStore();
+	const {
+		borrowMarketDataQueryKey,
+		borrowMarketOverviewQueryKey,
+		walletBalanceQueryKey,
+	} = useQueryKeyStore();
 
 	/**
 	 * Validate if the collateral amount is valid
@@ -229,7 +235,7 @@ export function useBorrowAddCollateralForm() {
 
 		// Reset the form if transaction failed
 		if (transactionStatus === TransactionStatus.TRANSACTION_FAILED) {
-			reset();
+			resetStore(userLoan);
 			return;
 		}
 
@@ -269,6 +275,9 @@ export function useBorrowAddCollateralForm() {
 								queryKey: borrowMarketOverviewQueryKey,
 							});
 						}
+						queryClient.invalidateQueries({
+							queryKey: walletBalanceQueryKey,
+						});
 						// Set status to success
 						setTransactionStatus(
 							TransactionStatus.TRANSACTION_SUCCESS

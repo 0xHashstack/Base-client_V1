@@ -50,7 +50,7 @@ const createSupplyFormStore = (
 		setIsLoading: (isLoading) => set({ isLoading }),
 		setTransactionStatus: (status) => set({ transactionStatus: status }),
 
-		reset: () => set({ ...initialState, market: initialMarket }),
+		reset: () => set({ ...initialState, market: null }),
 		resetStore: (newMarket) =>
 			set({
 				...initialState,

@@ -1,6 +1,7 @@
 import { LoanPosition } from '@/types/web3/borrow-market.types';
 import { createContext, useContext, useRef, useEffect } from 'react';
 import { create, useStore } from 'zustand';
+import { Web3Address } from '@/types/web3';
 
 // Define transaction status enum
 export enum TransactionStatus {
@@ -13,36 +14,50 @@ export enum TransactionStatus {
 }
 
 // Define the store state and actions
-interface BorrowRepayFormState {
+interface BorrowSwapToDebtFormState {
 	amount: string;
 	isLoading: boolean;
 	marketLoan: LoanPosition | null;
 	transactionStatus: TransactionStatus;
+	validationError: string;
+	selectedToken: {
+		address: Web3Address;
+		symbol: string;
+		decimals: number;
+	} | null;
 
 	// Actions
 	setAmount: (amount: string) => void;
 	setMaxAmount: () => void;
-	setMarketLoan: (marketLoan: BorrowRepayFormState['marketLoan']) => void;
+	setMarketLoan: (
+		marketLoan: BorrowSwapToDebtFormState['marketLoan']
+	) => void;
 	setIsLoading: (isLoading: boolean) => void;
-
 	setTransactionStatus: (status: TransactionStatus) => void;
+	setValidationError: (error: string) => void;
+	setSelectedToken: (
+		token: BorrowSwapToDebtFormState['selectedToken']
+	) => void;
 	reset: () => void;
-	resetStore: (newMarketLoan?: BorrowRepayFormState['marketLoan']) => void;
+	resetStore: (
+		newMarketLoan?: BorrowSwapToDebtFormState['marketLoan']
+	) => void;
 }
 
 const initialState = {
 	amount: '',
 	isLoading: false,
 	marketLoan: null,
-
 	transactionStatus: TransactionStatus.IDLE,
+	validationError: '',
+	selectedToken: null,
 };
 
 // Create a Zustand store
-const createBorrowRepayFormStore = (
-	initialMarket: BorrowRepayFormState['marketLoan'] = null
+const createBorrowSwapToDebtFormStore = (
+	initialMarket: BorrowSwapToDebtFormState['marketLoan'] = null
 ) =>
-	create<BorrowRepayFormState>((set) => ({
+	create<BorrowSwapToDebtFormState>((set) => ({
 		...initialState,
 		marketLoan: initialMarket,
 		setAmount: (amount) => set({ amount }),
@@ -52,6 +67,8 @@ const createBorrowRepayFormStore = (
 		setMarketLoan: (marketLoan) => set({ marketLoan }),
 		setIsLoading: (isLoading) => set({ isLoading }),
 		setTransactionStatus: (status) => set({ transactionStatus: status }),
+		setValidationError: (error) => set({ validationError: error }),
+		setSelectedToken: (token) => set({ selectedToken: token }),
 		reset: () => set({ ...initialState, marketLoan: null }),
 		resetStore: (marketLoan) =>
 			set({
@@ -62,53 +79,53 @@ const createBorrowRepayFormStore = (
 	}));
 
 // Create a React context for the store
-const BorrowRepayFormStoreContext = createContext<ReturnType<
-	typeof createBorrowRepayFormStore
+const BorrowSwapToDebtFormStoreContext = createContext<ReturnType<
+	typeof createBorrowSwapToDebtFormStore
 > | null>(null);
 
 // Provider component
-interface BorrowRepayFormProviderProps {
+interface BorrowSwapToDebtFormProviderProps {
 	children: React.ReactNode;
-	initialMarket: BorrowRepayFormState['marketLoan'];
+	initialMarket: BorrowSwapToDebtFormState['marketLoan'];
 }
 
-export const BorrowRepayFormProvider = ({
+export const BorrowSwapToDebtFormProvider = ({
 	children,
 	initialMarket,
-}: BorrowRepayFormProviderProps) => {
+}: BorrowSwapToDebtFormProviderProps) => {
 	const storeRef = useRef<ReturnType<
-		typeof createBorrowRepayFormStore
+		typeof createBorrowSwapToDebtFormStore
 	> | null>(null);
 
 	// Create the store if it doesn't exist
 	if (!storeRef.current) {
-		storeRef.current = createBorrowRepayFormStore(initialMarket);
+		storeRef.current = createBorrowSwapToDebtFormStore(initialMarket);
 	}
 
-	// Update the token when it changes
+	// Update the market loan when it changes
 	useEffect(() => {
 		if (storeRef.current) {
-			// Reset the form with the new token
+			// Reset the form with the new market loan
 			storeRef.current.getState().resetStore(initialMarket);
 		}
 	}, [initialMarket]);
 
 	return (
-		<BorrowRepayFormStoreContext.Provider value={storeRef.current}>
+		<BorrowSwapToDebtFormStoreContext.Provider value={storeRef.current}>
 			{children}
-		</BorrowRepayFormStoreContext.Provider>
+		</BorrowSwapToDebtFormStoreContext.Provider>
 	);
 };
 
 // Hook to use the store
-export const useBorrowRepayFormStore = <T,>(
-	selector: (state: BorrowRepayFormState) => T
-): T => {
-	const store = useContext(BorrowRepayFormStoreContext);
+export function useBorrowSwapToDebtFormStore<T>(
+	selector: (state: BorrowSwapToDebtFormState) => T
+): T {
+	const store = useContext(BorrowSwapToDebtFormStoreContext);
 	if (!store) {
 		throw new Error(
-			'useBorrowRepayFormStore must be used within a BorrowRepayFormProvider'
+			'useBorrowSwapToDebtFormStore must be used within a BorrowSwapToDebtFormProvider'
 		);
 	}
 	return useStore(store, selector);
-};
+}

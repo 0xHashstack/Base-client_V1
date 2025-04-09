@@ -16,7 +16,7 @@ const WithdrawTokenInfoCard: React.FC = () => {
 					1 {supplyPosition?.supplyAsset.symbol}
 				</Text.Regular12>
 				<Text.Regular12>
-					1 {supplyPosition?.supplyAsset.symbol}
+					1 {supplyPosition?.underlyingAsset.symbol}
 				</Text.Regular12>
 			</div>
 			<div className='flex items-center justify-between'>

@@ -74,14 +74,8 @@ const createBorrowAddCollateralFormStore = (
 		reset: () =>
 			set({
 				...initialState,
-				loanPosition: initialLoanPosition,
-				collateralAsset: useTokenStore
-					.getState()
-					.borrowMarketCollateral.find(
-						(collateral) =>
-							collateral.address ===
-							initialLoanPosition?.collateralAsset.addr
-					),
+				loanPosition: null,
+				collateralAsset: undefined,
 			}),
 		resetStore: (newLoanPosition) => {
 			const loanPosition =

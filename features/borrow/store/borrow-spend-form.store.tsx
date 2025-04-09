@@ -70,7 +70,7 @@ export const createBorrowSpendFormStore = (
 		setSelectedPool: (pool) => set({ selectedPool: pool }),
 		setTransactionStatus: (transactionStatus) => set({ transactionStatus }),
 		setValidationError: (validationError) => set({ validationError }),
-		reset: () => set({ ...initialState, market: initialToken }),
+		reset: () => set({ ...initialState, market: null }),
 		resetStore: (newMarket) =>
 			set({
 				...initialState,

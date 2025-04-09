@@ -50,7 +50,7 @@ const createSupplyWithdrawFormStore = (
 		setSupplyPosition: (token) => get().resetStore(token),
 		setIsLoading: (isLoading) => set({ isLoading }),
 		setTransactionStatus: (status) => set({ transactionStatus: status }),
-		reset: () => set({ ...initialState, supplyPosition: initialSupply }),
+		reset: () => set({ ...initialState, supplyPosition: null }),
 		resetStore: (newToken) =>
 			set({
 				...initialState,

@@ -76,8 +76,11 @@ export function useBorrowForm() {
 	const { writeContractAsync } = useWriteContract();
 	const { setTransaction } = useCurrentTransactionStore();
 	const queryClient = useQueryClient();
-	const { borrowMarketDataQueryKey, borrowMarketOverviewQueryKey } =
-		useQueryKeyStore();
+	const {
+		borrowMarketDataQueryKey,
+		borrowMarketOverviewQueryKey,
+		walletBalanceQueryKey,
+	} = useQueryKeyStore();
 
 	/**
 	 * Validate if the collateral amount is valid
@@ -333,6 +336,9 @@ export function useBorrowForm() {
 								queryKey: borrowMarketOverviewQueryKey,
 							});
 						}
+						queryClient.invalidateQueries({
+							queryKey: walletBalanceQueryKey,
+						});
 						// Set status to success
 						setTransactionStatus(
 							TransactionStatus.TRANSACTION_SUCCESS

@@ -43,8 +43,11 @@ export function useSupplyWithdrawForm() {
 	const resetStore = useSupplyWithdrawFormStore((state) => state.resetStore);
 
 	const { closeDrawer } = useEarnDrawer();
-	const { supplyMarketDataQueryKey, supplyMarketOverviewQueryKey } =
-		useQueryKeyStore();
+	const {
+		supplyMarketDataQueryKey,
+		supplyMarketOverviewQueryKey,
+		walletBalanceQueryKey,
+	} = useQueryKeyStore();
 
 	// Get the current wallet address
 	const { address: walletAddress } = useDappUser();
@@ -163,6 +166,11 @@ export function useSupplyWithdrawForm() {
 						// Invalidate the supply market overview query
 						queryClient.invalidateQueries({
 							queryKey: supplyMarketOverviewQueryKey,
+						});
+
+						// Invalidate the wallet balance query
+						queryClient.invalidateQueries({
+							queryKey: walletBalanceQueryKey,
 						});
 						// Set status to success
 						setTransactionStatus(

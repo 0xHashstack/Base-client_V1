@@ -13,11 +13,15 @@ interface QueryKeyState {
 	borrowMarketDataQueryKey: readonly unknown[];
 	borrowMarketOverviewQueryKey: readonly unknown[];
 
+	// wallet balance query keys
+	walletBalanceQueryKey: readonly unknown[];
+
 	// Actions
 	setSupplyMarketDataQueryKey: (queryKey: readonly unknown[]) => void;
 	setSupplyMarketOverviewQueryKey: (queryKey: readonly unknown[]) => void;
 	setBorrowMarketDataQueryKey: (queryKey: readonly unknown[]) => void;
 	setBorrowMarketOverviewQueryKey: (queryKey: readonly unknown[]) => void;
+	setWalletBalanceQueryKey: (queryKey: readonly unknown[]) => void;
 }
 
 export const useQueryKeyStore = create<QueryKeyState>((set) => ({
@@ -26,6 +30,7 @@ export const useQueryKeyStore = create<QueryKeyState>((set) => ({
 	supplyMarketOverviewQueryKey: [],
 	borrowMarketDataQueryKey: [],
 	borrowMarketOverviewQueryKey: [],
+	walletBalanceQueryKey: [],
 
 	// Actions
 	setSupplyMarketDataQueryKey: (queryKey) =>
@@ -39,4 +44,7 @@ export const useQueryKeyStore = create<QueryKeyState>((set) => ({
 
 	setBorrowMarketOverviewQueryKey: (queryKey) =>
 		set({ borrowMarketOverviewQueryKey: queryKey }),
+
+	setWalletBalanceQueryKey: (queryKey) =>
+		set({ walletBalanceQueryKey: queryKey }),
 }));
