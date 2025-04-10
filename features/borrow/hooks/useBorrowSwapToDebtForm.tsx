@@ -15,6 +15,8 @@ import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 import { useQueryKeyStore } from '@/store/useQueryKeyStore';
 import '@prototype/bigint.prototype';
+import { useTokenStore } from '@/store/useTokenStore';
+import { LoanUsageStatus } from '@/types/web3/borrow-market.types';
 
 /**
  * Hook to handle the borrow swap to debt form functionality
@@ -22,31 +24,22 @@ import '@prototype/bigint.prototype';
  */
 export function useBorrowSwapToDebtForm() {
 	// Use selectors to get only what we need from the store (following preferred pattern from memory)
-	const amount = useBorrowSwapToDebtFormStore((state) => state.amount);
-	const isLoading = useBorrowSwapToDebtFormStore((state) => state.isLoading);
 	const marketLoan = useBorrowSwapToDebtFormStore(
 		(state) => state.marketLoan
 	);
 	const transactionStatus = useBorrowSwapToDebtFormStore(
 		(state) => state.transactionStatus
 	);
-	const validationError = useBorrowSwapToDebtFormStore(
-		(state) => state.validationError
-	);
 
 	// Actions
 	const setMarketLoan = useBorrowSwapToDebtFormStore(
 		(state) => state.setMarketLoan
 	);
-	const setIsLoading = useBorrowSwapToDebtFormStore(
-		(state) => state.setIsLoading
-	);
+
 	const setTransactionStatus = useBorrowSwapToDebtFormStore(
 		(state) => state.setTransactionStatus
 	);
-	const setValidationError = useBorrowSwapToDebtFormStore(
-		(state) => state.setValidationError
-	);
+
 	const setSelectedToken = useBorrowSwapToDebtFormStore(
 		(state) => state.setSelectedToken
 	);
@@ -69,6 +62,13 @@ export function useBorrowSwapToDebtForm() {
 	const walletBalanceQueryKey = useQueryKeyStore(
 		(state) => state.walletBalanceQueryKey
 	);
+
+	const userLoans = useTokenStore((state) => state.userAllLoans);
+	const userInvestedLoans = useMemo(() => {
+		return userLoans.filter(
+			(loan) => Number(loan.usageDetails.status) === LoanUsageStatus.SPENT
+		);
+	}, [userLoans]);
 
 	// Get the current wallet address
 	const { address: walletAddress } = useDappUser();
@@ -102,12 +102,11 @@ export function useBorrowSwapToDebtForm() {
 
 		try {
 			setTransactionStatus(TransactionStatus.TRANSACTION_PROCESSING);
-			setIsLoading(true);
 
 			// Get appropriate swap to debt parameters
 			const swapToDebtParams = borrowTokenModel.getSwapToDebtParams({
 				loanId: marketLoan.loanId,
-				amount: amount,
+				amount: '0',
 				tokenAddress: marketLoan.borrowedAsset.address_,
 				decimals: marketLoan.borrowedAsset.decimals,
 			});
@@ -122,7 +121,7 @@ export function useBorrowSwapToDebtForm() {
 				// Set transaction in the store for monitoring
 				setTransaction({
 					hash: txHash,
-					successToastMessage: `Successfully swapped ${amount} ${marketLoan.borrowedAsset.symbol} to debt`,
+					successToastMessage: `Successfully swapped  ${marketLoan.borrowedAsset.symbol} to debt`,
 					onSuccess: () => {
 						// Invalidate the borrow market data query
 						queryClient.invalidateQueries({
@@ -148,7 +147,7 @@ export function useBorrowSwapToDebtForm() {
 						setTransactionStatus(
 							TransactionStatus.TRANSACTION_FAILED
 						);
-						setIsLoading(false);
+
 						toast.error(
 							`Failed to swap ${marketLoan.borrowedAsset.symbol} to debt`
 						);
@@ -157,28 +156,21 @@ export function useBorrowSwapToDebtForm() {
 
 				// Show initial info toast
 				toast.info(
-					`Swapping ${amount} ${marketLoan.borrowedAsset.symbol} to debt...`
+					`Swapping  ${marketLoan.borrowedAsset.symbol} to debt...`
 				);
 			}
 		} catch (error) {
 			console.error('Error swapping tokens to debt:', error);
 			setTransactionStatus(TransactionStatus.TRANSACTION_FAILED);
-			setValidationError(
-				'Failed to swap tokens to debt. Please try again.'
-			);
-		} finally {
-			setIsLoading(false);
 		}
 	}, [
 		marketLoan,
-		amount,
 		walletAddress,
 		transactionStatus,
 		borrowTokenModel,
 		closeDrawer,
-		setIsLoading,
+
 		setTransactionStatus,
-		setValidationError,
 		reset,
 		resetStore,
 		writeContractAsync,
@@ -206,23 +198,25 @@ export function useBorrowSwapToDebtForm() {
 		}
 	}, [marketLoan, transactionStatus]);
 
+	const isButtonDisabled = useMemo(() => {
+		return transactionStatus === TransactionStatus.TRANSACTION_PROCESSING;
+	}, [transactionStatus]);
+
 	return {
 		// State
-		amount,
-		isLoading,
 		marketLoan,
 		transactionStatus,
-		validationError,
-
 		// Actions
 		setMarketLoan,
 		setTransactionStatus,
-		setValidationError,
 		setSelectedToken,
+		setAmount: useBorrowSwapToDebtFormStore((state) => state.setAmount),
 		handleSwapToDebt,
 		getButtonText,
 
 		reset,
 		closeDrawer,
+		userInvestedLoans,
+		isButtonDisabled,
 	};
 }

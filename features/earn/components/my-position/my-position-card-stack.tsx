@@ -80,7 +80,7 @@ function MyPositionCardStack() {
 					<Text.Regular16
 						textColor={600}
 						className='text-center'>
-						You don’t have any positions yet
+						You don&apos;t have any positions yet
 					</Text.Regular16>
 				</PrimaryCard>
 			)}

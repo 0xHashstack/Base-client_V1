@@ -14,10 +14,8 @@ export enum TransactionStatus {
 // Define the store state and actions
 interface BorrowSwapToDebtFormState {
 	amount: string;
-	isLoading: boolean;
 	marketLoan: LoanPosition | null;
 	transactionStatus: TransactionStatus;
-	validationError: string;
 	selectedToken: {
 		address: Web3Address;
 		symbol: string;
@@ -30,9 +28,7 @@ interface BorrowSwapToDebtFormState {
 	setMarketLoan: (
 		marketLoan: BorrowSwapToDebtFormState['marketLoan']
 	) => void;
-	setIsLoading: (isLoading: boolean) => void;
 	setTransactionStatus: (status: TransactionStatus) => void;
-	setValidationError: (error: string) => void;
 	setSelectedToken: (
 		token: BorrowSwapToDebtFormState['selectedToken']
 	) => void;
@@ -47,7 +43,6 @@ const initialState = {
 	isLoading: false,
 	marketLoan: null,
 	transactionStatus: TransactionStatus.IDLE,
-	validationError: '',
 	selectedToken: null,
 };
 
@@ -63,9 +58,7 @@ const createBorrowSwapToDebtFormStore = (
 			set({ amount: '1000' }); // This would be replaced with actual balance logic
 		},
 		setMarketLoan: (marketLoan) => set({ marketLoan }),
-		setIsLoading: (isLoading) => set({ isLoading }),
 		setTransactionStatus: (status) => set({ transactionStatus: status }),
-		setValidationError: (error) => set({ validationError: error }),
 		setSelectedToken: (token) => set({ selectedToken: token }),
 		reset: () => set({ ...initialState, marketLoan: null }),
 		resetStore: (marketLoan) =>
