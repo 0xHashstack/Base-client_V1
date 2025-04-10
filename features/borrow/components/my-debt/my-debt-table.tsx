@@ -221,7 +221,7 @@ function MyDebtTable() {
 												isTrue={
 													Number(
 														loan.usageDetails.status
-													) !== LoanUsageStatus.SPENT
+													) === LoanUsageStatus.SPENT
 												}>
 												<Btn.Secondary
 													onClick={() =>
