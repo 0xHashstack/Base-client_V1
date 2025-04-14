@@ -8,7 +8,6 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-	TableNoData,
 	TableLoader,
 } from '@/components/ui/table';
 import { useBorrowDrawer } from '../../context/borrow-drawer.context';
@@ -35,6 +34,7 @@ import If from '@/components/common/If';
 import '@prototype/bigint.prototype';
 import { DECIMALS } from '@/constant/web3/decimal.constant';
 import { FEES } from '@/constant/web3/fees.constant';
+import PrimaryCard from '@/components/ui/card/primary-card';
 
 /**
  * MyDebtTable component
@@ -105,224 +105,245 @@ function MyDebtTable() {
 				<Text.Medium20>My Debt Positions</Text.Medium20>
 				<MyDebtQuickStat />
 			</div>
-			<Table isPrimary>
-				<TableHeader>
-					<TableRow>
-						<TableHead className='w-1/4'>Borrow Market</TableHead>
-						<TableHead className='w-1/6'>Value</TableHead>
-						<TableHead className='w-[150px]'></TableHead>
-						<TableHead className='w-1/6'>APR</TableHead>
-						<TableHead className='w-1/6'>Collateral</TableHead>
-						<TableHead className='w-1/6'>Health</TableHead>
-						<TableHead className='w-[80px]'></TableHead>
-					</TableRow>
-				</TableHeader>
-				<TableBody>
-					<If isTrue={isLoadingBorrowMarket}>
-						<TableLoader
-							rowCount={3}
-							colCount={6}
-						/>
-					</If>
+			<If isTrue={!isLoadingBorrowMarket && activeLoans.length === 0}>
+				<PrimaryCard className='flex ai-center justify-center p-6'>
+					<Text.Regular16
+						textColor={600}
+						className='text-center'>
+						You don’t have any borrow positions yet
+					</Text.Regular16>
+				</PrimaryCard>
+				<Table isPrimary>
+					<TableHeader>
+						<TableRow>
+							<TableHead className='w-1/4'>
+								Borrow Market
+							</TableHead>
+							<TableHead className='w-1/6'>Value</TableHead>
+							<TableHead className='w-[150px]'></TableHead>
+							<TableHead className='w-1/6'>APR</TableHead>
+							<TableHead className='w-1/6'>Collateral</TableHead>
+							<TableHead className='w-1/6'>Health</TableHead>
+							<TableHead className='w-[80px]'></TableHead>
+						</TableRow>
+					</TableHeader>
+					<TableBody>
+						<If isTrue={isLoadingBorrowMarket}>
+							<TableLoader
+								rowCount={3}
+								colCount={6}
+							/>
+						</If>
 
-					{!isLoadingBorrowMarket && activeLoans.length === 0 && (
-						<TableNoData
-							message='No debt positions found'
-							colSpan={6}
-						/>
-					)}
+						<>
+							{activeLoans.map((loan) => {
+								// Calculate the borrowed value in USD
+								const borrowedAmount =
+									loan.borrowedValue.formatBalance(
+										DECIMALS.PRICE
+									);
 
-					{!isLoadingBorrowMarket &&
-						activeLoans.map((loan) => {
-							// Calculate the borrowed value in USD
-							const borrowedAmount =
-								loan.borrowedValue.formatBalance(
-									DECIMALS.PRICE
-								);
+								// Format the values for display
+								const dTokenAmount =
+									loan.debtTokenAmount.formatBalance(
+										loan.borrowedAsset.decimals
+									);
 
-							// Format the values for display
-							const dTokenAmount =
-								loan.debtTokenAmount.formatBalance(
-									loan.borrowedAsset.decimals
-								);
+								// Get the health factor from the loan position
+								const healthFactor =
+									loan.positionHealth.healthFactor.formatToString(
+										DECIMALS.HEALTH_FACTOR
+									);
 
-							// Get the health factor from the loan position
-							const healthFactor =
-								loan.positionHealth.healthFactor.formatToString(
-									DECIMALS.HEALTH_FACTOR
-								);
+								const {
+									logoURI: collateralIconUrl = loan
+										.borrowedAsset.logoURI,
+								} =
+									collateralTokens.find(
+										({ address }) =>
+											address ===
+											loan.collateralAsset.addr
+									) || {};
 
-							const {
-								logoURI: collateralIconUrl = loan.borrowedAsset
-									.logoURI,
-							} =
-								collateralTokens.find(
-									({ address }) =>
-										address === loan.collateralAsset.addr
-								) || {};
-
-							return (
-								<TableRow
-									key={`${loan.borrowedAsset.address_}-${loan.usageDetails.status}`}>
-									<TableCell className='font-medium'>
-										<div className='flex items-center gap-3'>
-											<ImageWithLoader
-												src={
-													loan.borrowedAsset
-														.logoURI || ''
-												}
-												alt={
-													loan.borrowedAsset.name ||
+								return (
+									<TableRow
+										key={`${loan.borrowedAsset.address_}-${loan.usageDetails.status}`}>
+										<TableCell className='font-medium'>
+											<div className='flex items-center gap-3'>
+												<ImageWithLoader
+													src={
+														loan.borrowedAsset
+															.logoURI || ''
+													}
+													alt={
+														loan.borrowedAsset
+															.name || ''
+													}
+													width={20}
+													height={20}
+													className='rounded-full'
+												/>
+												{loan.borrowedAsset.name}
+											</div>
+										</TableCell>
+										<TableCell>
+											<HoverBorrowValueCard
+												borrowAmount={borrowedAmount}
+												tokenName={
+													loan.borrowedAsset.symbol ||
 													''
 												}
-												width={20}
-												height={20}
-												className='rounded-full'
-											/>
-											{loan.borrowedAsset.name}
-										</div>
-									</TableCell>
-									<TableCell>
-										<HoverBorrowValueCard
-											borrowAmount={borrowedAmount}
-											tokenName={
-												loan.borrowedAsset.symbol || ''
-											}
-											dTokenName={
-												'd' +
-												(loan.borrowedAsset.symbol ||
-													'')
-											}
-											dTokenIssued={dTokenAmount}
-											pricePerToken={loan.assetPrice.formatBalance(
-												DECIMALS.PRICE
-											)}
-											tokenPrice={loan.assetPrice.formatBalance(
-												DECIMALS.PRICE
-											)}
-											dappFees={FEES.DAPP_FEE.toFixed(2)}>
-											<span>${borrowedAmount}</span>
-										</HoverBorrowValueCard>
-									</TableCell>
-									<TableCell>
-										<div className='flex gap-2 items-center'>
-											<Btn.Outline
-												disabled={
-													Number(
-														loan.usageDetails.status
-													) === LoanUsageStatus.SPENT
+												dTokenName={
+													'd' +
+													(loan.borrowedAsset
+														.symbol || '')
 												}
-												onClick={() =>
-													handleRepay(loan)
-												}>
-												Repay
-											</Btn.Outline>
-											<If
-												isTrue={
-													Number(
-														loan.usageDetails.status
-													) === LoanUsageStatus.SPENT
-												}>
-												<Btn.Secondary
-													onClick={() =>
-														handleSwapToDebt(loan)
-													}>
-													Swap To Debt
-												</Btn.Secondary>
-												<Btn.Secondary
-													onClick={() =>
-														handleSpend(loan)
-													}>
-													Spend
-												</Btn.Secondary>
-											</If>
-										</div>
-									</TableCell>
-									<TableCell>
-										<HoverBorrowAprCard
-											netApr={loan.rateInfo.effectiveRate}
-											changeInAprPercentage={
-												loan.rateInfo.rateChange
-											}
-											collateralApr={
-												loan.rateInfo.collateralRate
-											}
-											borrowApr={
-												loan.rateInfo.borrowRate
-											}>
-											<span>
-												{loan.rateInfo.effectiveRate.formatToString(
-													DECIMALS.APR
-												)}
-												%
-											</span>
-										</HoverBorrowAprCard>
-									</TableCell>
-									<TableCell>
-										<div className='flex items-center gap-2'>
-											<ImageWithLoader
-												src={collateralIconUrl}
-												alt={
-													loan.borrowedAsset.name ||
-													''
-												}
-												width={20}
-												height={20}
-												className='rounded-full'
-											/>
-											{loan.collateralAsset.name}
-										</div>
-									</TableCell>
-									<TableCell>
-										<HoverBorrowHealthCard
-											healthScore={healthFactor}
-											actualDebt={loan.positionHealth.currentDebt.formatBalance(
-												DECIMALS.BORROW_MARKET
-											)}
-											collateral={loan.collateralAsset.collateralAmount.formatBalance(
-												loan.collateralAsset.decimals
-											)}
-											netAssetValue={loan.assetPrice.formatBalance(
-												DECIMALS.PRICE
-											)}
-											liquidationPrice={loan.positionHealth.riskThreshold.formatBalance(
-												DECIMALS.BORROW_MARKET
-											)}
-											debtAssetName={
-												loan.borrowedAsset.symbol || ''
-											}
-											collateralAssetName={
-												loan.collateralAsset.symbol ||
-												''
-											}
-											currentDebt={{
-												dappName:
-													loan.usageDetails
-														.applicationName,
-												spendCategory:
-													loan.usageDetails.status,
-												value: loan.usageDetails.transactionValue.format(
+												dTokenIssued={dTokenAmount}
+												pricePerToken={loan.assetPrice.formatBalance(
 													DECIMALS.PRICE
-												),
-												assetName:
-													loan.usageDetails.tokenName,
-											}}>
-											<span>{healthFactor}</span>
-										</HoverBorrowHealthCard>
-									</TableCell>
-									<TableCell>
-										<Btn.Secondary
-											onClick={() =>
-												handleAddCollateral(loan)
-											}>
-											Add Collateral
-										</Btn.Secondary>
-									</TableCell>
-								</TableRow>
-							);
-						})}
-				</TableBody>
-			</Table>
+												)}
+												tokenPrice={loan.assetPrice.formatBalance(
+													DECIMALS.PRICE
+												)}
+												dappFees={FEES.DAPP_FEE.toFixed(
+													2
+												)}>
+												<span>${borrowedAmount}</span>
+											</HoverBorrowValueCard>
+										</TableCell>
+										<TableCell>
+											<div className='flex gap-2 items-center'>
+												<Btn.Outline
+													disabled={
+														Number(
+															loan.usageDetails
+																.status
+														) ===
+														LoanUsageStatus.SPENT
+													}
+													onClick={() =>
+														handleRepay(loan)
+													}>
+													Repay
+												</Btn.Outline>
+												<If
+													isTrue={
+														Number(
+															loan.usageDetails
+																.status
+														) ===
+														LoanUsageStatus.SPENT
+													}>
+													<Btn.Secondary
+														onClick={() =>
+															handleSwapToDebt(
+																loan
+															)
+														}>
+														Swap To Debt
+													</Btn.Secondary>
+													<Btn.Secondary
+														onClick={() =>
+															handleSpend(loan)
+														}>
+														Spend
+													</Btn.Secondary>
+												</If>
+											</div>
+										</TableCell>
+										<TableCell>
+											<HoverBorrowAprCard
+												netApr={
+													loan.rateInfo.effectiveRate
+												}
+												changeInAprPercentage={
+													loan.rateInfo.rateChange
+												}
+												collateralApr={
+													loan.rateInfo.collateralRate
+												}
+												borrowApr={
+													loan.rateInfo.borrowRate
+												}>
+												<span>
+													{loan.rateInfo.effectiveRate.formatToString(
+														DECIMALS.APR
+													)}
+													%
+												</span>
+											</HoverBorrowAprCard>
+										</TableCell>
+										<TableCell>
+											<div className='flex items-center gap-2'>
+												<ImageWithLoader
+													src={collateralIconUrl}
+													alt={
+														loan.borrowedAsset
+															.name || ''
+													}
+													width={20}
+													height={20}
+													className='rounded-full'
+												/>
+												{loan.collateralAsset.name}
+											</div>
+										</TableCell>
+										<TableCell>
+											<HoverBorrowHealthCard
+												healthScore={healthFactor}
+												actualDebt={loan.positionHealth.currentDebt.formatBalance(
+													DECIMALS.BORROW_MARKET
+												)}
+												collateral={loan.collateralAsset.collateralAmount.formatBalance(
+													loan.collateralAsset
+														.decimals
+												)}
+												netAssetValue={loan.assetPrice.formatBalance(
+													DECIMALS.PRICE
+												)}
+												liquidationPrice={loan.positionHealth.riskThreshold.formatBalance(
+													DECIMALS.BORROW_MARKET
+												)}
+												debtAssetName={
+													loan.borrowedAsset.symbol ||
+													''
+												}
+												collateralAssetName={
+													loan.collateralAsset
+														.symbol || ''
+												}
+												currentDebt={{
+													dappName:
+														loan.usageDetails
+															.applicationName,
+													spendCategory:
+														loan.usageDetails
+															.status,
+													value: loan.usageDetails.transactionValue.format(
+														DECIMALS.PRICE
+													),
+													assetName:
+														loan.usageDetails
+															.tokenName,
+												}}>
+												<span>{healthFactor}</span>
+											</HoverBorrowHealthCard>
+										</TableCell>
+										<TableCell>
+											<Btn.Secondary
+												onClick={() =>
+													handleAddCollateral(loan)
+												}>
+												Add Collateral
+											</Btn.Secondary>
+										</TableCell>
+									</TableRow>
+								);
+							})}
+						</>
+					</TableBody>
+				</Table>
+			</If>
 		</div>
 	);
 }
