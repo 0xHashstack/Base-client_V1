@@ -75,7 +75,7 @@ export default function BorrowSpendFormInputs() {
 				value={market}
 				valueKey='loanId'
 				labelKey='borrowedAsset.symbol'
-				onChange={handleMarketChange}
+				onChange={(_, value) => handleMarketChange(value)}
 				renderOption={renderMarketOption}
 				renderValue={renderSelectedMarket}
 				className='border-none p-0 shadow-none ring-0'

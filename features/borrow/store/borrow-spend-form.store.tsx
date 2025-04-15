@@ -36,7 +36,6 @@ export interface BorrowSpendFormState {
 	selectedDapp: L3Dapp | null;
 	selectedPool: L3DappPool | null;
 	transactionStatus: TransactionStatus;
-	validationError: string;
 
 	// Actions
 	setMarket: (market: LoanPosition | null) => void;
@@ -44,7 +43,6 @@ export interface BorrowSpendFormState {
 	setSelectedDapp: (dapp: L3Dapp | null) => void;
 	setSelectedPool: (pool: L3DappPool | null) => void;
 	setTransactionStatus: (status: TransactionStatus) => void;
-	setValidationError: (error: string) => void;
 	reset: () => void;
 	resetStore: (newMarket?: LoanPosition | null) => void;
 }
@@ -69,7 +67,6 @@ export const createBorrowSpendFormStore = (
 			set({ selectedDapp: dapp, selectedPool: null }),
 		setSelectedPool: (pool) => set({ selectedPool: pool }),
 		setTransactionStatus: (transactionStatus) => set({ transactionStatus }),
-		setValidationError: (validationError) => set({ validationError }),
 		reset: () => set({ ...initialState, market: null }),
 		resetStore: (newMarket) =>
 			set({

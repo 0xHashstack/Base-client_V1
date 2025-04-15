@@ -57,9 +57,7 @@ export function useBorrowSpendForm() {
 	const setTransactionStatus = useBorrowSpendFormStore(
 		(state: BorrowSpendFormState) => state.setTransactionStatus
 	);
-	const setValidationError = useBorrowSpendFormStore(
-		(state: BorrowSpendFormState) => state.setValidationError
-	);
+
 	const reset = useBorrowSpendFormStore(
 		(state: BorrowSpendFormState) => state.reset
 	);
@@ -119,7 +117,6 @@ export function useBorrowSpendForm() {
 	 */
 	const validateForm = useCallback((): ValidationResult => {
 		if (!market) {
-			setValidationError('Please select a borrow market');
 			return {
 				valid: false,
 				error: 'Please select a borrow market',
@@ -127,7 +124,6 @@ export function useBorrowSpendForm() {
 		}
 
 		if (!selectedDapp) {
-			setValidationError('Please select a DApp');
 			return {
 				valid: false,
 				error: 'Please select a DApp',
@@ -135,7 +131,6 @@ export function useBorrowSpendForm() {
 		}
 
 		if (!selectedPool) {
-			setValidationError('Please select a pool');
 			return {
 				valid: false,
 				error: 'Please select a pool',
@@ -143,19 +138,17 @@ export function useBorrowSpendForm() {
 		}
 
 		if (!walletAddress) {
-			setValidationError('Wallet not connected');
 			return {
 				valid: false,
 				error: 'Wallet not connected',
 			};
 		}
 
-		setValidationError('');
 		return {
 			valid: true,
 			error: '',
 		};
-	}, [market, selectedDapp, selectedPool, walletAddress, setValidationError]);
+	}, [market, selectedDapp, selectedPool, walletAddress]);
 
 	/**
 	 * Handle liquidity provision submission
