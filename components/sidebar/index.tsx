@@ -24,7 +24,7 @@ function Sidebar({ className }: { className?: string }) {
 		<aside
 			ref={sidebarRef}
 			className={cn(
-				'z-30 h-screen bg-sidebar-bg transition-all duration-300 ease-in-out px-2.5 flex flex-col overflow-x-hidden w-[90vw] max-w-[300px] text-primary-600',
+				'z-30 h-screen bg-sidebar-bg transition-all duration-300 ease-in-out px-2.5 flex flex-col overflow-x-hidden w-[90vw] max-w-[300px] text-primary-600 shadow-2xl',
 				'laptop:sticky laptop:top-0',
 				'fixed left-0 top-0',
 				!isSidebarOpen ? '-translate-x-full' : 'translate-x-0',

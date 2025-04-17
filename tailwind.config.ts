@@ -62,6 +62,9 @@ export default {
 					secondary: 'hsl(var(--badge-secondary))',
 					error: 'hsl(var(--bade-error))',
 				},
+				sidebar: {
+					bg: 'hsl(var(--sidebar-bg))',
+				},
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				header: {

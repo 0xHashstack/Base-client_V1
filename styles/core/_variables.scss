@@ -93,6 +93,9 @@
 		// sizes
 		--max-section-width: 1300px;
 		--header-height: 64px;
+
+		// sidebar
+		--sidebar-bg: 0 0% 100%;
 	}
 	[data-theme-id='dark'] {
 		--background: 240 10% 4%;
@@ -178,5 +181,8 @@
 		// slider
 		--slider-bg: 0 0% 98%;
 		--slider-thumb: 0 0% 98%;
+
+		// sidebar
+		--sidebar-bg: 240 6% 10%;
 	}
 }

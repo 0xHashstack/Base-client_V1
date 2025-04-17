@@ -2,9 +2,11 @@ import { cn } from '@/lib/utils';
 import { SidebarNavProps } from '../types';
 import { usePathname } from 'next/navigation';
 import DashboardLink from '@/components/common/DashboardLink';
+import { useLayoutStore } from '@/store/useLayout.store';
 
 export const SidebarNav = ({ items }: SidebarNavProps) => {
 	const pathName = usePathname();
+	const { toggleSidebar } = useLayoutStore();
 	return (
 		<div className='flex-1 overflow-y-auto'>
 			<nav className='flex flex-col gap-1'>
@@ -12,6 +14,7 @@ export const SidebarNav = ({ items }: SidebarNavProps) => {
 					const isActive = pathName.includes(item.href);
 					return (
 						<DashboardLink
+							onClick={() => toggleSidebar(false)}
 							key={item.href}
 							href={item.href}
 							className={cn(
