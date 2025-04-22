@@ -6,7 +6,7 @@ import {
 import { useTokenStore } from '@/store/useTokenStore';
 import { SupplyMarketData } from '@/types/web3/supply-market.types';
 import { useWalletToken } from '@/context/wallet-token-provider';
-
+import '@prototype/number.prototype';
 /**
  * Hook to manage supply form input logic
  * @returns Form input state and handlers
@@ -83,7 +83,7 @@ export function useSupplyFormInputs() {
 		if (transactionStatus !== TransactionStatus.IDLE) return;
 		if (walletBalanceLoading || walletBalanceError || MAX_AMOUNT <= 0)
 			return;
-		setAmount(MAX_AMOUNT.toFixed(3));
+		setAmount(MAX_AMOUNT.toFixedDecimals());
 	}, [
 		setAmount,
 		walletBalanceLoading,
@@ -104,7 +104,11 @@ export function useSupplyFormInputs() {
 
 			const percentage = value[0];
 			const newAmount = (percentage / 100) * MAX_AMOUNT;
-			setAmount(newAmount.toFixed(3));
+			setAmount(
+				percentage === 100 ?
+					newAmount.toFixedDecimals()
+				:	newAmount.toFixed(3)
+			);
 		},
 		[
 			setAmount,

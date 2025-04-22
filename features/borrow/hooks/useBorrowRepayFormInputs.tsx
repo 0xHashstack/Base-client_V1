@@ -4,6 +4,7 @@ import { useBorrowRepayFormStore } from '../store/borrow-repay-form.store';
 import { useWalletToken } from '@/context/wallet-token-provider';
 import '@prototype/bigint.prototype';
 import { useTokenStore } from '@/store/useTokenStore';
+import '@prototype/number.prototype';
 /**
  * Hook to handle the borrow repay form inputs
  * @returns Form input state and handlers
@@ -25,7 +26,7 @@ export function useBorrowRepayFormInputs() {
 		return (
 			borrowMarket.repayFees
 				?.format(borrowMarket.borrowedAsset.decimals)
-				.toFixed(3) || '0.00'
+				.toFixedDecimals() || '0.000'
 		);
 	}, [borrowMarket?.repayFees, borrowMarket?.borrowedAsset?.decimals]);
 
@@ -79,7 +80,7 @@ export function useBorrowRepayFormInputs() {
 		if (!borrowMarket || MAX_AMOUNT <= 0) return;
 
 		// Set amount to max available in wallet
-		setAmount(MAX_AMOUNT.toFixed(3));
+		setAmount(MAX_AMOUNT.toFixedDecimals());
 	}, [borrowMarket, setAmount, MAX_AMOUNT]);
 
 	// Handle slider change
@@ -91,7 +92,11 @@ export function useBorrowRepayFormInputs() {
 
 			// Calculate amount based on percentage
 			const calculatedAmount = (percentage / 100) * MAX_AMOUNT;
-			setAmount(calculatedAmount.toFixed(3));
+			setAmount(
+				percentage === 100 ?
+					calculatedAmount.toFixedDecimals()
+				:	calculatedAmount.toFixed(3)
+			);
 		},
 		[borrowMarket, setAmount, MAX_AMOUNT]
 	);

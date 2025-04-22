@@ -7,7 +7,7 @@ import {
 import { useTokenStore } from '@/store/useTokenStore';
 import { useWalletToken } from '@/context/wallet-token-provider';
 import { BorrowMarketCollateral } from '@/types/web3/borrow-market.types';
-
+import '@prototype/number.prototype';
 /**
  * Hook to handle the borrow add collateral form inputs
  * @returns Form input state and handlers
@@ -106,7 +106,7 @@ export function useBorrowAddCollateralFormInputs() {
 		if (MAX_AMOUNT <= 0) return;
 
 		// Set amount to max available in wallet
-		setAmount(MAX_AMOUNT.toFixed(3));
+		setAmount(MAX_AMOUNT.toFixedDecimals());
 	}, [MAX_AMOUNT, setAmount]);
 
 	// Handle slider change
@@ -118,7 +118,11 @@ export function useBorrowAddCollateralFormInputs() {
 
 			// Calculate amount based on percentage of wallet balance
 			const calculatedAmount = (percentage / 100) * MAX_AMOUNT;
-			setAmount(calculatedAmount.toFixed(3));
+			setAmount(
+				percentage === 100 ?
+					calculatedAmount.toFixedDecimals()
+				:	calculatedAmount.toFixed(3)
+			);
 		},
 		[MAX_AMOUNT, setAmount]
 	);

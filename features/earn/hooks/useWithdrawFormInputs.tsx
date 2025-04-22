@@ -5,7 +5,7 @@ import { SupplyPosition } from '@/types/web3/supply-market.types';
 // Import the BigInt prototype extension to ensure it's loaded
 import '@prototype/bigint.prototype';
 import { TransactionStatus } from '../store/supply-form.store';
-
+import '@prototype/number.prototype';
 /**
  * Hook to manage withdraw form input logic
  * @returns Form input state and handlers
@@ -92,7 +92,7 @@ export function useWithdrawFormInputs() {
 	const handleMaxClick = useCallback(() => {
 		if (availableBalanceLoading || availableBalanceError || MAX_AMOUNT <= 0)
 			return;
-		setAmount(MAX_AMOUNT.toFixed(3));
+		setAmount(MAX_AMOUNT.toFixedDecimals());
 	}, [setAmount, availableBalanceLoading, availableBalanceError, MAX_AMOUNT]);
 
 	/**
@@ -110,7 +110,11 @@ export function useWithdrawFormInputs() {
 
 			const percentage = value[0];
 			const newAmount = (percentage / 100) * MAX_AMOUNT;
-			setAmount(newAmount.toFixed(3));
+			setAmount(
+				percentage === 100 ?
+					newAmount.toFixedDecimals()
+				:	newAmount.toFixed(3)
+			);
 		},
 		[setAmount, MAX_AMOUNT, availableBalanceLoading, availableBalanceError]
 	);

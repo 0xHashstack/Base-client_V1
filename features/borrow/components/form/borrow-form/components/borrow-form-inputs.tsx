@@ -154,130 +154,135 @@ function BorrowFormInputs() {
 
 	return (
 		<div className='flex flex-col gap-5'>
-			{/* Borrow Market Selector */}
-			<Card className='flex flex-col gap-3 px-6 py-4'>
-				<SingleSelect
-					label='Borrow Market'
-					options={borrowMarketList}
-					value={borrowMarket}
-					valueKey='address_'
-					labelKey='symbol'
-					placeholder='Select a token'
-					renderOption={renderBorrowMarketOption}
-					renderValue={renderBorrowMarketValue}
-					onChange={(_, value) => handleBorrowMarketChange(value)}
-					className='border-none p-0 shadow-none ring-0'
-					dropdownClassName='select-primary-displacement'
-				/>
-			</Card>
+			{/** Collateral Market Selector */}
+			<>
+				<Card className='flex flex-col gap-3 px-6 py-4'>
+					<SingleSelect
+						label='Collateral Market'
+						options={collateralMarketList}
+						value={collateralMarket}
+						valueKey='address'
+						labelKey='symbol'
+						placeholder='Select a token'
+						renderOption={renderTokenOption}
+						renderValue={renderTokenValue}
+						onChange={(_, value) => handleTokenChange(value)}
+						className='border-none p-0 shadow-none ring-0'
+						dropdownClassName='select-primary-displacement'
+					/>
+				</Card>
 
-			{/* Borrow Amount Input */}
-			<Card className='flex flex-col gap-6 p-6'>
-				<div className='flex flex-col gap-4'>
-					<Text.Regular12 textColor={600}>
-						Borrow Amount
-					</Text.Regular12>
-					<div className='flex w-full flex-col items-end'>
-						<div className='flex items-center gap-1 justify-between w-full'>
-							<div className='flex-1'>
-								<CustomInput.Amount
-									type='number'
-									value={borrowAmount}
-									onChange={handleBorrowAmountChange}
-									placeholder={`00.00 ${borrowMarket?.asset.symbol || ''}`}
-									disabled={!borrowMarket}
-								/>
+				<Card className='flex flex-col gap-6 p-6'>
+					<div className='flex flex-col gap-4'>
+						<Text.Regular12 textColor={600}>Amount</Text.Regular12>
+						<div className='flex w-full flex-col items-end'>
+							<div className='flex items-center gap-1 justify-between w-full'>
+								<div className='flex-1'>
+									<CustomInput.Amount
+										autoFocus
+										type='number'
+										value={amount}
+										onChange={handleAmountChange}
+										placeholder={`00.00 ${collateralMarket?.symbol || ''}`}
+										disabled={isFormDisabled}
+									/>
+								</div>
+
+								<Btn.Self
+									onClick={handleMaxClick}
+									className='text-link'
+									disabled={isFormDisabled}>
+									MAX
+								</Btn.Self>
 							</div>
-
-							<Btn.Self
-								onClick={handleBorrowMaxClick}
-								className='text-link'
-								disabled={!borrowMarket}>
-								MAX
-							</Btn.Self>
-						</div>
-						<div className='flex items-center gap-1'>
-							<Text.Regular12 textColor={600}>
-								Available To Borrow:{' '}
-								{formatToReadableValue(maxBorrowAmount)}{' '}
-								{borrowMarket?.asset.symbol || ''}
-							</Text.Regular12>
+							<div className='flex items-center gap-1'>
+								{renderWalletBalance()}
+							</div>
 						</div>
 					</div>
-				</div>
-				<div className='flex flex-col gap-2.5'>
-					<Slider
-						value={[borrowSliderPercentage]}
-						max={100}
-						step={1}
-						onValueChange={handleBorrowSliderChange}
-						className='mt-1'
-						disabled={!borrowMarket}
-						fixedStepsPercentage={[0, 25, 50, 75, 100]}
-						onStepClick={(value) =>
-							handleBorrowSliderChange([value])
-						}
-					/>
-				</div>
-			</Card>
+					<div className='flex flex-col gap-2.5'>
+						<Slider
+							value={[sliderPercentage]}
+							max={100}
+							step={1}
+							onValueChange={handleSliderChange}
+							className='mt-1'
+							disabled={isFormDisabled}
+							fixedStepsPercentage={[0, 25, 50, 75, 100]}
+							onStepClick={(value) => handleSliderChange([value])}
+						/>
+					</div>
+				</Card>
+			</>
 			<Separator className='bg-border' />
-			<Card className='flex flex-col gap-3 px-6 py-4'>
-				<SingleSelect
-					label='Collateral Market'
-					options={collateralMarketList}
-					value={collateralMarket}
-					valueKey='address'
-					labelKey='symbol'
-					placeholder='Select a token'
-					renderOption={renderTokenOption}
-					renderValue={renderTokenValue}
-					onChange={(_, value) => handleTokenChange(value)}
-					className='border-none p-0 shadow-none ring-0'
-					dropdownClassName='select-primary-displacement'
-				/>
-			</Card>
+			{/* Borrow Market Selector */}
+			<>
+				<Card className='flex flex-col gap-3 px-6 py-4'>
+					<SingleSelect
+						label='Borrow Market'
+						options={borrowMarketList}
+						value={borrowMarket}
+						valueKey='address_'
+						labelKey='symbol'
+						placeholder='Select a token'
+						renderOption={renderBorrowMarketOption}
+						renderValue={renderBorrowMarketValue}
+						onChange={(_, value) => handleBorrowMarketChange(value)}
+						className='border-none p-0 shadow-none ring-0'
+						dropdownClassName='select-primary-displacement'
+					/>
+				</Card>
 
-			<Card className='flex flex-col gap-6 p-6'>
-				<div className='flex flex-col gap-4'>
-					<Text.Regular12 textColor={600}>Amount</Text.Regular12>
-					<div className='flex w-full flex-col items-end'>
-						<div className='flex items-center gap-1 justify-between w-full'>
-							<div className='flex-1'>
-								<CustomInput.Amount
-									autoFocus
-									type='number'
-									value={amount}
-									onChange={handleAmountChange}
-									placeholder={`00.00 ${collateralMarket?.symbol || ''}`}
-									disabled={isFormDisabled}
-								/>
+				{/* Borrow Amount Input */}
+				<Card className='flex flex-col gap-6 p-6'>
+					<div className='flex flex-col gap-4'>
+						<Text.Regular12 textColor={600}>
+							Borrow Amount
+						</Text.Regular12>
+						<div className='flex w-full flex-col items-end'>
+							<div className='flex items-center gap-1 justify-between w-full'>
+								<div className='flex-1'>
+									<CustomInput.Amount
+										type='number'
+										value={borrowAmount}
+										onChange={handleBorrowAmountChange}
+										placeholder={`00.00 ${borrowMarket?.asset.symbol || ''}`}
+										disabled={!borrowMarket}
+									/>
+								</div>
+
+								<Btn.Self
+									onClick={handleBorrowMaxClick}
+									className='text-link'
+									disabled={!borrowMarket}>
+									MAX
+								</Btn.Self>
 							</div>
-
-							<Btn.Self
-								onClick={handleMaxClick}
-								className='text-link'
-								disabled={isFormDisabled}>
-								MAX
-							</Btn.Self>
-						</div>
-						<div className='flex items-center gap-1'>
-							{renderWalletBalance()}
+							<div className='flex items-center gap-1'>
+								<Text.Regular12 textColor={600}>
+									Available To Borrow:{' '}
+									{formatToReadableValue(maxBorrowAmount)}{' '}
+									{borrowMarket?.asset.symbol || ''}
+								</Text.Regular12>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div className='flex flex-col gap-2.5'>
-					<Slider
-						value={[sliderPercentage]}
-						max={100}
-						step={1}
-						onValueChange={handleSliderChange}
-						className='mt-1'
-						disabled={isFormDisabled}
-						fixedStepsPercentage={[0, 25, 50, 75, 100]}
-						onStepClick={(value) => handleSliderChange([value])}
-					/>
-				</div>
-			</Card>
+					<div className='flex flex-col gap-2.5'>
+						<Slider
+							value={[borrowSliderPercentage]}
+							max={100}
+							step={1}
+							onValueChange={handleBorrowSliderChange}
+							className='mt-1'
+							disabled={!borrowMarket}
+							fixedStepsPercentage={[0, 25, 50, 75, 100]}
+							onStepClick={(value) =>
+								handleBorrowSliderChange([value])
+							}
+						/>
+					</div>
+				</Card>
+			</>
 			<Separator className='bg-border' />
 		</div>
 	);

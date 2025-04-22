@@ -22,7 +22,6 @@ function WithdrawFormInputs() {
 		handleMaxClick,
 		handleSliderChange,
 		handleTokenChange,
-
 		formattedReadableMaxAmount,
 		isFormDisabled,
 	} = useWithdrawFormInputs();

@@ -13,7 +13,7 @@ import {
 import { useWalletToken } from '@/context/wallet-token-provider';
 import '@prototype/bigint.prototype';
 import { DECIMALS } from '@/constant/web3/decimal.constant';
-
+import '@prototype/number.prototype';
 // Validation logic has been moved to useBorrowForm
 
 /**
@@ -119,7 +119,7 @@ export function useBorrowFormInputs() {
 			return;
 
 		// Set to wallet balance (with 3 decimal places for readability)
-		setAmount(MAX_AMOUNT.toFixed(3));
+		setAmount(MAX_AMOUNT.toFixedDecimals());
 	}, [
 		setAmount,
 		collateralMarket,
@@ -141,7 +141,11 @@ export function useBorrowFormInputs() {
 
 			const percentage = values[0];
 			const newAmount = (percentage / 100) * MAX_AMOUNT;
-			setAmount(newAmount.toFixed(3));
+			setAmount(
+				percentage === 100 ?
+					newAmount.toFixedDecimals()
+				:	newAmount.toFixed(3)
+			);
 		},
 		[
 			setAmount,
@@ -232,7 +236,7 @@ export function useBorrowFormInputs() {
 		if (!borrowMarket || !collateralMarket || maxBorrowAmount <= 0) return;
 
 		// Set to max borrowable amount
-		setBorrowAmount(maxBorrowAmount.toFixed(3));
+		setBorrowAmount(maxBorrowAmount.toFixedDecimals());
 	}, [borrowMarket, collateralMarket, maxBorrowAmount, setBorrowAmount]);
 
 	// Convert borrow amount string to number for slider
@@ -258,7 +262,11 @@ export function useBorrowFormInputs() {
 
 			// Calculate amount based on percentage of max borrow amount
 			const calculatedAmount = (percentage / 100) * maxBorrowAmount;
-			setBorrowAmount(calculatedAmount.toFixed(3));
+			setBorrowAmount(
+				percentage === 100 ?
+					calculatedAmount.toFixedDecimals()
+				:	calculatedAmount.toFixed(3)
+			);
 		},
 		[borrowMarket, collateralMarket, maxBorrowAmount, setBorrowAmount]
 	);
