@@ -16,6 +16,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useQueryKeyStore } from '@/store/useQueryKeyStore';
 import { SupplyTokenModel } from '@/lib/model/supply-token.model';
 import '@prototype/bigint.prototype';
+import { DECIMALS } from '@/constant/web3/decimal.constant';
 
 /**
  * Hook to handle the borrow repay form functionality
@@ -125,7 +126,9 @@ export function useBorrowRepayForm() {
 			debugger;
 			// Get the parameters for the approve transaction
 			const approveParams = tokenModel.getApproveParams({
-				amount: amount.toString(),
+				amount: amount.formatBalance(
+					DECIMALS.BORROW_MARKET
+				).toString(),
 			});
 
 			// Call the approve function on the token contract
@@ -211,7 +214,9 @@ export function useBorrowRepayForm() {
 			// Get appropriate repay parameters based on repayment type
 			const repayParams = borrowTokenModel.getRepayLoanParams({
 				loanId: marketLoan.loanId,
-				repayAmount: marketLoan.repayFees.toString(),
+				repayAmount: amount.formatBalance(
+					DECIMALS.BORROW_MARKET
+				).toString(),
 				decimals: marketLoan.borrowedAsset.decimals,
 			});
 
