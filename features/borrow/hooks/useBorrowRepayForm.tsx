@@ -123,12 +123,9 @@ export function useBorrowRepayForm() {
 		if (!marketLoan || !tokenModel || !walletAddress) return;
 		try {
 			setTransactionStatus(TransactionStatus.APPROVING);
-			debugger;
 			// Get the parameters for the approve transaction
 			const approveParams = tokenModel.getApproveParams({
-				amount: amount.formatBalance(
-					DECIMALS.BORROW_MARKET
-				).toString(),
+				amount: amount.formatBalance(DECIMALS.BORROW_MARKET).toString(),
 			});
 
 			// Call the approve function on the token contract
@@ -209,14 +206,13 @@ export function useBorrowRepayForm() {
 		try {
 			setTransactionStatus(TransactionStatus.TRANSACTION_PROCESSING);
 			setIsLoading(true);
-			debugger;
 
 			// Get appropriate repay parameters based on repayment type
 			const repayParams = borrowTokenModel.getRepayLoanParams({
 				loanId: marketLoan.loanId,
-				repayAmount: amount.formatBalance(
-					DECIMALS.BORROW_MARKET
-				).toString(),
+				repayAmount: amount
+					.formatBalance(DECIMALS.BORROW_MARKET)
+					.toString(),
 				decimals: marketLoan.borrowedAsset.decimals,
 			});
 
