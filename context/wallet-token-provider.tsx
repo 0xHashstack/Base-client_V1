@@ -32,7 +32,7 @@ export function WalletTokenProvider({
 }: WalletTokenProviderProps) {
 	// Use the hook to get token balance information
 	const setWalletBalanceQueryKey = useQueryKeyStore(
-		(state) => state.setBorrowMarketDataQueryKey
+		(state) => state.setWalletBalanceQueryKey
 	);
 
 	const balanceInfo = useWalletTokenBalance(tokenAddress, {
