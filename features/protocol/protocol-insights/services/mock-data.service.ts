@@ -138,9 +138,9 @@ const generateStackedChartData = (
 };
 
 // Generate data for different time periods
-const generateDataForPeriods = <T>(
-	generator: (days: number, ...args: unknown[]) => T[],
-	args: unknown[]
+const generateDataForPeriods = <T, Args extends unknown[]>(
+	generator: (days: number, ...args: Args) => T[],
+	args: Args
 ): Record<TimePeriod, T[]> => {
 	return {
 		'1D': generator(1, ...args),
